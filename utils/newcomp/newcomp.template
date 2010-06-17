@@ -12,7 +12,7 @@ Usage: $progname [-f] NewCompName
 create skeleton component files with NewCompName in current directory.
 Please specify NewCompName as you need.
 If you issue "$progname NewGatherer", following files will be created
-Makefile.NewGatherer
+Makefile
 NewGatherer.h
 NewGatherer.cpp
 NewGathererComp.cpp
