@@ -1,0 +1,20 @@
+TOP        = /usr/local/src/swig-1.3.31/Examples/
+SWIG       = $(TOP)/../preinst-swig
+CXXSRCS    = 
+TARGET     = ParameterClient
+INTERFACE  = ParameterClient.i
+LIBS       = -lm
+
+all: swig
+
+swig:
+	swig -c++ -python  ParameterClient.i
+	g++ -c -fpic  ParameterClient_wrap.cxx -I/usr/include/python2.3
+	g++ -shared ParameterClient_wrap.o -o _ParameterClient.so
+#	$(MAKE) -f $(TOP)/Makefile CXXSRCS='$(CXXSRCS)' SWIG='$(SWIG)' \
+#	TARGET='$(TARGET)' INTERFACE='$(INTERFACE)' python_cpp
+
+clean:
+	$(MAKE) -f $(TOP)/Makefile python_clean
+	rm -f $(TARGET).py
+

@@ -1,0 +1,45 @@
+#!/bin/sh
+
+progname=$(echo $0 | sed -e 's|^.*/||')
+Xalan_path=/usr/bin/Xalan
+#Xalan_attribute_path=/home/daq/DaqComponents/xml2json-with-attribute.xslt
+
+#mydir=`pwd`
+Xalan_attribute_path=/usr/bin/xml2json-with-attribute.xslt
+
+if [ -z $1 ]; then
+1>&2 cat <<EOF
+$progname: need one argument for input condition xml file
+$progname: Usage: $progname condition.xml [condition.json]
+       If 2nd argument is not specified, output json filename is
+       basename of the 1st arugment + .json
+EOF
+    exit 1
+fi
+
+if [ ! -r $Xalan_attribute_path ]; then
+    echo "$progname: cannot read attribute file: $Xalan_attribute_path" 1>&2
+    exit 1
+fi
+
+input=$1
+if [ -z $2 ]; then
+    output=$(echo $input | sed -e 's/\.xml/.json/')
+else
+    output=$2
+fi
+
+$Xalan_path -o $output $input $Xalan_attribute_path
+
+xalan_exit_status=$?
+if [ $xalan_exit_status -ne 0 ]; then
+    echo "$progname: xalan command fail: exit status: $xalan_exit_status" 1>&2
+fi
+
+sed -i.bak -e 's/^amz_loadComplete(//' -e 's/);$/\n/' -e 's/"0"/0/g' $output
+sed_exit_status=$?
+if [ $sed_exit_status -eq 0 ]; then
+    rm ${output}.bak
+else
+    echo "$progname: sed command to chomp header and trailer fail: exit status: $sed_exit_status" 1>&2
+fi

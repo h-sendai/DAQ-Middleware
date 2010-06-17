@@ -1,0 +1,9 @@
+1. make
+2. su
+3. make install
+4. exit
+
+We have RPM package.  Please point your Web browser to
+http://daqmw.kek.jp/rpm/
+
+Thank you.

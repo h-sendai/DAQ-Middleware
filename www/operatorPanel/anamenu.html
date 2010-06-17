@@ -1,0 +1,71 @@
+<html>
+<head>
+  <title>anamenu</title>
+  <script language="javascript">
+    var timer_id;
+    function load_first() {
+        parent.body.location = "./analysispos2d1.html";
+    }      
+    function cyclic_form() {
+	document.getElementById("myform").submit();
+	var tid = setTimeout("cyclic_form()", 10000);
+     }
+  </script>
+<style>
+div.psdselect {float:left;}
+body {background-color: lightblue;}
+</style>
+</head>
+<body onload="load_first()">
+<div class="psdselect">
+
+<fieldset>
+  <legend>Histogram</legend>
+  <form id="myform" name="form" action="./ana.py/anaHist" target="body" method="post" onlsubmit="return false">
+  <input type="submit" onClick="cyclic_form()" value ="change" /> <br />
+<!--  <input type="button" value = "reset" onlClick="clearTimeout(tid)" /> -->
+  <p>Histogram selection</p>
+  <input type="radio" name="histselect" value="twodpos" checked="checked"/>2 D Position Distribution<br />
+  <input type="radio" name="histselect" value="onedpos"/>1 D Position Distribution<br />
+  <input type="radio" name="histselect" value="onedtof"/>1 D TOF Distribution
+<br />
+  <p>Crate/Module selection</p>
+  <select name= "crate" >
+    <option value="0">VME Crate 0</option>
+    <option value="1">VME Crate 1</option>
+    <option value="2">VME Crate 2</option>
+    <option value="3">VME Crate 3</option>
+    <option value="4">VME Crate 4</option>
+  </select>
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+  <select name= "module" >
+    <option value="0">NEUNET Module 0</option>
+    <option value="1">NEUNET Module 1</option>
+    <option value="2">NEUNET Module 2</option>
+    <option value="3">NEUNET Module 3</option>
+    <option value="4">NEUNET Module 4</option>
+    <option value="5">NEUNET Module 5</option>
+    <option value="6">NEUNET Module 6</option>
+    <option value="7">NEUNET Module 7</option>
+    <option value="8">NEUNET Module 8</option>
+    <option value="9">NEUNET Module 9</option>
+    <option value="10">NEUNET Module 10</option>
+    <option value="11">NEUNET Module 11</option>
+    <option value="12">NEUNET Module 12</option>
+    <option value="13">NEUNET Module 13</option>
+    <option value="14">NEUNET Module 14</option>
+    <option value="15">NEUNET Module 15</option>
+    <option value="16">NEUNET Module 16</option>
+    <option value="17">NEUNET Module 17</option>
+    <option value="18">NEUNET Module 18</option>
+    <option value="19">NEUNET Module 19</option>
+  </form>
+</fieldset>
+</div>
+</body>
+</html>

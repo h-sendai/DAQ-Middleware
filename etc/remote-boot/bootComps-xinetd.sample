@@ -1,0 +1,14 @@
+# default: on
+# description: BootComps socket server
+service bootComps
+{
+   port            = 50000
+   socket_type     = stream
+   wait            = no
+#  only_from       = 192.168.0.0/24
+   user            = daq
+   server          = /usr/share/daqmw/etc/remote-boot/bootComps.py
+   log_on_success  += USERID
+   log_on_failure  += USERID
+   disable         = no
+}

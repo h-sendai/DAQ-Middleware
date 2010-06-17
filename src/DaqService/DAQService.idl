@@ -1,0 +1,89 @@
+// -*- IDL -*-
+/*!
+ * @file DAQService.idl
+ * @brief DAQ Service interface definition
+ * @date
+ * @author Yoshiji Yasu, Kazuo Nakayoshi
+ *
+ * Copyright (C) 2008
+ *     Yoshiji Yasu, Kazuo Nakayoshi
+ *     Electronics System Group,
+ *     KEK, Japan.
+ *     All rights reserved.
+ *
+ */
+
+#include <RTC.idl>
+
+struct NameValue{
+    string name;
+    string value;
+};
+
+typedef sequence<NameValue> NVList;
+
+enum DAQLifeCycleState
+{
+    LOADED,
+    CONFIGURED,
+    RUNNING,
+    PAUSED
+};
+
+enum DAQCommand
+{
+    CMD_CONFIGURE,
+    CMD_START,
+    CMD_STOP,
+    CMD_UNCONFIGURE,
+    CMD_PAUSE,
+    CMD_RESUME,
+    CMD_NOP
+};
+
+enum DAQDone
+{
+    UNDONE,
+    DONE
+};
+
+enum CompStatus
+{
+    COMP_WORKING,
+    COMP_FINISHED,
+    COMP_WARNING,
+    COMP_FATAL
+};
+
+struct FatalErrorStatus
+{
+    long fatalTypes;
+    long errorCode;
+    string description;
+};
+
+struct Status
+{
+    string comp_name;
+    DAQLifeCycleState state;
+    unsigned long long event_size;
+    CompStatus comp_status;
+};
+
+interface DAQService
+{
+    DAQLifeCycleState getState();
+    RTC::ReturnCode_t setCommand(in DAQCommand command);
+    DAQCommand getCommand();
+    DAQDone checkDone();
+    void    setDone();
+    void   setStatus(in Status stat);
+    Status getStatus();
+    void setCompParams(in NVList comp_params);
+    NVList getCompParams();
+    void setRunNo(in long run_no);
+    long getRunNo();
+    void setFatalStatus(in FatalErrorStatus fatalStaus);
+    FatalErrorStatus getFatalStatus();
+};
+

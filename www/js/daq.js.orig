@@ -1,0 +1,174 @@
+
+ function loopwait(timeWait) {
+   var timeStart = new Date().getTime();
+   var timeNow   = new Date().getTime();
+   while (timeNow < (timeStart+timeWait)) {
+     timeNow = new Date().getTime();
+   };
+ }
+
+ function open_win(url) {
+//   alert(url);
+   window.open(url, 'win', 'status=no,acrollbars=no,directories=no,menubar=no,resizable=yes,toolbar=no');
+ }
+
+ function change2Configured() {
+   inputs = document.getElementsByTagName("input");
+   inputs[3].src = "../parts/configurationbuttonlight.jpg";
+   inputs[5].src = "../parts/beginbutton.jpg";
+   inputs[7].src = "../parts/endbuttonlight.jpg";
+   inputs[9].src = "../parts/unconfigurebutton.jpg";
+   $("configId").disabled = true;
+   $("beginId").disabled = false;
+   $("endId").disabled = true;
+   $("unconfigId").disabled = false;
+   setTimeout("getstate1('./daq.py/Log')", 2000); // after 2 sec
+ }
+
+ function change2Running() {
+   inputs = document.getElementsByTagName("input");
+   inputs[3].src = "../parts/configurationbuttonlight.jpg";
+   inputs[5].src = "../parts/beginbuttonlight.jpg";
+   inputs[7].src = "../parts/endbutton.jpg";
+   inputs[9].src = "../parts/unconfigurebuttonlight.jpg";
+   $("configId").disabled = true;
+   $("beginId").disabled = true;
+   $("endId").disabled = false;
+   $("unconfigId").disabled = true;
+   setTimeout("getstate1('./daq.py/Log')", 10000); // after 2 sec
+ }
+
+ function change2Loaded() {
+   inputs = document.getElementsByTagName("input");
+   inputs[3].src = "../parts/configurationbutton.jpg";
+   inputs[5].src = "../parts/beginbuttonlight.jpg";
+   inputs[7].src = "../parts/endbuttonlight.jpg";
+   inputs[9].src = "../parts/unconfigurebuttonlight.jpg";
+   $("configId").disabled = false;
+   $("beginId").disabled = true;
+   $("endId").disabled = true;
+   $("unconfigId").disabled = true;
+   setTimeout("getstate1('./daq.py/Log')", 2000); // after 2 sec
+ }
+
+ function change2Loaded1() {
+   inputs = document.getElementsByTagName("input");
+   inputs[3].src = "../parts/configurationbutton.jpg";
+   inputs[5].src = "../parts/beginbuttonlight.jpg";
+   inputs[7].src = "../parts/endbuttonlight.jpg";
+   inputs[9].src = "../parts/unconfigurebuttonlight.jpg";
+   $("configId").disabled = false;
+   $("beginId").disabled = true;
+   $("endId").disabled = true;
+   $("unconfigId").disabled = true;
+ }
+
+ function change2Configured1() {
+   inputs = document.getElementsByTagName("input");
+   inputs[3].src = "../parts/configurationbuttonlight.jpg";
+   inputs[5].src = "../parts/beginbutton.jpg";
+   inputs[7].src = "../parts/endbuttonlight.jpg";
+   inputs[9].src = "../parts/unconfigurebutton.jpg";
+   $("configId").disabled = true;
+   $("beginId").disabled = false;
+   $("endId").disabled = true;
+   $("unconfigId").disabled = false;
+ }
+
+ function change2Running1() {
+   inputs = document.getElementsByTagName("input");
+   inputs[3].src = "../parts/configurationbuttonlight.jpg";
+   inputs[5].src = "../parts/beginbuttonlight.jpg";
+   inputs[7].src = "../parts/endbutton.jpg";
+   inputs[9].src = "../parts/unconfigurebuttonlight.jpg";
+   $("configId").disabled = true;
+   $("beginId").disabled = true;
+   $("endId").disabled = false;
+   $("unconfigId").disabled = true;
+ }
+
+ function changepanel(state) {
+   if (state == "LOADED")
+     parent.menu.location = "./operatormenu.html";
+   else if (state == "CONFIGURED")
+     parent.menu.location = "./operatormenu1.html";
+   else if (state == "RUNNING")
+     parent.menu.location = "./operatormenu2.html";
+ }
+
+ function setstate() {
+   getstate('./daq.py/Log', changepanel);
+ }
+
+ function getstate(url, callmethod) {
+   var msec = (new Date()).getTime();
+   new Ajax.Request(url, {
+     method: "get",
+     parameters: "cache="+msec,
+     onCreate:function(httpObj){
+//       alert(httpObj+" was got.");
+     },
+     onSuccess:function(httpObj){
+//       alert("OK: "+ httpObj.responseText);
+//       $("result1").innerHTML = httpObj.responseText;
+//       $("result2").innerHTML = res.getElementsByTagName('state');
+       var res = httpObj.responseXML;
+       var states = res.getElementsByTagName('state');
+       var state = states[0].firstChild.nodeValue;
+//       alert("state: "+states+" len = "+states.length);
+       callmethod(state);
+     },
+     onFailure:function(httpObj){
+//       alert("Bad: "+ httpObj.responseText);
+//       $("result1").innerHTML ="Bad";
+     }
+   });
+ }
+
+ function getstate1(url) {
+   var msec = (new Date()).getTime();
+   new Ajax.Request(url, {
+     method: "get",
+     parameters: "cache="+msec,
+     onCreate:function(httpObj){
+//       alert(httpObj+" was got.");
+     },
+     onSuccess:function(httpObj){
+//       alert("OK: "+ httpObj.responseText);
+//       $("result1").innerHTML = httpObj.responseText;
+//       $("result2").innerHTML = res.getElementsByTagName('state');
+       var res = httpObj.responseXML;
+       var status = res.getElementsByTagName('status');
+       var states = res.getElementsByTagName('state');
+       var compStatus = res.getElementsByTagName('compStatus');
+       var eventnums = res.getElementsByTagName('eventNum');
+//       alert("state: "+states+" len = "+states.length);
+       var gathererstate = states[0].firstChild.nodeValue;
+//       alert(gathererstate);
+       $("commandStatus").innerHTML = status[0].firstChild.nodeValue;
+       $("loggerState").innerHTML = states[0].firstChild.nodeValue; 
+       $("monitorState").innerHTML = states[1].firstChild.nodeValue;
+       $("dispatcherState").innerHTML = states[2].firstChild.nodeValue;
+       $("gathererState").innerHTML = states[3].firstChild.nodeValue;
+       $("loggerNC").innerHTML = eventnums[0].firstChild.nodeValue;
+       $("monitorNC").innerHTML = eventnums[1].firstChild.nodeValue;
+       $("dispatcherNC").innerHTML = eventnums[2].firstChild.nodeValue;
+       $("gathererNC").innerHTML = eventnums[3].firstChild.nodeValue;
+       $("loggerStatus").innerHTML = compStatus[0].firstChild.nodeValue; 
+       $("monitorStatus").innerHTML = compStatus[1].firstChild.nodeValue;
+       $("dispatcherStatus").innerHTML = compStatus[2].firstChild.nodeValue;
+       $("gathererStatus").innerHTML = compStatus[3].firstChild.nodeValue;
+
+	if(currentstate == "LOADED")
+	  change2Loaded1();
+	else if (currentstate == "CONFIGURED")
+	  change2Configured1();
+	else if (currentstat == "RUNNING")
+	  change2Running1();
+     },
+     onFailure:function(httpObj){
+//       alert("Bad: "+ httpObj.responseText);
+//       $("result1").innerHTML ="Bad";
+     }
+   });
+ }

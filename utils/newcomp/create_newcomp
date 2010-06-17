@@ -1,0 +1,41 @@
+#!/usr/bin/perl
+
+use strict;
+use warnings;
+use Getopt::Std;
+
+my $in_file  = 'newcomp.template';
+my $out_file = 'newcomp';
+
+my @skeleton_files = qw(
+	Makefile.in
+	Skeleton.h.in
+	Skeleton.cpp.in
+	SkeletonComp.cpp.in
+);
+
+my %part_name;
+$part_name{'Makefile.in'}         = q{makefile};
+$part_name{'Skeleton.h.in'}       = q{skeleton_h};
+$part_name{'Skeleton.cpp.in'}     = q{skeleton_cpp};
+$part_name{'SkeletonComp.cpp.in'} = q{skeleton_comp_cpp};
+
+for my $file (@skeleton_files) {
+	die "cannot find $file\n" if ! -f $file;
+}
+
+open my $in_fh, '<', $in_file or die "cannot open $in_file\n";
+
+my @out_lines = <$in_fh>; # read all $in_file;
+my $out_lines = join "", @out_lines;
+
+for my $skeleton_file (@skeleton_files) {
+	open my $fh, '<', $skeleton_file or die "cannot open $skeleton_file\n";
+	my @skeleton_lines = ();
+	@skeleton_lines = <$fh>;
+	my $skeleton_lines = join "", @skeleton_lines;
+	chomp $skeleton_lines;
+	$out_lines =~ s/\@$part_name{$skeleton_file}\@/$skeleton_lines/;
+}
+
+print $out_lines, "\n";

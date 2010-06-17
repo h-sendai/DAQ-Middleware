@@ -1,0 +1,34 @@
+LIB = JsonSpirit
+
+SHFLAGS = -shared
+CC = g++
+CXXFLAGS = -g -O2 -Wall -I.
+DIST = ../../../lib
+
+OBJS += json_spirit_reader.o
+OBJS += json_spirit_value.o
+OBJS += json_spirit_writer.o
+
+all: lib$(LIB).so
+
+#.cpp.o:
+#	rm -f @
+#	$(CC) $(CFLAGS) -c -o $@ $<
+#.o.so:
+# rm -f @
+# $(CC) $(SHFLAGS) -o lib$@ $(OBJ) $(LDFLAGS)
+
+lib$(LIB).so: $(OBJS)
+	$(CC) $(SHFLAGS) -o $@ $(OBJS) $(LDFLAGS)
+
+install:
+	cp lib$(LIB).so $(DIST)
+
+#lib$(LIB).a: $(OBJS)
+#	ar r $@ $^
+#	ranlib $@
+
+#Sock.o: Sock.h
+
+clean:
+	rm -f lib$(LIB).so lib$(LIB).a *.o

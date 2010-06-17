@@ -1,0 +1,106 @@
+#!/usr/bin/perl
+
+use strict;
+use warnings;
+use Getopt::Std;
+
+(our $progname = $0) =~ s{^.*/}{}xms;
+
+sub usage {
+	print STDERR << "END_USAGE";
+Usage: $progname [-f] NewCompName
+create skeleton component files with NewCompName in current directory.
+Please specify NewCompName as you need.
+If you issue "$progname NewGatherer", following files will be created
+Makefile.NewGatherer
+NewGatherer.h
+NewGatherer.cpp
+NewGathererComp.cpp
+
+Option:
+-f Overwrite exisiting file(s)
+END_USAGE
+}
+
+sub usage_overwrite {
+	my @files = @_;
+	my $file_lines = join "\n", @files;
+	print STDERR << "END_USAGE_OVERWRITE";
+$progname: Following file(s) exists in this directory:
+
+$file_lines
+
+To force overwrite this/these file(s), use -f option.
+END_USAGE_OVERWRITE
+}
+
+my %opts;
+getopts('fh', \%opts);
+
+if ($opts{h}) {
+	usage();
+	exit 64;
+}
+
+die "need one argument for new component name\n" if scalar @ARGV != 1;
+
+my %input;
+
+########################################################################
+$input{makefile} = << 'END_MAKEFILE';
+@makefile@
+END_MAKEFILE
+########################################################################
+
+########################################################################
+$input{h} = << 'END_H';
+@skeleton_h@
+END_H
+########################################################################
+
+########################################################################
+$input{cpp} = << 'END_CPP';
+@skeleton_cpp@
+END_CPP
+########################################################################
+
+########################################################################
+$input{comp_cpp} = << 'END_COMP_CPP';
+@skeleton_comp_cpp@
+END_COMP_CPP
+########################################################################
+
+my $old_comp_name = "Skeleton";
+my $new_comp_name = $ARGV[0];
+
+my $lc_old_comp_name = lc $old_comp_name;
+my $uc_old_comp_name = uc $old_comp_name;
+my $lc_new_comp_name = lc $new_comp_name;
+my $uc_new_comp_name = uc $new_comp_name;
+
+my %output;
+# $output{makefile} = "Makefile.${new_comp_name}";
+$output{makefile} = "Makefile";
+$output{h       } = "${new_comp_name}.h";
+$output{cpp     } = "${new_comp_name}.cpp";
+$output{comp_cpp} = "${new_comp_name}Comp.cpp";
+
+my @existing_files = ();
+if (! $opts{f}) {
+	for my $file (values %output) {
+		push @existing_files, $file if -f $file;
+	}
+	if (scalar @existing_files != 0) {
+		usage_overwrite(@existing_files);
+		exit 64;
+	}
+}
+	
+for my $kind (keys %output) {
+	$input{$kind} =~ s/$old_comp_name/$new_comp_name/g;
+	$input{$kind} =~ s/$lc_old_comp_name/$lc_new_comp_name/g;
+	$input{$kind} =~ s/$uc_old_comp_name/$uc_new_comp_name/g;
+	open my $fh, '>', $output{$kind} or die "cannot open $output{$kind}\n";
+	print $fh $input{$kind};
+	close $fh;
+}

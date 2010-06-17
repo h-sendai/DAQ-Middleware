@@ -1,0 +1,7 @@
+1. config.xml schema changed
+   added <sourcePath> element
+
+2. fatal error changed
+
+3. Monitor: stop using TApplication 
+

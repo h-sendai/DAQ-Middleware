@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<condition>
+    <common>
+        <EchoMonitor>
+            <histogram_n_bin>100</histogram_n_bin>
+            <histogram_min>0</histogram_min>
+            <histogram_max>100</histogram_max>
+            <monitor_update_rate>10</monitor_update_rate>
+        </EchoMonitor>
+    </common>
+</condition>

@@ -1,0 +1,30 @@
+<html>
+<head>
+<title>test</tilte>
+<!--
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Cache-Control" content="no-cache">
+<meta http-equiv="Expires" content="Thu, 01 Dec 1994 16:00:00 GMT">
+-->
+<style>
+div#txt {font-size: 20pt; text-align:center;}
+div#hist {float:left;}
+</style>
+<script>
+function display() {
+var crateid = 2;
+document.image_source_psd.src = "./histogram/pos_2d_"+crateid+".png";
+document.getElementById('txt').innerHTML="Two Dimensional Position Distribution at Crate# "+(crateid);
+//setTimeout("display()", 3000);
+setTimeout("location.reload()", 10000); // 10 sec.
+}
+function stop_display() {
+clearTimeout();
+}
+</script>
+</head>
+<body onload = "display()" onunload="stop_display()">
+<div id="txt"></div>
+<img src="" alt="busy now..." height="95%" width="95%" name="image_source_psd"></img>
+</body>
+</html>
