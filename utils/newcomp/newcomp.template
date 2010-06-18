@@ -3,6 +3,7 @@
 use strict;
 use warnings;
 use Getopt::Std;
+use File::Path;
 
 (our $progname = $0) =~ s{^.*/}{}xms;
 
@@ -35,7 +36,7 @@ END_USAGE_OVERWRITE
 }
 
 my %opts;
-getopts('fh', \%opts);
+getopts('dfh', \%opts);
 
 if ($opts{h}) {
 	usage();
@@ -85,6 +86,12 @@ $output{h       } = "${new_comp_name}.h";
 $output{cpp     } = "${new_comp_name}.cpp";
 $output{comp_cpp} = "${new_comp_name}Comp.cpp";
 
+if ($opts{d}) {
+	for my $kind (keys %output) {
+		$output{$kind} = "$new_comp_name/$output{$kind}";
+	}
+}
+
 my @existing_files = ();
 if (! $opts{f}) {
 	for my $file (values %output) {
@@ -100,6 +107,9 @@ for my $kind (keys %output) {
 	$input{$kind} =~ s/$old_comp_name/$new_comp_name/g;
 	$input{$kind} =~ s/$lc_old_comp_name/$lc_new_comp_name/g;
 	$input{$kind} =~ s/$uc_old_comp_name/$uc_new_comp_name/g;
+	if ($opts{d}) {
+		mkpath($new_comp_name);
+	}
 	open my $fh, '>', $output{$kind} or die "cannot open $output{$kind}\n";
 	print $fh $input{$kind};
 	close $fh;
