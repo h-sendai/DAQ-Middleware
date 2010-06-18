@@ -30,6 +30,4 @@ uninstall:
 	@set -e; for dir in $(SUBDIRS); do $(MAKE) -C $${dir} $@; done
 
 dist:
-	@(cd ..; tar zcf DAQ-Middleware-$(VERSION).tar.gz DAQ-Middleware-$(VERSION))
-#$(SUBDIRS):
-#	@$(MAKE) -C $@
+	hg archive -t tgz ~/rpm/SOURCES/DAQ-Middleware-$(VERSION).tar.gz
