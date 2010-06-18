@@ -25,6 +25,8 @@ CPPFLAGS += -I$(BASE_PATH)/$(DAQSERVICE)
 #CPPFLAGS += -I../../..
 CPPFLAGS += -I.
 
+OBJS     += $(subst .cpp,.o, $(SRCS))
+
 CXXFLAGS += `rtm-config --cflags`
 LDFLAGS  += `rtm-config --libs`
 SHFLAGS  = -shared
