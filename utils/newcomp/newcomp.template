@@ -19,6 +19,7 @@ NewGatherer.cpp
 NewGathererComp.cpp
 
 Option:
+-d Create NewCompName directory and the files into that
 -f Overwrite exisiting file(s)
 END_USAGE
 }
