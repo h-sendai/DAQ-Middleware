@@ -1,5 +1,7 @@
 LIBNAME = Sock
 TARGET  = lib$(LIBNAME).a lib$(LIBNAME).so
+API_VERSION = 1
+PATCHLEVEL  = 0
 
 all: $(TARGET)
 

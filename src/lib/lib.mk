@@ -2,8 +2,10 @@
 # argument in the make command (make install prefix=/usr) override this value.
 prefix = /usr
 
-LIBRARY    = lib$(LIBNAME).a
-LIBRARY_SO = lib$(LIBNAME).so
+LIBRARY                   = lib$(LIBNAME).a
+LIBRARY_SO                = lib$(LIBNAME).so
+LIBRARY_SO_API            = $(LIBRARY_SO).$(API_VERSION)
+LIBRARY_SO_API_PATCHLEVEL = $(LIBRARY_SO).$(API_VERSION).$(PATCHLEVEL)
 
 CFLAGS   = -g -pipe -O2 -Wall
 CXXFLAGS = $(CFLAGS)
@@ -22,7 +24,8 @@ $(LIBRARY): $(OBJS) $(CPPOBJS)
 	$(AR) $(ARFLAGS) $@ $^
 
 $(LIBRARY_SO): $(SHOBJS) $(CPPSHOBJS)
-	$(CC) -shared -o $(LIBRARY_SO) $(SHOBJS) $(CPPSHOBJS)
+#	gcc -shared -Wl,-soname,libfoo.so.1 -o libfoo.so.1.0 *.o
+	$(CC) -shared -Wl,-soname,$(LIBRARY_SO_API) -o $(LIBRARY_SO_API_PATCHLEVEL) $(SHOBJS) $(CPPSHOBJS)
 
 .SUFFIXES: .so
 .c.so:
@@ -33,7 +36,7 @@ $(LIBRARY_SO): $(SHOBJS) $(CPPSHOBJS)
 	$(CXX) $(CPPFLAGS) -c ${CXXFLAGS} $(PIC_OPT) -o $*.so $< 
 
 clean:
-	rm -f $(LIBRARY) $(OBJS) $(LIBRARY_SO) $(SHOBJS) $(CPPOBJS) $(CPPSHOBJS)
+	rm -f $(LIBRARY) $(OBJS) $(LIBRARY_SO)* $(SHOBJS) $(CPPOBJS) $(CPPSHOBJS)
 
 #INSTALL_LIB_DIR = $(prefix)/lib
 #INSTALL_INC_DIR = $(prefix)/include
@@ -44,9 +47,18 @@ INSTALL_INC_DIR = $(prefix)/include/$(DAQMW_SUFFIX)
 
 install:
 	mkdir -p $(INSTALL_LIB_DIR)
-	install -m 0644 $(TARGET) $(INSTALL_LIB_DIR)
+	install -m 0644 $(LIBRARY) $(LIBRARY_SO_API_PATCHLEVEL) $(INSTALL_LIB_DIR)
+	rm -f $(INSTALL_LIB_DIR)/$(LIBRARY_SO_API)
+	rm -f $(INSTALL_LIB_DIR)/$(LIBRARY_SO)
+	ln -s $(LIBRARY_SO_API_PATCHLEVEL) $(INSTALL_LIB_DIR)/$(LIBRARY_SO_API)
+	ln -s $(LIBRARY_SO_API)            $(INSTALL_LIB_DIR)/$(LIBRARY_SO)
 	mkdir -p $(INSTALL_INC_DIR)
 	install -m 0644 $(API_INCLUDE_FILES) $(INSTALL_INC_DIR)
+# shared library symlink creation
+# 1. for ld
+# ln -s libfoo.so.1 libfoo.so
+# 2. for ld.so
+# ln -s libfoo.so.1.0 libfoo.so.1 
 
 echo:
 	@echo $(OBJS)
