@@ -9,3 +9,13 @@ syntax: glob
 *.a
 utils/newcomp/*.in
 utils/newcomp/newcomp
+src/DaqOperator/DAQService.hh
+src/DaqOperator/DAQService.idl
+src/DaqOperator/DAQServiceDynSK.cc
+src/DaqOperator/DAQServiceSK.cc
+src/DaqOperator/DAQServiceSkel.cpp
+src/DaqOperator/DAQServiceSkel.h
+src/DaqOperator/DAQServiceStub.cpp
+src/DaqOperator/DAQServiceStub.h
+src/DaqOperator/DaqOperatorComp
+src/DaqOperator/symlink
