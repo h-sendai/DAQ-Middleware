@@ -10,16 +10,18 @@ use File::Path;
 sub usage {
 	print STDERR << "END_USAGE";
 Usage: $progname [-f] NewCompName
-create skeleton component files with NewCompName in current directory.
+create skeleton component files with NewCompName in NewCompName directory.
+Create this directory automatically if this directory does not exist.
 Please specify NewCompName as you need.
 If you issue "$progname NewGatherer", following files will be created
-Makefile
-NewGatherer.h
-NewGatherer.cpp
-NewGathererComp.cpp
+NewGatherer/
+NewGatherer/Makefile
+NewGatherer/NewGatherer.h
+NewGatherer/NewGatherer.cpp
+NewGatherer/NewGathererComp.cpp
 
 Option:
--d Create NewCompName directory and the files into that
+-c Don't create directory but create component files in the current directory
 -f Overwrite exisiting file(s)
 END_USAGE
 }
@@ -37,7 +39,7 @@ END_USAGE_OVERWRITE
 }
 
 my %opts;
-getopts('dfh', \%opts);
+getopts('cfh', \%opts);
 
 if ($opts{h}) {
 	usage();
@@ -87,7 +89,7 @@ $output{h       } = "${new_comp_name}.h";
 $output{cpp     } = "${new_comp_name}.cpp";
 $output{comp_cpp} = "${new_comp_name}Comp.cpp";
 
-if ($opts{d}) {
+if (! $opts{c}) {
 	for my $kind (keys %output) {
 		$output{$kind} = "$new_comp_name/$output{$kind}";
 	}
@@ -108,7 +110,7 @@ for my $kind (keys %output) {
 	$input{$kind} =~ s/$old_comp_name/$new_comp_name/g;
 	$input{$kind} =~ s/$lc_old_comp_name/$lc_new_comp_name/g;
 	$input{$kind} =~ s/$uc_old_comp_name/$uc_new_comp_name/g;
-	if ($opts{d}) {
+	if (! $opts{c}) {
 		mkpath($new_comp_name);
 	}
 	open my $fh, '>', $output{$kind} or die "cannot open $output{$kind}\n";
