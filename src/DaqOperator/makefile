@@ -16,9 +16,11 @@ CPPFLAGS += -I../lib/SiTCP/CPP/Sock
 LDLIBS += -L../lib/SiTCP/CPP/Sock -lSock
 LDLIBS += -lxerces-c
 
-OBJS += ConfFileParser.o
-OBJS += CreateDom.o
-OBJS += ServerSocket.o
+SRCS += $(COMP_NAME).cpp
+SRCS += $(COMP_NAME)Comp.cpp
+SRCS += ConfFileParser.cpp
+SRCS += CreateDom.cpp
+SRCS += ServerSocket.cpp
 
 FILES += ComponentInfoContainer.h
 FILES += ConfFileParser.cpp

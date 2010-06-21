@@ -40,7 +40,7 @@ SKEL_OBJ  = DAQServiceSkel.o
 STUB_OBJ  = DAQServiceStub.o 
 IMPL_OBJ  = DAQServiceSVC_impl.o 
 OBJS     += $(SKEL_OBJ) $(IMPL_OBJ)
-OBJS     += $(COMP_NAME).o
+#OBJS     += $(COMP_NAME).o
 
 # BINDIR = $(BASE_PATH)/../bin
 
@@ -53,7 +53,7 @@ $(COMP_NAME).h: DAQServiceSVC_impl.h
 $(COMP_NAME).o: $(COMP_NAME).h $(COMP_NAME).cpp
 
 $(COMP_NAME)Comp: $(COMP_NAME)Comp.o $(OBJS)
-	$(CXX) -o $@ $(OBJS) $(COMP_NAME)Comp.o $(LDFLAGS) $(LDLIBS)
+	$(CXX) -o $@ $(OBJS) $(LDFLAGS) $(LDLIBS)
 
 # install target should be defined in the user's makefile
 # because we don't know where is the install directory.

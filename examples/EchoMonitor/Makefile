@@ -11,6 +11,8 @@ LDLIBS   += $(shell ${ROOTSYS}/bin/root-config --glibs)
 
 LDLIBS   += -lboost_regex
 
-OBJS += ConditionEchoMonitor.o
+SRCS += $(COMP_NAME).cpp 
+SRCS += $(COMP_NAME)Comp.cpp 
+SRCS += ConditionEchoMonitor.cpp
 
 include /usr/share/daqmw/mk/comp.mk
