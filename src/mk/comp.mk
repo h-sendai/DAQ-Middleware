@@ -1,26 +1,24 @@
 ifndef BASE_PATH
 # not in source tree
-BASE_PATH=/usr/include/daqmw
-DAQCOMPONENT=
-DAQSERVICE=idl
+INCLUDE_PATH = /usr/include/daqmw
 else
 # in source tree
-DAQCOMPONENT=DaqComponent
-DAQSERVICE=DaqService
+INCLUDE_PATH = $(BASE_PATH)/DaqComponent
 endif
+IDL_PATH = $(INCLUDE_PATH)/idl
 
 #VPATH += $(BASE_PATH)/DaqComponent
 #VPATH += $(BASE_PATH)/DaqService
 ##VPATH += ../../..
 
-VPATH += $(BASE_PATH)/$(DAQCOMPONENT)
-VPATH += $(BASE_PATH)/$(DAQSERVICE)
+VPATH += $(INCLUDE_PATH)
+VPATH += $(IDL_PATH)
 
 #CPPFLAGS += -I$(BASE_PATH)/DaqComponent
 #CPPFLAGS += -I$(BASE_PATH)/DaqService
 
-CPPFLAGS += -I$(BASE_PATH)/$(DAQCOMPONENT)
-CPPFLAGS += -I$(BASE_PATH)/$(DAQSERVICE)
+CPPFLAGS += -I$(INCLUDE_PATH)
+CPPFLAGS += -I$(IDL_PATH)
 
 #CPPFLAGS += -I../../..
 CPPFLAGS += -I.
@@ -46,7 +44,7 @@ OBJS     += $(SKEL_OBJ) $(IMPL_OBJ)
 
 symlink:
 	rm -f DAQService.idl
-	ln -s $(BASE_PATH)/$(DAQSERVICE)/DAQService.idl
+	ln -s $(IDL_PATH)/DAQService.idl
 	touch symlink
 
 $(COMP_NAME).h: DAQServiceSVC_impl.h
