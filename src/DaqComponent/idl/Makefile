@@ -16,6 +16,6 @@ install:
 	install -m $(MODE) $(FILES) $(DIR)
 
 uninstall:
-	@echo "---> uninstalling DaqService files."
+	@echo "---> uninstalling idl files."
 	@for file in $(FILES); do rm -f $(DIR)/$${file}; done
 	@echo "---> done"

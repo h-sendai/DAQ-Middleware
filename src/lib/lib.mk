@@ -66,5 +66,5 @@ echo:
 	@echo "CPPOBJS" $(CPPOBJS)
 
 uninstall:
-	for file in $(TARGET); do rm -f $(INSTALL_LIB_DIR)/$${file}; done
+	for file in $(TARGET); do rm -f $(INSTALL_LIB_DIR)/$${file}*; done
 	for file in $(API_INCLUDE_FILES); do rm -f $(INSTALL_INC_DIR)/$${file}; done

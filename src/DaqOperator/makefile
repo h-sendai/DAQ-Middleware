@@ -4,7 +4,7 @@
 
 prefix = /usr
 BINDIR = $(prefix)/libexec/daqmw
-SRCDIR = $(prefix)/share/daqmw/DaqOperator 
+SRCDIR = $(prefix)/share/daqmw/DaqOperator
 
 export BASE_PATH=..
 
@@ -42,5 +42,9 @@ install: all
 	@install -m 755 $(COMP_NAME)Comp $(BINDIR)
 	@mkdir -p $(SRCDIR)
 	@install -m 644 $(FILES) $(SRCDIR)
+
+uninstall:
+	@rm -f $(BINDIR)/$(COMP_NAME)Comp
+	@rm -f $(SRCDIR)/*
 
 include ../mk/comp.mk
