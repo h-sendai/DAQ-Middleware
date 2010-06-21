@@ -1,5 +1,7 @@
 prefix = /usr
 
+SUBDIRS += idl
+
 DIR = $(prefix)/include/daqmw
 MODE = 0644
 
@@ -12,14 +14,19 @@ FILES += data_header_footer.h
 FILES += json2conlist.h
 
 all:
+	@set -e; for dir in $(SUBDIRS); do $(MAKE) -C $${dir} $@; done
+	
 
 install:
 	mkdir -p $(DIR)
 	install -m $(MODE) $(FILES) $(DIR)
+	@set -e; for dir in $(SUBDIRS); do $(MAKE) -C $${dir} $@; done
 
 clean:
+	@set -e; for dir in $(SUBDIRS); do $(MAKE) -C $${dir} $@; done
 
 uninstall:
 	@echo "---> uninstalling DaqComponent files."
 	@for file in $(FILES); do rm -f $(DIR)/$${file}; done
 	@echo "---> done"
+	@set -e; for dir in $(SUBDIRS); do $(MAKE) -C $${dir} $@; done

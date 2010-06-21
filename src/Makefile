@@ -3,7 +3,6 @@ prefix = /usr
 SUBDIRS += lib
 SUBDIRS += DaqComponent
 SUBDIRS += DaqOperator
-SUBDIRS += DaqService
 SUBDIRS += mk
 
 .PHONY: $(SUBDIRS)
