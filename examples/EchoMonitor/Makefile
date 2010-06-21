@@ -1,3 +1,7 @@
+ifndef ROOTSYS
+$(error This component uses ROOT to draw histogram.  You have to define ROOTSYS environment variable (for example "export ROOTSYS=/usr/local/root" in shell command line))
+endif
+
 COMP_NAME = EchoMonitor
 
 all: $(COMP_NAME)Comp
