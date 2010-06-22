@@ -15,8 +15,8 @@ LDLIBS   += $(shell ${ROOTSYS}/bin/root-config --glibs)
 
 LDLIBS   += -lboost_regex
 
-SRCS += $(COMP_NAME).cpp 
-SRCS += $(COMP_NAME)Comp.cpp 
+SRCS += $(COMP_NAME).cpp
+SRCS += $(COMP_NAME)Comp.cpp
 SRCS += ConditionEchoMonitor.cpp
 
 # sample install target
