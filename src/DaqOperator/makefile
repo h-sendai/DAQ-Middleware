@@ -6,7 +6,10 @@ prefix = /usr
 BINDIR = $(prefix)/libexec/daqmw
 SRCDIR = $(prefix)/share/daqmw/DaqOperator
 
-export BASE_PATH=..
+cwd     = $(shell pwd)
+updir   = $(shell dirname $(cwd))
+upupdir = $(shell dirname $(updir))
+export DAQMWSRCROOT=$(upupdir)
 
 COMP_NAME = DaqOperator
 

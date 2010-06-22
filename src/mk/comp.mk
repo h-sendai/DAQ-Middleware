@@ -1,32 +1,31 @@
-ifndef BASE_PATH
-# not in source tree
-INCLUDE_PATH = /usr/include/daqmw
-else
+ifdef DAQMWSRCROOT
 # in source tree
-INCLUDE_PATH = $(BASE_PATH)/DaqComponent
+INCLUDE_PATH = $(DAQMWSRCROOT)/src/DaqComponent
+# use special install directory
+else ifdef DAQMWINSTALLROOT
+INCLUDE_PATH = $(DAQMWINSTALLROOT)/include/daqmw
+else
+INCLUDE_PATH = /usr/include/daqmw
 endif
 IDL_PATH = $(INCLUDE_PATH)/idl
 
-#VPATH += $(BASE_PATH)/DaqComponent
-#VPATH += $(BASE_PATH)/DaqService
-##VPATH += ../../..
+AUTO_GEN_DIR = autogen
 
 VPATH += $(INCLUDE_PATH)
 VPATH += $(IDL_PATH)
 
-#CPPFLAGS += -I$(BASE_PATH)/DaqComponent
-#CPPFLAGS += -I$(BASE_PATH)/DaqService
-
 CPPFLAGS += -I$(INCLUDE_PATH)
 CPPFLAGS += -I$(IDL_PATH)
-
-#CPPFLAGS += -I../../..
 CPPFLAGS += -I.
+CPPFLAGS += -I$(AUTO_GEN_DIR)
 
+SKEL_OBJ  = $(AUTO_GEN_DIR)/DAQServiceSkel.o  	
+IMPL_OBJ  = $(AUTO_GEN_DIR)/DAQServiceSVC_impl.o 
+OBJS     += $(SKEL_OBJ) $(IMPL_OBJ)
 OBJS     += $(subst .cpp,.o, $(SRCS))
 
-CXXFLAGS += `rtm-config --cflags`
-LDFLAGS  += `rtm-config --libs`
+CXXFLAGS += $(shell rtm-config --cflags)
+LDFLAGS  += $(shell rtm-config --libs)
 SHFLAGS  = -shared
 
 IDLC     = `rtm-config --idlc`
@@ -34,24 +33,19 @@ IDLFLAGS = `rtm-config --idlflags` -I`rtm-config --prefix`/include/rtm/idl
 WRAPPER  = rtm-skelwrapper
 WRAPPER_FLAGS = --include-dir="" --skel-suffix=Skel --stub-suffix=Stub
 
-SKEL_OBJ  = DAQServiceSkel.o  	
-STUB_OBJ  = DAQServiceStub.o 
-IMPL_OBJ  = DAQServiceSVC_impl.o 
-OBJS     += $(SKEL_OBJ) $(IMPL_OBJ)
-#OBJS     += $(COMP_NAME).o
-
-# BINDIR = $(BASE_PATH)/../bin
-
-symlink:
-	rm -f DAQService.idl
-	ln -s $(IDL_PATH)/DAQService.idl
-	touch symlink
-
-$(COMP_NAME).h: DAQServiceSVC_impl.h
-$(COMP_NAME).o: $(COMP_NAME).h $(COMP_NAME).cpp
-
-$(COMP_NAME)Comp: $(COMP_NAME)Comp.o $(OBJS)
+$(COMP_NAME)Comp: .depend $(OBJS)
 	$(CXX) -o $@ $(OBJS) $(LDFLAGS) $(LDLIBS)
+
+#$(COMP_NAME).h: DAQServiceSVC_impl.h
+$(COMP_NAME).o: $(COMP_NAME).h $(COMP_NAME).cpp
+$(COMP_NAME)Comp.o: $(COMP_NAME)Comp.cpp $(COMP_NAME).h
+
+.depend:
+	rm -fr $(AUTO_GEN_DIR)
+	mkdir $(AUTO_GEN_DIR)
+	(cd $(AUTO_GEN_DIR); ln -s $(IDL_PATH)/DAQService.idl; $(IDLC) $(IDLFLAGS) DAQService.idl; $(WRAPPER) $(WRAPPER_FLAGS) --idl-file=DAQService.idl)
+	(cd $(AUTO_GEN_DIR); $(IDLC) $(IDLFLAGS) DAQService.idl; $(WRAPPER) $(WRAPPER_FLAGS) --idl-file=DAQService.idl)
+	@touch .depend
 
 # install target should be defined in the user's makefile
 # because we don't know where is the install directory.
@@ -68,37 +62,19 @@ clean:
 	@rm -f DAQService.hh DAQServiceDynSK.cc DAQServiceSK.cc
 	@rm -f DAQService.idl
 	@rm -f symlink
+	@rm -fr $(AUTO_GEN_DIR) .depend
 
-# XXX: symlink
-DAQService.idl: symlink
+#DAQServiceSkel.cpp: DAQService.idl
+#	$(IDLC) $(IDLFLAGS) DAQService.idl
+#	$(WRAPPER) $(WRAPPER_FLAGS) --idl-file=DAQService.idl
+#DAQServiceSkel.h : DAQService.idl
+#	$(IDLC) $(IDLFLAGS) DAQService.idl
+#	$(WRAPPER) $(WRAPPER_FLAGS) --idl-file=DAQService.idl
 
-#DAQServiceSkel.cpp: symlink DAQService.idl
-DAQServiceSkel.cpp: DAQService.idl
-	$(IDLC) $(IDLFLAGS) DAQService.idl
-	$(WRAPPER) $(WRAPPER_FLAGS) --idl-file=DAQService.idl
-# XXX: symlink
-#DAQServiceSkel.h : symlink DAQService.idl
-DAQServiceSkel.h : DAQService.idl
-	$(IDLC) $(IDLFLAGS) DAQService.idl
-	$(WRAPPER) $(WRAPPER_FLAGS) --idl-file=DAQService.idl
+#DAQServiceSVC_impl.h: DAQServiceSkel.h
 
-#MlfComponent.h:       DaqComponentBase.h
-#DaqComponentBase.h:   DAQServiceSVC_impl.h
-
-DAQServiceSVC_impl.h: DAQServiceSkel.h
-
-$(COMP_NAME).o:     $(COMP_NAME).h $(COMP_NAME).cpp 
-$(COMP_NAME)Comp.o: $(COMP_NAME)Comp.cpp $(COMP_NAME).h
-
-DAQServiceSVC_impl.o: DAQServiceSVC_impl.cpp DAQServiceSVC_impl.h DAQServiceSkel.h
-DAQServiceSkel.o: DAQServiceSkel.cpp DAQServiceSkel.h
+$(AUTO_GEN_DIR)/DAQServiceSVC_impl.o: DAQServiceSVC_impl.cpp
+	$(CXX) $(CXXFLAGS) $(CPPFLAGS) -c -o $@ $<
+#$(AUTO_GEN_DIR)/DAQServiceSkel.o: $(AUTO_GEN_DIR)/DAQServiceSkel.cpp $(AUTO_GEN_DIR)/DAQServiceSkel.h
 
 # comp.mk ends here
-
-# DAQServiceStub.cpp : DAQService.idl
-#	$(IDLC) $(IDLFLAGS) DAQService.idl
-#	$(WRAPPER) $(WRAPPER_FLAGS) --idl-file=DAQService.idl
-# DAQServiceStub.h : DAQService.idl
-#	$(IDLC) $(IDLFLAGS) DAQService.idl
-#	$(WRAPPER) $(WRAPPER_FLAGS) --idl-file=DAQService.idl
-
