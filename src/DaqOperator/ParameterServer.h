@@ -186,6 +186,7 @@ namespace DAQMW {
 	    buf[0] = size;
 	    memcpy(&buf[1], m_msg.c_str(), size);
 	    m_newSock.sendAll(buf, length);
+	    delete [] buf;
 	    m_newSock.disconnect();
 	  }
 	} catch ( SockException& e ) {
