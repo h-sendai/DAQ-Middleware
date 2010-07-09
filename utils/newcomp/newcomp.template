@@ -39,7 +39,7 @@ END_USAGE_OVERWRITE
 }
 
 my %opts;
-getopts('cfh', \%opts);
+getopts('cDfh', \%opts);
 
 if ($opts{h}) {
 	usage();
@@ -115,5 +115,35 @@ for my $kind (keys %output) {
 	}
 	open my $fh, '>', $output{$kind} or die "cannot open $output{$kind}\n";
 	print $fh $input{$kind};
+	close $fh;
+}
+
+# rewrite Makefile if -D is specified (for in-source-tree Makefile)
+if ($opts{D} || $ENV{DAQMWSRCROOT}) {
+	my $makefile = $output{makefile};
+
+	open my $read_fh, '<', $makefile or die "cannot open $makefile\n";
+	my @makefile_lines = ();
+	while (<$read_fh>) {
+		next if /^include/;
+		chomp;
+		push @makefile_lines, $_;
+	}
+	close $read_fh;
+	my $makefile_lines = join "\n", @makefile_lines;
+	
+	my $add_lines =<< 'END_ADD_LINES';
+
+ifdef DAQMWSRCROOT
+include ${DAQMWSRCROOT}/src/mk/comp.mk
+else
+include /usr/share/daqmw/mk/comp.mk
+endif
+END_ADD_LINES
+	
+	$makefile_lines .= $add_lines;
+
+	open my $fh, '>', $makefile or die "cannot open $makefile\n";
+	print $fh $makefile_lines;
 	close $fh;
 }
