@@ -1,13 +1,15 @@
 prefix = /usr
 DIR    = $(prefix)/bin
 
-all: prepare newcomp
+EXAMPLE_COMPS += Skeleton
+EXAMPLE_COMPS += SkeletonSource
+EXAMPLE_COMPS += SkeletonSink
+EXAMPLE_COMPS += SkeletonFilter
 
-prepare:
-	@set -e; for i in ../../examples/Skeleton/*; do cp $${i} $$(basename $${i}).in; done
+all: newcomp
 
-newcomp: newcomp.template Makefile.in Skeleton.h.in Skeleton.cpp.in SkeletonComp.cpp.in
-	@perl create_newcomp > $@
+newcomp:
+	@perl create_newcomp $(EXAMPLE_COMPS) > $@
 	@chmod +x $@
 
 install:
@@ -18,5 +20,4 @@ uninstall:
 	@rm -f $(DIR)/newcomp
 
 clean:
-	@rm -f *.in
 	@rm -f newcomp

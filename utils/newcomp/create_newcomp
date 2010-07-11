@@ -1,41 +1,271 @@
 #!/usr/bin/perl
 
+# Usage: ./create_newcomp Skeleton SkeletonSource SkeletonSink SkeletonFilter
+# argument are the component directory name in the examples directory.
+# examples directory is hardcoded in $examples_dir in this script.
+
+# How this script works
+# 1. create set_vars function lines by using the argument of this script.
+# 2. Program part except set_vars is defined in this script's __DATA__ section.
+#    Read the __DATA__ section and join the set_vars funtion.
+# 3. Print.
+
 use strict;
 use warnings;
 use Getopt::Std;
 
-my $in_file  = 'newcomp.template';
-my $out_file = 'newcomp';
+my %opts;
+getopts('d', \%opts);
 
-my @skeleton_files = qw(
-	Makefile.in
-	Skeleton.h.in
-	Skeleton.cpp.in
-	SkeletonComp.cpp.in
-);
+my $examples_dir = '../../examples';
+my @Comp_Names = @ARGV;
 
-my %part_name;
-$part_name{'Makefile.in'}         = q{makefile};
-$part_name{'Skeleton.h.in'}       = q{skeleton_h};
-$part_name{'Skeleton.cpp.in'}     = q{skeleton_cpp};
-$part_name{'SkeletonComp.cpp.in'} = q{skeleton_comp_cpp};
+my @file_types = qw(makefile h cpp comp_cpp);
 
-for my $file (@skeleton_files) {
-	die "cannot find $file\n" if ! -f $file;
+die "no component name is specified\n" if @ARGV == 0;
+
+for my $c (@Comp_Names) {
+	my $comp_dir = "${examples_dir}/$c";
+	die "no such directory: $comp_dir\n" if ! -d $comp_dir;
 }
 
-open my $in_fh, '<', $in_file or die "cannot open $in_file\n";
+my %input;
+my %file_path;
 
-my @out_lines = <$in_fh>; # read all $in_file;
-my $out_lines = join "", @out_lines;
+# Comp_Name vs. comp_type mapping
 
-for my $skeleton_file (@skeleton_files) {
-	open my $fh, '<', $skeleton_file or die "cannot open $skeleton_file\n";
-	my @skeleton_lines = ();
-	@skeleton_lines = <$fh>;
-	my $skeleton_lines = join "", @skeleton_lines;
-	chomp $skeleton_lines;
-	$out_lines =~ s/\@$part_name{$skeleton_file}\@/$skeleton_lines/;
+for my $Comp_Name (@Comp_Names) {
+	my $comp_type;
+	if ($Comp_Name eq 'Skeleton') {
+		$comp_type = 'null';
+	}
+	else {
+		($comp_type) = ($Comp_Name =~ m/Skeleton(\S+)/);
+		$comp_type = lc $comp_type;
+	}
+	for my $ft (@file_types) {
+		if ($ft eq 'makefile') {
+			$file_path{$comp_type}{$ft} = "${examples_dir}/$Comp_Name/Makefile";
+		}
+		elsif ($ft eq 'comp_cpp') {
+			$file_path{$comp_type}{$ft} = "${examples_dir}/${Comp_Name}/${Comp_Name}Comp.cpp";
+		}
+		else {
+			$file_path{$comp_type}{$ft} = "${examples_dir}/${Comp_Name}/${Comp_Name}.${ft}";
+		}
+	}
 }
 
-print $out_lines, "\n";
+# first, check all files exist or not
+for my $comp_type (keys %file_path) {
+	print "===> $comp_type\n" if $opts{d};
+	for my $file_type (@file_types) {
+		if (! -f $file_path{$comp_type}{$file_type}) {
+			die "File $file_path{$comp_type}{$file_type} does not exist\n" 
+		}
+		print "$comp_type : $file_type : $file_path{$comp_type}{$file_type}\n" if $opts{d};
+	}
+}
+
+# second, check all files exist or not
+my @set_vars_lines = ();
+push @set_vars_lines, "sub set_vars {\n";
+for my $comp_type (keys %file_path) {
+	my $fh;
+	for my $file_type (@file_types) {
+		# create following part in this for loop
+		#$input{filter}{comp_cpp} = << 'END_COMP_CPP';
+		# source line
+		#END_COMP_CPP
+
+		my $end_marker = "END_\U$file_type";
+
+		push @set_vars_lines, "########################################################################\n";
+		push @set_vars_lines, "\$input\{$comp_type\}\{$file_type\} = <<'$end_marker';\n";
+
+		open $fh, '<', $file_path{$comp_type}{$file_type}
+			or die "cannot open $file_path{$comp_type}{$file_type}\n";
+		my @file_content = <$fh>;
+		close $fh;
+		push @set_vars_lines, @file_content;
+
+		push @set_vars_lines, "$end_marker\n";
+	}
+}
+push @set_vars_lines, "}\n"; # end of set_vars()
+
+my @newcomp_lines = ();
+while (<DATA>) {
+	push @newcomp_lines, $_;
+}
+
+push @newcomp_lines, @set_vars_lines;
+my $newcomp_lines = join '', @newcomp_lines;
+print $newcomp_lines;
+
+__DATA__
+#!/usr/bin/perl
+
+use strict;
+use warnings;
+use Getopt::Std;
+use File::Path;
+
+(our $progname = $0) =~ s{^.*/}{}xms;
+
+my %input;
+my %output;
+my $comp_type;
+
+&set_vars;
+
+my @comp_type = ();
+for my $c (keys %input) {
+	push @comp_type, $c;
+}
+@comp_type = sort @comp_type;
+
+sub usage {
+	print STDERR << "END_USAGE";
+Usage: $progname [-f] [-t component_type] NewCompName
+
+Create skeleton component files with NewCompName in NewCompName directory.
+If this directory does not exist, it will be created automatically
+unless -c option is specified.
+Please specify NewCompName as you need.
+If you issue "$progname NewGatherer", following files will be created:
+
+NewGatherer/
+NewGatherer/Makefile
+NewGatherer/NewGatherer.h
+NewGatherer/NewGatherer.cpp
+NewGatherer/NewGathererComp.cpp
+
+You may specify component type as -t option.  Valid component types are:
+
+END_USAGE
+
+	for my $c (@comp_type) {
+		print STDERR $c, "\n";
+	}
+
+	print STDERR << 'END_USAGE_2';
+
+Option:
+-c Don't create directory but create component files in the current directory
+-f Overwrite exisiting file(s)
+END_USAGE_2
+}
+
+sub usage_overwrite {
+	my @files = @_;
+	my $file_lines = join "\n", @files;
+	print STDERR << "END_USAGE_OVERWRITE";
+$progname: Following file(s) exists in this directory:
+
+$file_lines
+
+To force overwrite this/these file(s), use -f option.
+END_USAGE_OVERWRITE
+}
+
+my %opts;
+getopts('cDfht:', \%opts);
+
+if ($opts{h}) {
+	usage();
+	exit 64;
+}
+
+$comp_type = $opts{t} || 'null';
+
+if (! grep /^$comp_type$/, @comp_type) {
+	print STDERR "Not valid component type.  Valid component type is:\n";
+	for my $c (@comp_type) {
+		print STDERR $c, "\n";
+	}
+	exit 1;
+}
+
+die "need new component name argument\n" if scalar @ARGV != 1;
+
+my $old_comp_name;
+if ($comp_type ne 'null') {
+	$old_comp_name = "Skeleton\u$comp_type";
+}
+else {
+	$old_comp_name = "Skeleton";
+}
+
+#my $old_comp_name = "Skeleton";
+my $new_comp_name = $ARGV[0];
+
+my $lc_old_comp_name = lc $old_comp_name;
+my $uc_old_comp_name = uc $old_comp_name;
+my $lc_new_comp_name = lc $new_comp_name;
+my $uc_new_comp_name = uc $new_comp_name;
+
+# $output{makefile} = "Makefile.${new_comp_name}";
+$output{makefile} = "Makefile";
+$output{h       } = "${new_comp_name}.h";
+$output{cpp     } = "${new_comp_name}.cpp";
+$output{comp_cpp} = "${new_comp_name}Comp.cpp";
+
+if (! $opts{c}) {
+	for my $kind (keys %output) {
+		$output{$kind} = "$new_comp_name/$output{$kind}";
+	}
+}
+
+my @existing_files = ();
+if (! $opts{f}) {
+	for my $file (values %output) {
+		push @existing_files, $file if -f $file;
+	}
+	if (scalar @existing_files != 0) {
+		usage_overwrite(@existing_files);
+		exit 64;
+	}
+}
+	
+for my $kind (keys %output) {
+	$input{$comp_type}{$kind} =~ s/$old_comp_name/$new_comp_name/g;
+	$input{$comp_type}{$kind} =~ s/$lc_old_comp_name/$lc_new_comp_name/g;
+	$input{$comp_type}{$kind} =~ s/$uc_old_comp_name/$uc_new_comp_name/g;
+	if (! $opts{c}) {
+		mkpath($new_comp_name);
+	}
+	open my $fh, '>', $output{$kind} or die "cannot open $output{$kind}\n";
+	print $fh $input{$comp_type}{$kind};
+	close $fh;
+}
+
+# rewrite Makefile if -D is specified (for in-source-tree Makefile)
+if ($opts{D} || $ENV{DAQMWSRCROOT}) {
+	my $makefile = $output{makefile};
+
+	open my $read_fh, '<', $makefile or die "cannot open $makefile\n";
+	my @makefile_lines = ();
+	while (<$read_fh>) {
+		next if /^include/;
+		chomp;
+		push @makefile_lines, $_;
+	}
+	close $read_fh;
+	my $makefile_lines = join "\n", @makefile_lines;
+	
+	my $add_lines =<< 'END_ADD_LINES';
+
+ifdef DAQMWSRCROOT
+include ${DAQMWSRCROOT}/src/mk/comp.mk
+else
+include /usr/share/daqmw/mk/comp.mk
+endif
+END_ADD_LINES
+	
+	$makefile_lines .= $add_lines;
+
+	open my $fh, '>', $makefile or die "cannot open $makefile\n";
+	print $fh $makefile_lines;
+	close $fh;
+}

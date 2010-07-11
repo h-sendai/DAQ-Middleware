@@ -1,7 +1,7 @@
 // -*- C++ -*-
 /*!
- * @file Skeleton.h
- * @brief Skeleton component.
+ * @file SkeletonSink.h
+ * @brief SkeletonSink component.
  * @date
  * @author Kazuo Nakayoshi <kazuo.nakayoshi@kek.jp>
  *
@@ -13,8 +13,8 @@
  *
  */
 
-#ifndef SKELETON_H
-#define SKELETON_H
+#ifndef SKELETONSINK_H
+#define SKELETONSINK_H
 
 #include <rtm/Manager.h>
 #include <rtm/DataFlowComponentBase.h>
@@ -28,12 +28,12 @@
 
 using namespace RTC;
 
-class Skeleton
+class SkeletonSink
     : public DAQMW::DaqComponentBase
 {
 public:
-    Skeleton(RTC::Manager* manager);
-    ~Skeleton();
+    SkeletonSink(RTC::Manager* manager);
+    ~SkeletonSink();
 
     // The initialize action (on CREATED->ALIVE transition)
     // formaer rtc_init_entry()
@@ -72,7 +72,7 @@ private:
 
 extern "C"
 {
-    void SkeletonInit(RTC::Manager* manager);
+    void SkeletonSinkInit(RTC::Manager* manager);
 };
 
-#endif // SKELETON_H
+#endif // SKELETONSINK_H

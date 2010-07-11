@@ -1,7 +1,7 @@
 // -*- C++ -*-
 /*!
- * @file  Skeleton.cpp
- * @brief Skeleton component
+ * @file  SkeletonSink.cpp
+ * @brief SkeletonSink component
  * @date
  * @author Kazuo Nakayoshi <kazuo.nakayoshi@kek.jp>
  *
@@ -13,16 +13,16 @@
  *
  */
 
-#include "Skeleton.h"
+#include "SkeletonSink.h"
 
 using DAQMW::FatalType::USER_DEFINED_ERROR1;
 
 // Module specification
-static const char* skeleton_spec[] =
+static const char* skeletonsink_spec[] =
 {
-    "implementation_id", "Skeleton",
-    "type_name",         "Skeleton",
-    "description",       "Skeleton component",
+    "implementation_id", "SkeletonSink",
+    "type_name",         "SkeletonSink",
+    "description",       "SkeletonSink component",
     "version",           "1.0",
     "vendor",            "Kazuo Nakayoshi, KEK",
     "category",          "example",
@@ -33,10 +33,10 @@ static const char* skeleton_spec[] =
     ""
 };
 
-Skeleton::Skeleton(RTC::Manager* manager)
+SkeletonSink::SkeletonSink(RTC::Manager* manager)
     : DAQMW::DaqComponentBase(manager),
-      m_InPort("skeleton_in",   m_in_data),
-      m_OutPort("skeleton_out", m_out_data),
+      m_InPort("skeletonsink_in",   m_in_data),
+      m_OutPort("skeletonsink_out", m_out_data),
 
       m_in_status(BUF_SUCCESS),
       m_out_status(BUF_SUCCESS),
@@ -46,29 +46,29 @@ Skeleton::Skeleton(RTC::Manager* manager)
     // Registration: InPort/OutPort/Service
 
     // Set InPort buffers
-    registerInPort ("skeleton_in",  m_InPort);
-    registerOutPort("skeleton_out", m_OutPort);
+    registerInPort ("skeletonsink_in",  m_InPort);
+    registerOutPort("skeletonsink_out", m_OutPort);
 
     init_command_port();
     init_state_table( );
-    set_comp_name("SKELETON");
+    set_comp_name("SKELETONSINK");
 }
 
-Skeleton::~Skeleton()
+SkeletonSink::~SkeletonSink()
 {
 }
 
 
-RTC::ReturnCode_t Skeleton::onInitialize()
+RTC::ReturnCode_t SkeletonSink::onInitialize()
 {
     if (m_debug) {
-        std::cerr << "Skeleton::onInitialize()" << std::endl;
+        std::cerr << "SkeletonSink::onInitialize()" << std::endl;
     }
 
     return RTC::RTC_OK;
 }
 
-RTC::ReturnCode_t Skeleton::onExecute(RTC::UniqueId ec_id)
+RTC::ReturnCode_t SkeletonSink::onExecute(RTC::UniqueId ec_id)
 {
     std::cerr << "*** onExecute\n";
     daq_do();
@@ -76,14 +76,14 @@ RTC::ReturnCode_t Skeleton::onExecute(RTC::UniqueId ec_id)
     return RTC::RTC_OK;
 }
 
-int Skeleton::daq_dummy()
+int SkeletonSink::daq_dummy()
 {
     return 0;
 }
 
-int Skeleton::daq_configure()
+int SkeletonSink::daq_configure()
 {
-    std::cerr << "*** Skeleton::configure" << std::endl;
+    std::cerr << "*** SkeletonSink::configure" << std::endl;
 
     ::NVList* paramList;
     paramList = m_daq_service0.getCompParams();
@@ -92,7 +92,7 @@ int Skeleton::daq_configure()
     return 0;
 }
 
-int Skeleton::parse_params(::NVList* list)
+int SkeletonSink::parse_params(::NVList* list)
 {
 
     std::cerr << "param list length:" << (*list).length() << std::endl;
@@ -109,16 +109,16 @@ int Skeleton::parse_params(::NVList* list)
 }
 
 
-int Skeleton::daq_unconfigure()
+int SkeletonSink::daq_unconfigure()
 {
-    std::cerr << "*** Skeleton::unconfigure" << std::endl;
+    std::cerr << "*** SkeletonSink::unconfigure" << std::endl;
 
     return 0;
 }
 
-int Skeleton::daq_start()
+int SkeletonSink::daq_start()
 {
-    std::cerr << "*** Skeleton::start" << std::endl;
+    std::cerr << "*** SkeletonSink::start" << std::endl;
 
     m_in_status  = BUF_SUCCESS;
     m_out_status = BUF_SUCCESS;
@@ -126,27 +126,27 @@ int Skeleton::daq_start()
     return 0;
 }
 
-int Skeleton::daq_stop()
+int SkeletonSink::daq_stop()
 {
-    std::cerr << "*** Skeleton::stop" << std::endl;
+    std::cerr << "*** SkeletonSink::stop" << std::endl;
     reset_InPort();
     return 0;
 }
 
-int Skeleton::daq_pause()
+int SkeletonSink::daq_pause()
 {
-    std::cerr << "*** Skeleton::pause" << std::endl;
+    std::cerr << "*** SkeletonSink::pause" << std::endl;
     fatal_error_report(USER_DEFINED_ERROR1, "TEST FOR USER DEFINED ERROR");
     return 0;
 }
 
-int Skeleton::daq_resume()
+int SkeletonSink::daq_resume()
 {
-    std::cerr << "*** Skeleton::resume" << std::endl;
+    std::cerr << "*** SkeletonSink::resume" << std::endl;
     return 0;
 }
 
-int Skeleton::reset_InPort()
+int SkeletonSink::reset_InPort()
 {
     TimedOctetSeq dummy_data;
 
@@ -155,14 +155,14 @@ int Skeleton::reset_InPort()
     //    ret = m_InPort.read();
     // }
 
-    std::cerr << "*** Skeleton::InPort flushed\n";
+    std::cerr << "*** SkeletonSink::InPort flushed\n";
     return 0;
 }
 
-int Skeleton::daq_run()
+int SkeletonSink::daq_run()
 {
     if (m_debug) {
-        std::cerr << "*** Skeleton::run" << std::endl;
+        std::cerr << "*** SkeletonSink::run" << std::endl;
     }
 
     if (check_trans_lock()) {  /// got stop command
@@ -175,11 +175,11 @@ int Skeleton::daq_run()
 
 extern "C"
 {
-    void SkeletonInit(RTC::Manager* manager)
+    void SkeletonSinkInit(RTC::Manager* manager)
     {
-        RTC::Properties profile(skeleton_spec);
+        RTC::Properties profile(skeletonsink_spec);
         manager->registerFactory(profile,
-                    RTC::Create<Skeleton>,
-                    RTC::Delete<Skeleton>);
+                    RTC::Create<SkeletonSink>,
+                    RTC::Delete<SkeletonSink>);
     }
 };
