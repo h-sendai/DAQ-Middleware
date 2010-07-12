@@ -187,7 +187,7 @@ if (! grep /^$comp_type$/, @comp_type) {
 	exit 1;
 }
 
-die "need new component name argument\n" if scalar @ARGV != 1;
+die "need new component name argument.  Try newcomp -h to display help.\n" if scalar @ARGV != 1;
 
 my $old_comp_name;
 if ($comp_type ne 'null') {
