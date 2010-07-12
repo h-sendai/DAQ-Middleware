@@ -1,15 +1,9 @@
 // -*- C++ -*-
 /*!
- * @file SkeletonSink.h
- * @brief SkeletonSink component.
+ * @file 
+ * @brief
  * @date
- * @author Kazuo Nakayoshi <kazuo.nakayoshi@kek.jp>
- *
- * Copyright (C) 2008
- *     Kazuo Nakayoshi
- *     Electronics System Group,
- *     KEK, Japan.
- *     All rights reserved.
+ * @author
  *
  */
 
@@ -20,7 +14,6 @@
 #include <rtm/DataFlowComponentBase.h>
 #include <rtm/CorbaPort.h>
 #include <rtm/DataInPort.h>
-#include <rtm/DataOutPort.h>
 #include <rtm/idl/BasicDataTypeSkel.h>
 
 #include "DaqComponentBase.h"
@@ -36,7 +29,7 @@ public:
     ~SkeletonSink();
 
     // The initialize action (on CREATED->ALIVE transition)
-    // formaer rtc_init_entry()
+    // former rtc_init_entry()
     virtual RTC::ReturnCode_t onInitialize();
 
     // The execution action that is invoked periodically
@@ -46,9 +39,6 @@ public:
 private:
     TimedOctetSeq          m_in_data;
     InPort<TimedOctetSeq>  m_InPort;
-
-    TimedOctetSeq          m_out_data;
-    OutPort<TimedOctetSeq> m_OutPort;
 
 private:
     int daq_dummy();
@@ -63,9 +53,11 @@ private:
     int parse_params(::NVList* list);
     int reset_InPort();
 
-    int m_in_status;
-    int m_out_status;
-    int m_sampling_rate;
+    unsigned int read_InPort();
+    //int online_analyze();
+
+    BufferStatus m_in_status;
+    BufferStatus m_out_status;
     bool m_debug;
 };
 

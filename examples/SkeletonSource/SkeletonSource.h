@@ -1,15 +1,9 @@
 // -*- C++ -*-
 /*!
- * @file SkeletonSource.h
- * @brief SkeletonSource component.
+ * @file 
+ * @brief
  * @date
- * @author Kazuo Nakayoshi <kazuo.nakayoshi@kek.jp>
- *
- * Copyright (C) 2008
- *     Kazuo Nakayoshi
- *     Electronics System Group,
- *     KEK, Japan.
- *     All rights reserved.
+ * @author
  *
  */
 
@@ -19,7 +13,6 @@
 #include <rtm/Manager.h>
 #include <rtm/DataFlowComponentBase.h>
 #include <rtm/CorbaPort.h>
-#include <rtm/DataInPort.h>
 #include <rtm/DataOutPort.h>
 #include <rtm/idl/BasicDataTypeSkel.h>
 
@@ -36,7 +29,7 @@ public:
     ~SkeletonSource();
 
     // The initialize action (on CREATED->ALIVE transition)
-    // formaer rtc_init_entry()
+    // former rtc_init_entry()
     virtual RTC::ReturnCode_t onInitialize();
 
     // The execution action that is invoked periodically
@@ -44,9 +37,6 @@ public:
     virtual RTC::ReturnCode_t onExecute(RTC::UniqueId ec_id);
 
 private:
-    TimedOctetSeq          m_in_data;
-    InPort<TimedOctetSeq>  m_InPort;
-
     TimedOctetSeq          m_out_data;
     OutPort<TimedOctetSeq> m_OutPort;
 
@@ -61,11 +51,14 @@ private:
     int daq_resume();
 
     int parse_params(::NVList* list);
-    int reset_InPort();
+    int read_data_from_detectors();
+    int set_data(unsigned int data_byte_size, unsigned int seq_num);
+    int write_OutPort();
 
-    int m_in_status;
-    int m_out_status;
-    int m_sampling_rate;
+    static const int SEND_BUFFER_SIZE = 4096;
+    unsigned char m_data[SEND_BUFFER_SIZE];
+
+    BufferStatus m_out_status;
     bool m_debug;
 };
 

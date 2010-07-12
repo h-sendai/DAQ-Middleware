@@ -1,23 +1,22 @@
 // -*- C++ -*-
 /*!
- * @file  SkeletonSink.cpp
- * @brief SkeletonSink component
+ * @file
+ * @brief
  * @date
- * @author Kazuo Nakayoshi <kazuo.nakayoshi@kek.jp>
- *
- * Copyright (C) 2008
- *     Kazuo Nakayoshi
- *     Electronics System Group,
- *     KEK, Japan.
- *     All rights reserved.
+ * @author
  *
  */
 
 #include "SkeletonSink.h"
 
+using DAQMW::FatalType::DATAPATH_DISCONNECTED;
+using DAQMW::FatalType::INPORT_ERROR;
+using DAQMW::FatalType::HEADER_DATA_MISMATCH;
+using DAQMW::FatalType::FOOTER_DATA_MISMATCH;
 using DAQMW::FatalType::USER_DEFINED_ERROR1;
 
 // Module specification
+// Change following items to suit your component's spec.
 static const char* skeletonsink_spec[] =
 {
     "implementation_id", "SkeletonSink",
@@ -27,7 +26,7 @@ static const char* skeletonsink_spec[] =
     "vendor",            "Kazuo Nakayoshi, KEK",
     "category",          "example",
     "activity_type",     "DataFlowComponent",
-    "max_instance",      "10",
+    "max_instance",      "1",
     "language",          "C++",
     "lang_type",         "compile",
     ""
@@ -36,10 +35,7 @@ static const char* skeletonsink_spec[] =
 SkeletonSink::SkeletonSink(RTC::Manager* manager)
     : DAQMW::DaqComponentBase(manager),
       m_InPort("skeletonsink_in",   m_in_data),
-      m_OutPort("skeletonsink_out", m_out_data),
-
       m_in_status(BUF_SUCCESS),
-      m_out_status(BUF_SUCCESS),
 
       m_debug(false)
 {
@@ -47,17 +43,15 @@ SkeletonSink::SkeletonSink(RTC::Manager* manager)
 
     // Set InPort buffers
     registerInPort ("skeletonsink_in",  m_InPort);
-    registerOutPort("skeletonsink_out", m_OutPort);
 
     init_command_port();
-    init_state_table( );
+    init_state_table();
     set_comp_name("SKELETONSINK");
 }
 
 SkeletonSink::~SkeletonSink()
 {
 }
-
 
 RTC::ReturnCode_t SkeletonSink::onInitialize()
 {
@@ -70,7 +64,6 @@ RTC::ReturnCode_t SkeletonSink::onInitialize()
 
 RTC::ReturnCode_t SkeletonSink::onExecute(RTC::UniqueId ec_id)
 {
-    std::cerr << "*** onExecute\n";
     daq_do();
 
     return RTC::RTC_OK;
@@ -97,17 +90,17 @@ int SkeletonSink::parse_params(::NVList* list)
 
     std::cerr << "param list length:" << (*list).length() << std::endl;
 
-    int length = (*list).length();
-    for (int i = 0; i < length; i++) {
-        if (m_debug) {
-            std::cerr << "NVList[" << (*list)[i].name
-                      << ","<< (*list)[i].value << "]" << std::endl;
-        }
+    int len = (*list).length();
+    for (int i = 0; i < len; i+=2) {
+        std::string sname  = (std::string)(*list)[i].value;
+        std::string svalue = (std::string)(*list)[i+1].value;
+
+        std::cerr << "sname: " << sname << "  ";
+        std::cerr << "value: " << svalue << std::endl;
     }
 
     return 0;
 }
-
 
 int SkeletonSink::daq_unconfigure()
 {
@@ -121,7 +114,6 @@ int SkeletonSink::daq_start()
     std::cerr << "*** SkeletonSink::start" << std::endl;
 
     m_in_status  = BUF_SUCCESS;
-    m_out_status = BUF_SUCCESS;
 
     return 0;
 }
@@ -130,33 +122,61 @@ int SkeletonSink::daq_stop()
 {
     std::cerr << "*** SkeletonSink::stop" << std::endl;
     reset_InPort();
+
     return 0;
 }
 
 int SkeletonSink::daq_pause()
 {
     std::cerr << "*** SkeletonSink::pause" << std::endl;
-    fatal_error_report(USER_DEFINED_ERROR1, "TEST FOR USER DEFINED ERROR");
+
     return 0;
 }
 
 int SkeletonSink::daq_resume()
 {
     std::cerr << "*** SkeletonSink::resume" << std::endl;
+
     return 0;
 }
 
 int SkeletonSink::reset_InPort()
 {
-    TimedOctetSeq dummy_data;
+    int ret = true;
+    while(ret == true) {
+        ret = m_InPort.read();
+    }
 
-    // int ret = BUF_SUCCESS;
-    // while (ret == BUF_SUCCESS) {
-    //    ret = m_InPort.read();
-    // }
-
-    std::cerr << "*** SkeletonSink::InPort flushed\n";
     return 0;
+}
+
+unsigned int SkeletonSink::read_InPort()
+{
+    /////////////// read data from InPort Buffer ///////////////
+    unsigned int recv_byte_size = 0;
+    bool ret = m_InPort.read();
+
+    //////////////////// check read status /////////////////////
+    if (ret == false) { // false: TIMEOUT or FATAL
+        m_in_status = check_inPort_status(m_InPort);
+        if (m_in_status == BUF_TIMEOUT) { // Buffer empty.
+            if (check_trans_lock()) {     // Check if stop command has come.
+                set_trans_unlock();       // Transit to CONFIGURE state.
+            }
+        }
+        else if (m_in_status == BUF_FATAL) { // Fatal error
+            fatal_error_report(INPORT_ERROR);
+        }
+    }
+    else {
+        recv_byte_size = m_in_data.data.length();
+    }
+    if (m_debug) {
+        std::cerr << "m_in_data.data.length():" << recv_byte_size
+                  << std::endl;
+    }
+
+    return recv_byte_size;
 }
 
 int SkeletonSink::daq_run()
@@ -165,12 +185,22 @@ int SkeletonSink::daq_run()
         std::cerr << "*** SkeletonSink::run" << std::endl;
     }
 
-    if (check_trans_lock()) {  /// got stop command
-        set_trans_unlock();
+    unsigned int recv_byte_size = read_InPort();
+    if (recv_byte_size == 0) { // Timeout
         return 0;
     }
 
-   return 0;
+    check_header_footer(m_in_data, recv_byte_size); // check header and footer
+    unsigned int event_byte_size = get_event_size(recv_byte_size);
+
+    /////////////  Write component main logic here. /////////////
+    // online_analyze();
+    /////////////////////////////////////////////////////////////
+
+    m_loop++;                            // increase sequence num.
+    m_total_size += event_byte_size;     // increase total data byte size
+
+    return 0;
 }
 
 extern "C"
