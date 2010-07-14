@@ -11,7 +11,7 @@ from xml.dom.ext.reader import PyExpat
 from xml.xpath import Evaluate
 
 # adjust the daq_lib_path to your own environment. 
-daq_lib_path = '/home/daq/lib:/home/daq/manyo'
+daq_lib_path = '/usr/lib/daqmw:$ROOTSYS/lib'
 confFile = ''
 
 # xinetd port
@@ -22,9 +22,10 @@ nsport = 9876
 
 def usage():
     usage_message = """\
-Usage: run.py [-h] [-c] [-f] [-x]
+Usage: run.py [-h] [-c] [-d] [-f] [-x]
 -h: Print usage and exit
 -c: DAQ-Operator Console mode for debugging
+-d: Specify a directory of DaqOperator
 -f: configuration file name with abs. path
 -x: schema file name with abs. path
 """
@@ -132,10 +133,11 @@ def checkIpAddress(addr):
     
 
 def opt():
+    global operatorDir;
     global confFile;
     global schemaFile;
     try:
-        opts, args = getopt.getopt(sys.argv[1:], "chf:x:")
+        opts, args = getopt.getopt(sys.argv[1:], "chd:f:x:")
     except getopt.GetoptError:
         usage();
         sys.exit(1)
@@ -148,6 +150,9 @@ def opt():
         if o == "-h":
             usage();
             sys.exit(1)
+        if o == "-d":
+            operatorDir = a
+            print "Operator Dir:", operatorDir
         if o == "-f":
             confFile = a
             print "confFile:", confFile
@@ -217,12 +222,6 @@ else:
     os.system(cmd)
     sys.exit(1)
 
-print 'confFile:', confFile
-cmd = 'xmlwf -s ' + mydir + '/config.xsd ' + confFile
-
-print cmd
-ret = mycommand(cmd)
-
 ret = mycommand('killall omniNames')
 ret = mycommand('pkill Comp')
 
@@ -279,7 +278,7 @@ print 'booting the DAQ-Operator'
 
 #print 'confFile:', confFile
 
-com = 'LD_LIBRARY_PATH=' + ldpath + ' ' + mydir + '/bin/DaqOperatorComp -h ' + str(operatorAddr) + ' -p ' + str(nsport) + ' ' + '-x' + confFile + ' ' + str(consMode)
+com = 'LD_LIBRARY_PATH=' + ldpath + ' ' + str(operatorDir) + '/DaqOperatorComp -h ' + str(operatorAddr) + ' -p ' + str(nsport) + ' ' + '-x' + confFile + ' ' + str(consMode)
 
 print 'command:', com
 os.system( com )
