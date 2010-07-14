@@ -25,7 +25,6 @@
 	<xsd:element name="hostPort"  type="xsd:string" />
 	<xsd:element name="instName"  type="xsd:string" />
 	<xsd:element name="execPath"  type="xsd:string" />
-	<xsd:element name="sourcePath"  type="xsd:string" />
 	<xsd:element name="confFile"  type="xsd:string" />
 	<xsd:element name="startOrd"  type="xsd:string" />
 	<xsd:element name="inPort"    type="InPortType" />
@@ -71,7 +70,6 @@
 		<xsd:element ref="hostAddr" />
 		<xsd:element ref="hostPort" />
 		<xsd:element ref="instName" />
-		<xsd:element ref="sourcePath" />
 		<xsd:element ref="execPath" />
 		<xsd:element ref="confFile" />
 		<xsd:element ref="startOrd" />

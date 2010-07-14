@@ -459,7 +459,9 @@ int connect_data_ports()
 		CORBA_SeqUtil::push_back(prof.properties,
 					 NVUtil::newNV("dataport.inport.buffer.write.timeout",
 						       "0.1"));
-
+		CORBA_SeqUtil::push_back(prof.properties,
+					 NVUtil::newNV("dataport.inport.buffer.length",
+						       "128"));
 		ReturnCode_t ret;
 		ret = prof.ports[0]->connect(prof);
 		assert(ret == RTC::RTC_OK);
