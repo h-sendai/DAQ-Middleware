@@ -12,6 +12,7 @@ FILES += example4.xml
 FILES += myconfig.xml
 FILES += test-cond.xml
 FILES += test-mlf.xml
+FILES += sample.xml
 
 all:
 

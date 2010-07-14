@@ -1,0 +1,54 @@
+<?xml version="1.0"?>
+<!-- DON'T REMOVE THE ABOVE LINE.            -->
+<!-- DON'T PUT ANY LINES ABOVE THE 1ST LINE. -->
+<!-- Sample config.xml to run SampleReader and SampleMonitor.                 -->
+<!-- Please rewrite execPath (2 places), confFile (2 places) suitable         -->
+<!-- for your directory structure.                                            -->
+<!-- confFile (/path/to/rtc.conf) will be created automatically at this path. -->
+<!-- If you use condition file, please update condition_file_name             -->
+<!-- to the path of your condition.json                                       -->
+<configInfo>
+    <daqOperator>
+        <hostAddr>127.0.0.1</hostAddr>
+    </daqOperator>
+    <daqGroups>
+        <daqGroup gid="group0">
+            <components>
+                <component cid="SampleReader0">
+                    <hostAddr>127.0.0.1</hostAddr>
+                    <hostPort>50000</hostPort>
+                    <instName>SampleReader0.rtc</instName>
+                    <execPath>/home/daq/bin/SampleReaderComp</execPath>
+                    <confFile>/home/daq/bin/rtc.conf</confFile>
+                    <startOrd>2</startOrd>
+                    <inPorts>
+                    </inPorts>
+                    <outPorts>
+                        <outPort>samplereader_out</outPort>
+                    </outPorts>
+                    <params>
+                        <param pid="srcAddr">127.0.0.1</param>
+                        <param pid="srcPort">2222</param>
+                    </params>
+                </component>
+                <component cid="SampleMonitor0">
+                    <hostAddr>127.0.0.1</hostAddr>
+                    <hostPort>50000</hostPort>
+                    <instName>SampleMonitor0.rtc</instName>
+                    <execPath>/home/daq/bin/SampleMonitorComp</execPath>
+                    <confFile>/home/daq/bin/rtc.conf</confFile>
+                    <startOrd>1</startOrd>
+                    <inPorts>
+                        <inPort from="SampleReader0:samplereader_out">samplemonitor_in</inPort>
+                    </inPorts>
+                    <outPorts>
+                    </outPorts>
+                    <params>
+                        <param pid="samplingRate">dispatcher_out2/10</param>
+                        <param pid="condition_file_name">/home/daq/bin/condition.json</param>
+                    </params>
+                </component>
+            </components>
+        </daqGroup>
+    </daqGroups>
+</configInfo>
