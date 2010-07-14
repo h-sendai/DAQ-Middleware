@@ -17,15 +17,11 @@ LDLIBS   += $(shell ${ROOTSYS}/bin/root-config --glibs)
 
 # sample install target
 #
-MODE = 0755
-BINDIR = /home/daq/bin
+# MODE = 0755
+# BINDIR = /home/daq/bin
 #
-install: $(COMP_NAME)Comp
-	mkdir -p $(BINDIR)
-	install -m $(MODE) $(COMP_NAME)Comp $(BINDIR)
+# install: $(COMP_NAME)Comp
+#	mkdir -p $(BINDIR)
+#	install -m $(MODE) $(COMP_NAME)Comp $(BINDIR)
 
-ifdef DAQMWSRCROOT
-include ${DAQMWSRCROOT}/src/mk/comp.mk
-else
 include /usr/share/daqmw/mk/comp.mk
-endif
