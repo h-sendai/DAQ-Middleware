@@ -4,7 +4,8 @@
 <!-- Sample config.xml to run SampleReader and SampleMonitor.                 -->
 <!-- Please rewrite execPath (2 places), confFile (2 places) suitable         -->
 <!-- for your directory structure.                                            -->
-<!-- confFile (/path/to/rtc.conf) will be created automatically at this path. -->
+<!-- run.py will create rtc.conf in /tmp/daqmw/rtc.conf                       -->
+<!-- If you use run.py, set confFile as /tmp/daqmw/rtc.conf                   -->
 <!-- If you use condition file, please update condition_file_name             -->
 <!-- to the path of your condition.json                                       -->
 <configInfo>
@@ -18,8 +19,8 @@
                     <hostAddr>127.0.0.1</hostAddr>
                     <hostPort>50000</hostPort>
                     <instName>SampleReader0.rtc</instName>
-                    <execPath>/home/daq/bin/SampleReaderComp</execPath>
-                    <confFile>/home/daq/bin/rtc.conf</confFile>
+                    <execPath>/home/daq/MyDaq/SampleReader/SampleReaderComp</execPath>
+                    <confFile>/tmp/daqmw/rtc.conf</confFile>
                     <startOrd>2</startOrd>
                     <inPorts>
                     </inPorts>
@@ -35,8 +36,8 @@
                     <hostAddr>127.0.0.1</hostAddr>
                     <hostPort>50000</hostPort>
                     <instName>SampleMonitor0.rtc</instName>
-                    <execPath>/home/daq/bin/SampleMonitorComp</execPath>
-                    <confFile>/home/daq/bin/rtc.conf</confFile>
+                    <execPath>/home/daq/MyDaq/SampleMonitor/SampleMonitorComp</execPath>
+                    <confFile>/tmp/daqmw/rtc.conf</confFile>
                     <startOrd>1</startOrd>
                     <inPorts>
                         <inPort from="SampleReader0:samplereader_out">samplemonitor_in</inPort>
