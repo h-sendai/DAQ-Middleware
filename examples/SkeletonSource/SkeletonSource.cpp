@@ -185,6 +185,11 @@ int SkeletonSource::daq_run()
         std::cerr << "*** SkeletonSource::run" << std::endl;
     }
 
+    if (check_trans_lock()) {  // check if stop command has come
+        set_trans_unlock();    // transit to CONFIGURED state
+        return 0;
+    }
+
     unsigned int recv_byte_size = 0;
 
     if (m_out_status == BUF_SUCCESS) {   // previous OutPort.write() successfully done

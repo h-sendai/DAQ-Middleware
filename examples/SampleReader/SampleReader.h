@@ -67,7 +67,6 @@ private:
 
     int m_srcPort;                        /// Port No. of data server
     std::string m_srcAddr;                /// IP addr. of data server
-    unsigned char* m_rdata;
 
     bool m_debug;
 };

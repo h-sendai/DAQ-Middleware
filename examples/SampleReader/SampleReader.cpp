@@ -258,8 +258,10 @@ int SampleReader::daq_run()
         return 0;
     }
 
+    unsigned int recv_byte_size = 0;
+
     if (m_out_status == BUF_SUCCESS) {   // previous OutPort.write() successfully done
-        unsigned int recv_byte_size = read_data_from_detectors();
+        recv_byte_size = read_data_from_detectors();
         if (recv_byte_size > 0) {
              set_data(recv_byte_size, m_loop); // set data to OutPort Buffer
         }
@@ -270,8 +272,8 @@ int SampleReader::daq_run()
         ;     // Timeout. do nothing.
     }
     else {    // OutPort write successfully done
-        m_loop++;                          // increase sequence num.
-        m_total_size += SEND_BUFFER_SIZE;  // increase total data byte size
+        m_loop++;                        // increase sequence num.
+        m_total_size += recv_byte_size;  // increase total data byte size
     }
 
     return 0;
