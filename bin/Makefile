@@ -9,6 +9,7 @@ FILES += genmake.py
 FILES += run-comps.sh
 FILES += run-local.py
 FILES += run.py
+FILES += daqmw-rpm 
 
 all:
 
