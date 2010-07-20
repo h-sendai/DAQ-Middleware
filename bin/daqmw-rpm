@@ -1,0 +1,115 @@
+#!/bin/sh
+
+set -e
+
+progpath=$0
+progname=$(basename $0)
+
+repo_rpm_url=http://daqmw.kek.jp/rpm/el5/noarch/kek-daqmiddleware-repo-2-0.noarch.rpm
+repo_name=kek-daqmiddleware
+repo_rpm_name=${repo_name}-repo
+
+usage()
+{
+    cat <<EOF 1>&2
+Usage: $progname [install | uninstall | distclean]
+
+$progname install:   Setup repository configuration (if not yet) and install
+                     DAQ-Middleware and its dependencies.
+$progname uninstall: Uninstall DAQ-Middleware and its dependencies.
+                     Repository configuration remains.
+$progname distclean: Uninstall DAQ-Middleware, its dependencies and
+                     repository configuration and its cache.
+EOF
+}
+
+do_install()
+{
+    # first, clean up all rpms and repository configuration file
+    do_distclean 
+
+    # second, install repository configuration file and rpms
+    rpm -ihv $repo_rpm_url
+    yum -y --enablerepo=$repo_name install DAQ-Middleware
+}
+
+do_uninstall()
+{
+    local rpm_package
+    local rpm_package_list
+
+    rpm_package_list=$(sed -e '1,/^__DATA__/d' $progpath | sed -e '/^#/d')
+    for rpm_package in $rpm_package_list; do
+        rpm --quiet -q $rpm_package && \
+        (echo -n "remove $rpm_package ..."; rpm -e $rpm_package; echo " done")
+    done
+    return 0
+}
+
+do_distclean()
+{
+    local rpm_package
+    local cache_dir
+
+    rpm_package=$repo_rpm_name
+    cache_dir=/var/cache/yum/$repo_name
+
+    # first, try to remove rpms except repository configuration file
+    do_uninstall
+
+    # second, try to remove repository configuration file
+    rpm --quiet -q $rpm_package && (echo -n "remove repo conf file ..."; rpm -e $rpm_package; echo " done")
+
+    # third, remove cache directory completely
+    rm -fr $cache_dir
+    return 0
+}
+
+TEMP=`getopt -o h --long help -n "$progname" -- "$@"`
+
+#if [ $? != 0 ] ; then echo "Terminating..." >&2 ; exit 1 ; fi
+if [ $? != 0 ] ;then
+    exit 1
+fi
+
+eval set -- "$TEMP"
+
+while true ; do
+    case "$1" in
+        --help) usage; exit 0 ;;
+        -h)     usage; exit 0 ;;
+        --) shift ; break ;;
+        *) echo "Internal error!" ; exit 1 ;;
+    esac
+done
+
+if [ $# -eq 0 ]; then
+    usage
+    exit 1
+fi
+
+command=$1
+case $command in 
+    install) do_install; ;;
+    uninstall) do_uninstall; ;;
+    distclean) do_distclean; ;;
+    *) usage; exit 1 ;;
+esac
+
+# do not remove following exit to use __DATA__ section
+exit
+
+__DATA__
+#
+DAQ-Middleware
+OpenRTM-aist
+omniORB-bootscripts
+xalan-c-devel
+omniORB-devel
+xalan-c
+omniORB-servers
+omniORB-utils
+omniORB-doc
+xerces-c-devel
+xerces-c
+omniORB
