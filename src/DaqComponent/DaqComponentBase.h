@@ -40,14 +40,22 @@ namespace DAQMW
     public:
         DaqComponentBase(RTC::Manager* manager)
             : RTC::DataFlowComponentBase(manager),
-              m_trans_lock(false), m_DAQServicePort("DAQService"),
-              m_comp_name("NONAME"), m_command(CMD_NOP),
-              m_state(LOADED), m_state_prev(LOADED),
+              m_comp_name("NONAME"),
               m_runNumber(0),
-              m_eventByteSize(0), m_loop(0), m_total_event(0), m_total_size(0),
-              m_isOnError(false), 
-              m_isTimerAlarm(false),
-              m_debug(false)
+              m_eventByteSize(0),
+              m_loop(0),
+              m_total_event(0),
+              m_total_size(0),
+              m_debug(false),
+              m_trans_lock(false),
+              m_DAQServicePort("DAQService"),
+              m_command(CMD_NOP),
+              m_state(LOADED),
+              m_state_prev(LOADED),
+
+              m_isOnError(false),
+              m_isTimerAlarm(false)
+
         {
             mytimer = new Timer(STATUS_CYCLE_SEC);
         }
@@ -60,26 +68,10 @@ namespace DAQMW
         enum BufferStatus {BUF_FATAL = -1, BUF_SUCCESS, BUF_TIMEOUT, BUF_NODATA, BUF_NOBUF};
 
     protected:
-        static const int DAQ_CMD_SIZE      = 10;
-        static const int DAQ_STATE_SIZE    =  6;
-        static const int DAQ_IDLE_TIME_SEC =  1;
-        static const int STATUS_CYCLE_SEC  =  2;
 
-        typedef int (DAQMW::DaqComponentBase::*DAQFunc)();
-
-        DAQFunc m_daq_trans_func[DAQ_CMD_SIZE];
-        DAQFunc m_daq_do_func[DAQ_STATE_SIZE];
-
-        bool m_trans_lock;
         DAQServiceSVC_impl m_daq_service0;
-        RTC::CorbaPort m_DAQServicePort;
-
-        Timer* mytimer;
         std::string m_comp_name;
-        DAQCommand m_command;
-        DAQCommand m_old_command;
-        DAQLifeCycleState m_state;
-        DAQLifeCycleState m_state_prev;
+
         Status m_status;
         unsigned int m_runNumber;
         unsigned m_eventByteSize;
@@ -87,12 +79,7 @@ namespace DAQMW
         unsigned long long m_total_event;
         unsigned long long m_total_size;
 
-        std::string m_err_message;
-
-        bool      m_isOnError;
-        bool      m_isTimerAlarm;
         bool      m_debug;
-
 
         static const unsigned int  HEADER_BYTE_SIZE = 8;
         static const unsigned int  FOOTER_BYTE_SIZE = 8;
@@ -109,15 +96,15 @@ namespace DAQMW
          *  except header and footer.
          *  Footer data includes magic number(2bytes), sequence number(4bytes).
          *
-         *                dat[0]   dat[1]   dat[2]    dat[3]   dat[4]     dat[5]     dat[6]    dat[7]
-         *  Header        0xe7     0xe7     reserved  reserved siz(24:31) siz(16:23) siz(8:15) siz(0:7)
+         *                dat[0] dat[1] dat[2]    dat[3]   dat[4]     dat[5]     dat[6]    dat[7]
+         *  Header        0xe7   0xe7   reserved  reserved siz(24:31) siz(16:23) siz(8:15) siz(0:7)
          *  Event data1
          *  ...
          *  Event dataN
-         *  Footer        0xcc     0xcc     reserved  reserved seq(24:31) seq(16:23) seq(8:15) seq(0:7)
+         *  Footer        0xcc   0xcc   reserved  reserved seq(24:31) seq(16:23) seq(8:15) seq(0:7)
          */
 
-        int set_header(unsigned char* header, unsigned data_byte_size) {
+        virtual int set_header(unsigned char* header, unsigned data_byte_size) {
             header[0] = HEADER_MAGIC;
             header[1] = HEADER_MAGIC;
             header[2] = 0;
@@ -129,7 +116,7 @@ namespace DAQMW
             return 0;
         }
 
-        int set_footer(unsigned char* footer, unsigned sequence_num) 
+        virtual int set_footer(unsigned char* footer, unsigned sequence_num)
         {
             footer[0] = FOOTER_MAGIC;
             footer[1] = FOOTER_MAGIC;
@@ -216,7 +203,6 @@ namespace DAQMW
                 std::cerr << "### ERROR: footer invalid" << std::endl;
                 fatal_error_report(FatalType::FOOTER_DATA_MISMATCH);
             }
-
             return true;
         }
 
@@ -232,7 +218,6 @@ namespace DAQMW
 
             // Set CORBA Service Ports
             registerPort(m_DAQServicePort);
-
             return 0;
         }
 
@@ -254,14 +239,6 @@ namespace DAQMW
             m_trans_lock = false;
         }
 
-        int transAction(int command) {
-            return (this->*m_daq_trans_func[command])();
-        }
-
-        void doAction(int state){
-            (this->*m_daq_do_func[state])();
-        }
-
         virtual int daq_dummy()       = 0;
         virtual int daq_configure()   = 0;
         virtual int daq_unconfigure() = 0;
@@ -271,112 +248,7 @@ namespace DAQMW
         virtual int daq_pause()       = 0;
         virtual int daq_resume()      = 0;
 
-        int daq_base_dummy()
-        {
-            daq_dummy();
-            set_status(COMP_WORKING);
-            sleep(DAQ_IDLE_TIME_SEC);
-            return 0;
-        }
-
-        int daq_base_configure()
-        {
-            set_status(COMP_WORKING);
-            daq_configure();
-
-            return 0;
-        }
-
-        int daq_base_unconfigure()
-        {
-            m_total_size = 0;
-            set_status(COMP_WORKING);
-            daq_unconfigure();
-
-            return 0;
-        }
-
-        int daq_base_start()
-        {
-            m_total_size = 0;
-            m_loop = 0;
-            set_status(COMP_WORKING);
-            daq_start();
-
-            return 0;
-        }
-
-        int daq_base_stop()
-        {
-            if (m_isOnError) {
-                m_isOnError = false; /// reset error flag
-                std::cerr << "*** Error flag was reset\n";
-            }
-
-            m_err_message = "";
-            set_status(COMP_WORKING);
-            daq_stop();
-
-            std::cerr << "event byte size = " << m_total_size << std::endl;
-            return 0;
-        }
-
-        int daq_base_pause()
-        {
-            set_status(COMP_WORKING);
-            daq_pause();
-
-            return 0;
-        }
-
-        int get_command()
-        {
-            m_command = m_daq_service0.getCommand();
-            if (m_debug) {
-                std::cerr << "m_command=" << m_command << std::endl;
-            }
-
-            return 0;
-        }
-
-        int set_done()
-        {
-            m_daq_service0.setDone();
-            if (m_debug) {
-                std::cerr << "set_done()\n";
-            }
-
-            return 0;
-        }
-
         virtual int parse_params( ::NVList* list ) = 0;
-
-        int daq_onError(){
-            m_isOnError = true;
-            if (check_trans_lock()) {
-                set_trans_unlock();
-            }
-            std::cerr << "### daq_onError(): ERROR Occured\n";
-            std::cerr << m_err_message << std::endl;
-            set_status(COMP_FATAL);
-            sleep(DAQ_IDLE_TIME_SEC);
-
-            return 0;
-        }
-
-        int set_status(CompStatus comp_status)
-        {
-            Status* mystatus = new Status;
-            mystatus->comp_name = CORBA::string_dup(m_comp_name.c_str());
-            mystatus->state = m_state;
-            ///mystatus->event_num = m_total_event;
-            mystatus->event_size = m_total_size;
-            mystatus->comp_status = comp_status;
-
-            m_daq_service0.setStatus(*mystatus);
-
-            return 0;
-        }
 
         void fatal_error_report(FatalType::Enum type, int code = -1)
         {
@@ -390,15 +262,6 @@ namespace DAQMW
             m_isOnError = true;
             set_status(COMP_FATAL);
             throw DaqCompUserException(type, desc, code);
-        }
-
-        void fatal_report_to_operator(FatalType::Enum type, const char* desc, int code = -1)
-        {
-            FatalErrorStatus errStatus;
-            errStatus.fatalTypes = type;
-            errStatus.errorCode  = code;
-            errStatus.description = CORBA::string_dup(desc);
-            m_daq_service0.setFatalStatus(errStatus);
         }
 
         void init_state_table()
@@ -419,17 +282,6 @@ namespace DAQMW
         int reset_timer()
         {
             mytimer->resetTimer();
-
-            return 0;
-        }
-
-        int clockwork_status_report()
-        {
-            if (mytimer->checkTimer()) {
-                m_isTimerAlarm = true;
-                set_status(COMP_WORKING);
-                mytimer->resetTimer();
-            }
             return 0;
         }
 
@@ -444,7 +296,6 @@ namespace DAQMW
          * In this case, we get a DataPortStatus such as PORT_OK, SEND_TIMEOUT,
          * PRECONDITION_NOT_MET, CONNECTION_LOST and UNKNOWN_ERROR.
          */
-
         BufferStatus check_outPort_status(RTC::OutPort<RTC::TimedOctetSeq> & myOutPort)
         {
             BufferStatus ret = BUF_SUCCESS;
@@ -566,46 +417,6 @@ namespace DAQMW
             return ret;
         }
 
-        bool set_state(DAQCommand command)
-        {
-            bool ret = true;
-            /// new command has come, chage new state
-            switch (command) {
-            case CMD_CONFIGURE:
-                m_state_prev = LOADED;
-                m_state = CONFIGURED;
-                break;
-            case CMD_START:
-                m_state_prev = CONFIGURED;
-                m_state = RUNNING;
-                break;
-            case CMD_PAUSE:
-                m_state_prev = RUNNING;
-                m_state = PAUSED;
-                set_trans_lock();
-                break;
-            case CMD_RESUME:
-                m_state_prev = PAUSED;
-                m_state = RUNNING;
-                break;
-            case CMD_STOP:
-                m_state_prev = RUNNING;
-                m_state = CONFIGURED;
-                set_trans_lock();
-                break;
-            case CMD_UNCONFIGURE:
-                m_state_prev = RUNNING;
-                m_state = LOADED;
-                break;
-            default:
-                //status = false;
-                ret = false;
-                break;
-            }
-            return ret;
-        }
-
-
         int daq_do()
         {
             int ret = 0;
@@ -698,6 +509,196 @@ namespace DAQMW
             }
             return ret;
         } /// daq_do()
+
+    private:
+        static const int DAQ_CMD_SIZE      = 10;
+        static const int DAQ_STATE_SIZE    =  6;
+        static const int DAQ_IDLE_TIME_SEC =  1;
+        static const int STATUS_CYCLE_SEC  =  2;
+
+        bool m_trans_lock;
+
+        RTC::CorbaPort m_DAQServicePort;
+
+        Timer* mytimer;
+
+        DAQCommand m_command;
+        DAQLifeCycleState m_state;
+        DAQLifeCycleState m_state_prev;
+
+        std::string m_err_message;
+
+        bool      m_isOnError;
+        bool      m_isTimerAlarm;
+
+        typedef int (DAQMW::DaqComponentBase::*DAQFunc)();
+
+        DAQFunc m_daq_trans_func[DAQ_CMD_SIZE];
+        DAQFunc m_daq_do_func[DAQ_STATE_SIZE];
+
+        int transAction(int command) {
+            return (this->*m_daq_trans_func[command])();
+        }
+
+        void doAction(int state){
+            (this->*m_daq_do_func[state])();
+        }
+
+        int daq_base_dummy()
+        {
+            daq_dummy();
+            set_status(COMP_WORKING);
+            sleep(DAQ_IDLE_TIME_SEC);
+            return 0;
+        }
+
+        int daq_base_configure()
+        {
+            set_status(COMP_WORKING);
+            daq_configure();
+            return 0;
+        }
+
+        int daq_base_unconfigure()
+        {
+            m_total_size = 0;
+            set_status(COMP_WORKING);
+            daq_unconfigure();
+            return 0;
+        }
+
+        int daq_base_start()
+        {
+            m_total_size = 0;
+            m_loop = 0;
+            set_status(COMP_WORKING);
+            daq_start();
+            return 0;
+        }
+
+        int daq_base_stop()
+        {
+            if (m_isOnError) {
+                m_isOnError = false; /// reset error flag
+                std::cerr << "*** Error flag was reset\n";
+            }
+
+            m_err_message = "";
+            set_status(COMP_WORKING);
+            daq_stop();
+
+            std::cerr << "event byte size = " << m_total_size << std::endl;
+            return 0;
+        }
+
+        int daq_base_pause()
+        {
+            set_status(COMP_WORKING);
+            daq_pause();
+            return 0;
+        }
+
+        int get_command()
+        {
+            m_command = m_daq_service0.getCommand();
+            if (m_debug) {
+                std::cerr << "m_command=" << m_command << std::endl;
+            }
+            return 0;
+        }
+
+        int set_done()
+        {
+            m_daq_service0.setDone();
+            if (m_debug) {
+                std::cerr << "set_done()\n";
+            }
+            return 0;
+        }
+
+        int daq_onError(){
+            m_isOnError = true;
+            if (check_trans_lock()) {
+                set_trans_unlock();
+            }
+            std::cerr << "### daq_onError(): ERROR Occured\n";
+            std::cerr << m_err_message << std::endl;
+            set_status(COMP_FATAL);
+            sleep(DAQ_IDLE_TIME_SEC);
+            return 0;
+        }
+
+        int set_status(CompStatus comp_status)
+        {
+            Status* mystatus = new Status;
+            mystatus->comp_name = CORBA::string_dup(m_comp_name.c_str());
+            mystatus->state = m_state;
+            ///mystatus->event_num = m_total_event;
+            mystatus->event_size = m_total_size;
+            mystatus->comp_status = comp_status;
+
+            m_daq_service0.setStatus(*mystatus);
+            return 0;
+        }
+
+        void fatal_report_to_operator(FatalType::Enum type, const char* desc, int code = -1)
+        {
+            FatalErrorStatus errStatus;
+            errStatus.fatalTypes = type;
+            errStatus.errorCode  = code;
+            errStatus.description = CORBA::string_dup(desc);
+            m_daq_service0.setFatalStatus(errStatus);
+        }
+
+        int clockwork_status_report()
+        {
+            if (mytimer->checkTimer()) {
+                m_isTimerAlarm = true;
+                set_status(COMP_WORKING);
+                mytimer->resetTimer();
+            }
+            return 0;
+        }
+
+        bool set_state(DAQCommand command)
+        {
+            bool ret = true;
+            /// new command has come, chage new state
+            switch (command) {
+            case CMD_CONFIGURE:
+                m_state_prev = LOADED;
+                m_state = CONFIGURED;
+                break;
+            case CMD_START:
+                m_state_prev = CONFIGURED;
+                m_state = RUNNING;
+                break;
+            case CMD_PAUSE:
+                m_state_prev = RUNNING;
+                m_state = PAUSED;
+                set_trans_lock();
+                break;
+            case CMD_RESUME:
+                m_state_prev = PAUSED;
+                m_state = RUNNING;
+                break;
+            case CMD_STOP:
+                m_state_prev = RUNNING;
+                m_state = CONFIGURED;
+                set_trans_lock();
+                break;
+            case CMD_UNCONFIGURE:
+                m_state_prev = RUNNING;
+                m_state = LOADED;
+                break;
+            default:
+                //status = false;
+                ret = false;
+                break;
+            }
+            return ret;
+        }
+
     }; /// class
 } /// namespace
 
