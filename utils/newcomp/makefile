@@ -1,9 +1,9 @@
 prefix = /usr
 DIR    = $(prefix)/bin
 
-# EXAMPLE_COMPS += Skeleton
 # EXAMPLE_COMPS += SkeletonFilter
 
+EXAMPLE_COMPS += Skeleton
 EXAMPLE_COMPS += SkeletonSource
 EXAMPLE_COMPS += SkeletonSink
 
