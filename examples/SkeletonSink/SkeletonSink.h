@@ -57,7 +57,6 @@ private:
     //int online_analyze();
 
     BufferStatus m_in_status;
-    BufferStatus m_out_status;
     bool m_debug;
 };
 

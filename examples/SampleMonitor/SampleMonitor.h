@@ -68,7 +68,6 @@ private:
     int decode_data(struct sampleData* mydata, int size);
 
     BufferStatus m_in_status;
-    //BufferStatus m_out_status;
 
     ////////// ROOT Histogram //////////
     TCanvas *m_canvas;

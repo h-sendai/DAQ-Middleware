@@ -57,7 +57,7 @@ SampleMonitor::SampleMonitor(RTC::Manager* manager)
 
     //init histograms
     m_hist = new TH1F* [CH_NUM];
-    for(int i = 0; i < CH_NUM; i++){
+    for (int i = 0; i < CH_NUM; i++) {
         m_hist[i] = 0;
     }
 }
@@ -285,10 +285,9 @@ int SampleMonitor::daq_run()
 
     decode_data((struct sampleData*)&mydata[0], event_byte_size);
 
-    if(m_loop%m_monitor_update_rate == 0) {
-		//std::cerr << "Update!" << std::endl;
-        for(int i=0; i< 8; i++) {
-            m_canvas->cd(i+1);
+    if((m_loop % m_monitor_update_rate) == 0) {
+        for (int i = 0; i < 8; i++) {
+            m_canvas->cd(i + 1);
             m_hist[i]->Draw();
         }
         m_canvas->Update();
