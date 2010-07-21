@@ -1,15 +1,9 @@
 // -*- C++ -*-
 /*!
- * @file  Skeleton.cpp
- * @brief Skeleton component
+ * @file
+ * @brief
  * @date
- * @author Kazuo Nakayoshi <kazuo.nakayoshi@kek.jp>
- *
- * Copyright (C) 2008
- *     Kazuo Nakayoshi
- *     Electronics System Group,
- *     KEK, Japan.
- *     All rights reserved.
+ * @author
  *
  */
 
@@ -18,6 +12,7 @@
 using DAQMW::FatalType::USER_DEFINED_ERROR1;
 
 // Module specification
+// Change following items to suit your component's spec.
 static const char* skeleton_spec[] =
 {
     "implementation_id", "Skeleton",
@@ -94,15 +89,15 @@ int Skeleton::daq_configure()
 
 int Skeleton::parse_params(::NVList* list)
 {
-
     std::cerr << "param list length:" << (*list).length() << std::endl;
 
-    int length = (*list).length();
-    for (int i = 0; i < length; i++) {
-        if (m_debug) {
-            std::cerr << "NVList[" << (*list)[i].name
-                      << ","<< (*list)[i].value << "]" << std::endl;
-        }
+    int len = (*list).length();
+    for (int i = 0; i < len; i+=2) {
+        std::string sname  = (std::string)(*list)[i].value;
+        std::string svalue = (std::string)(*list)[i+1].value;
+
+        std::cerr << "sname: " << sname << "  ";
+        std::cerr << "value: " << svalue << std::endl;
     }
 
     return 0;
@@ -136,7 +131,6 @@ int Skeleton::daq_stop()
 int Skeleton::daq_pause()
 {
     std::cerr << "*** Skeleton::pause" << std::endl;
-    fatal_error_report(USER_DEFINED_ERROR1, "TEST FOR USER DEFINED ERROR");
     return 0;
 }
 
@@ -148,12 +142,12 @@ int Skeleton::daq_resume()
 
 int Skeleton::reset_InPort()
 {
-    TimedOctetSeq dummy_data;
-
-    // int ret = BUF_SUCCESS;
-    // while (ret == BUF_SUCCESS) {
-    //    ret = m_InPort.read();
-    // }
+//     uncomment if InPort is connected other OutPort of Component
+//
+//     int ret = BUF_SUCCESS;
+//     while (ret == BUF_SUCCESS) {
+//         ret = m_InPort.read();
+//     }
 
     std::cerr << "*** Skeleton::InPort flushed\n";
     return 0;
@@ -164,6 +158,8 @@ int Skeleton::daq_run()
     if (m_debug) {
         std::cerr << "*** Skeleton::run" << std::endl;
     }
+
+    sleep(1);
 
     if (check_trans_lock()) {  /// got stop command
         set_trans_unlock();

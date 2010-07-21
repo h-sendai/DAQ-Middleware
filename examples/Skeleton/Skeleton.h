@@ -1,15 +1,9 @@
 // -*- C++ -*-
 /*!
- * @file Skeleton.h
- * @brief Skeleton component.
+ * @file
+ * @brief
  * @date
- * @author Kazuo Nakayoshi <kazuo.nakayoshi@kek.jp>
- *
- * Copyright (C) 2008
- *     Kazuo Nakayoshi
- *     Electronics System Group,
- *     KEK, Japan.
- *     All rights reserved.
+ * @author
  *
  */
 
@@ -63,9 +57,9 @@ private:
     int parse_params(::NVList* list);
     int reset_InPort();
 
-    int m_in_status;
-    int m_out_status;
-    int m_sampling_rate;
+    BufferStatus m_in_status;
+    BufferStatus m_out_status;
+
     bool m_debug;
 };
 
