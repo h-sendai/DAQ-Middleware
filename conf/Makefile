@@ -13,6 +13,7 @@ FILES += myconfig.xml
 FILES += test-cond.xml
 FILES += test-mlf.xml
 FILES += sample.xml
+FILES += skel.xml
 
 all:
 
