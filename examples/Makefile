@@ -3,15 +3,9 @@ prefix = /usr
 DESTDIR = $(prefix)/share/daqmw/examples
 #MODE = 0644
 
-SRC_DIRS += BestEffortDispatcher
-SRC_DIRS += Dispatcher
-SRC_DIRS += EchoMonitor
-SRC_DIRS += EchoReader
-SRC_DIRS += Logger
 SRC_DIRS += SampleMonitor
 SRC_DIRS += SampleReader
 SRC_DIRS += Skeleton
-SRC_DIRS += SkeletonFilter
 SRC_DIRS += SkeletonSink
 SRC_DIRS += SkeletonSource
 
