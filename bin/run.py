@@ -4,9 +4,10 @@
 #         This script parses config.xml file, gets IP addrese of CPU DAQs and
 #         CPU UI, and starts DAQ-Components on remote/local PCs via network.
 
-import sys, os, time, getopt
+import sys, os, time
 import popen2
 import socket
+from optparse import OptionParser
 from xml.dom.ext.reader import PyExpat
 from xml.xpath import Evaluate
 from xml.dom.minidom import parse
@@ -21,104 +22,63 @@ xinetdPort = 50000
 # omniNames port
 nsport = 9876
 
-# Options
-opt_args = ["help",
-            "console",
-            "local",
-            "file_of_config=",
-            "schema=",
-            "operator=",
-            "display="]
-
-def usage():
-    print """
-Usage: run.py [OPTIONS]
-
-  -h, --help                      Print usage.
-  -c, --console                   Console mode. Default setting is HTTP mode.
-  -l, --local                     Local booting mode. Default is remote booting mode.
-  -f, --file_of_config=conf_file  Specify config file with full path.
-  -s, --schema=schema_file        Specify XML schema file for config with full path.
-  -o, --operator=operator_path    Specify DaqOperatorComp with full path.
-  -d, --display=display_env       Specify DISPLAY env. for X apps, such as ROOT for monitoring.
-
-Examples:
-
-  run.py -f xxx/conf.xml       : remote booting using config file xxx/conf.xml with http mode
-  run.py -f xxx/conf.xml -c    : remote booting using config file xxx/conf.xml with console mode
-  run.py -f xxx/conf.xml -l    : local booting using config file xxx/conf.xml with http mode
-  run.py -f xxx/conf.xml -c -l : local booting using config file xxx/conf.xml with console mode
-"""
-
 def opt():
-    global opt_args
-    global consoleMode
-    global localBoot
     global confFile
     global schemaFile
     global operator
-    global mydisplay
+    global console
+    global localBoot
+    global mydisp
+    global verbose
 
-    consoleMode = False
-    localBoot   = False
-    schemaFile  = '/usr/share/daqmw/conf/config.xsd'
-    operator    = '/usr/libexec/daqmw/DaqOperatorComp'
+    usage = "run.py [OPTIONS] [CONFIG_FILE]"
+    parser = OptionParser(usage)
+    parser.set_defaults(console=False)
+    parser.set_defaults(local=False)
+    parser.set_defaults(verbose=False)
+    parser.set_defaults(schema='/usr/share/daqmw/conf/config.xsd')
+    parser.set_defaults(operator='/usr/libexec/daqmw/DaqOperatorComp')
 
-    try:
-        opts, args = getopt.getopt(sys.argv[1:], "hclf:s:o:d:", opt_args)
-    except getopt.GetoptError:
-        print "Error: Invalid option."
-        usage();
-        sys.exit(-1)
+    parser.add_option("-c", "--console",
+                      action="store_true", dest="console", help="console mode. default is HTTP mode")
+    parser.add_option("-l", "--local",
+                      action="store_true", dest="local", help="local boot mode. default is remote boot")
+    parser.add_option("-v", "--verbose",
+                      action="store_true", dest="verbose", help="verbose mode on. default is off" )
+    parser.add_option("-s", "--schema", dest="schema",
+                      help="specify XML schema file with abs. path")
+    parser.add_option("-o", "--operator", dest="operator",
+                      help="specify DaqOperatorComp with abs. path")
+    parser.add_option("-d", "--display", dest="display",
+                      help="specify DISPLAY env. val for X apps")
 
-    for o, a in opts:
-        if o in ("-h", "--help"):
-            usage();
-            sys.exit(0)
-        if o in ("-c", "--console"):
-            consoleMode = True
-            print "Console mode "
-        if o in ("-l", "--local"):
-            localBoot = True
-            print "Local boot mode"
-        if o in ("-f", "--file_of_config"):
-            confFile  = a
-            print confFile
-        if o in ("-s", "--schema"):
-            schemaFile = a
-        if o in ("-o", "--operator"):
-            operator = a
-        if o in ("-d", "--display"):
-            mydisplay = a
+    (options, args) = parser.parse_args()
 
-    if not opts:
-        usage()
-        sys.exit(-1)
+    confFile   = args[0]
+    schemaFile = options.schema
+    operator   = options.operator
+    console    = options.console
+    localBoot  = options.local
+    mydisp     = options.display
+    verbose    = options.verbose
 
-    if confFile == '':
-        print 'ERROR: Configuration file not specified.'
-        sys.exit(-1)
+    if len(args) != 1:
+        parser.error("ERROR: not specified config file")
     if os.path.exists(confFile):
-        print 'Use ' + confFile + ' for configuration'
+        print 'Use config file ' + confFile + ' for configuration'
     else:
-        print 'ERROR: ' + confFile + ' not exists. exit.'
+        print 'ERROR: config file ' + confFile + ' not exists. exit.'
         sys.exit(-1)
     if os.path.exists(schemaFile):
         print 'Use ' + schemaFile + ' for XML schema'
     else:
-        print 'ERROR: ' + schemaFile + ' not exists. exit.'
+        print 'ERROR: schema ' + options.schemaFile + ' not exists. exit.'
         sys.exit(-1)
-    if os.path.exists(operator):
-        print 'Use ' + operator + ' for DAQ-Operator'
+    if os.path.exists(options.operator):
+        print 'Use ' + options.operator + ' for DAQ-Operator'
     else:
-        print 'ERROR: ' + operator + ' not exists. exit.'
+        print 'ERROR: ' + options.operator + ' not exists. exit.'
         sys.exit(-1)
-
-def isFileExist(fname):
-    if os.path.exists(schemaFile):
-        return True
-    else:
-        return False
 
 def getVal(confile, path):
     reader = PyExpat.Reader()
@@ -127,8 +87,8 @@ def getVal(confile, path):
     myVal = ''
     for node in Evaluate(path, dom.documentElement):
         myVal = node.firstChild.nodeValue
-        print node.firstChild.nodeValue
-    #return node.firstChild.nodeValue
+        if verbose:
+            print node.firstChild.nodeValue
     return myVal
 
 def getVals(confile, path):
@@ -139,15 +99,6 @@ def getVals(confile, path):
     for node in Evaluate(path, dom.documentElement):
         vals.append(node.firstChild.nodeValue)
     return vals
-
-def mycommand2(cmd):
-    child = os.popen(cmd)
-    time.sleep(0.1)
-    data  = child.read()
-    print 'mycommand2: data: ', data
-    err   = child.close()
-    if err:
-        return 'Runtime Error: ', err
 
 def mycommand(cmd):
     cp = popen2.Popen3(cmd,1)
@@ -171,7 +122,8 @@ def sendData(addr, port, data):
         s.send(data)
         s.shutdown(socket.SHUT_WR)
         rdata = s.recv(1024)
-        print "received data:", rdata
+        if verbose:
+            print "received data:", rdata
         s.close()
     except socket.error, msg:
         s.close()
@@ -205,7 +157,7 @@ def genConfFileForCpudaq(addr, operatorAddr, nsport, mydir):
 
 # generate rtc.conf for DaqOperator
 def genConfFileForOperator(operatorAddr, nsport, mydir):
-    fname = str(mydir) + '/rtc.conf.operator'
+    fname = str(mydir) + '/rtc.conf'
     com = 'rm -f ' + fname
     os.system(com)
     fw = open(fname, 'w')
@@ -234,7 +186,8 @@ def getExecPath(confFile):
                 epathdat = epath.childNodes
                 for dat in epathdat:
                     if dat.nodeType == dat.TEXT_NODE:
-                        print ' ', dat.nodeValue
+                        if verbose:
+                            print ' ', dat.nodeValue
                         execPaths.append(dat.nodeValue)
         allExecPaths.append(execPaths)
 
@@ -251,13 +204,11 @@ def validateConfigFile(confFile, schemaFile):
     validated = confFile + ' validates'
 
     if (mess == validated):
-        #print 'Validated:', confFile
         return True
     else:
         print '### ERROR: Validation failed:', confFile
         print '### Check the', confFile
         os.system(cmd) # for error message
-        #sys.exit(-1)
         return False
 
 def localCompsBooting():
@@ -266,11 +217,12 @@ def localCompsBooting():
     os.system(mypkill)  # kill previous components
     index = 0
     for i in execPaths:
-        print "booting: ", i
+        #print "booting: ", i
         logfile = daqmw_dir +'/log.' + os.path.basename(execPaths[index])
         #comm = myldpath + i + ' -f ' + confPaths[index] + '.' + operatorAddr + ' > ' + logfile + ' 2>&1 &'
         comm = myldpath + i + ' -f ' + confPaths[index] + ' > ' + logfile + ' 2>&1 &'
-        print comm
+        if verbose:
+            print comm
         os.system(comm)
         index+=1
 
@@ -282,24 +234,17 @@ def remoteCompsBooting():
         runcomps = ''
         runcomps += '#comps.sh\n'
         runcomps += 'pkill -f "^[^ ]+Comp "\n'
-        mydisp = 'export DISPLAY=' + mydisplay + '\n'
+        mydisp = 'export DISPLAY=' + str(mydisp) + '\n'
         runcomps += mydisp
-#        runcomps += 'export HOME=/home/nakayosi\n'
-#        runcomps += 'export LD_LIBRARY_PATH=$MANYOLIB:$SOCKLIB:$ROOTLIB:/usr/lib/daqmw:$LD_LIBRARY_PATH:\n'
 
         for i in execPaths[index]:
-            print i
             logfile = daqmw_dir + '/log.' + os.path.basename(i)
             comp = myldpath + i + ' -f ' + confPaths[index] + ' > ' + logfile + ' 2>&1 &\n'
             runcomps += comp
         index += 1
 
         print 'booting the DAQ-Components on each CPU DAQ'
-        #for addr in cpudaqAddr:
-        print '  send to ', addr
         rdata = sendData(addr, xinetdPort, runcomps)
-        #print rdata
-        #print runcomps
 
 def main():
     global compExecPath
@@ -328,8 +273,9 @@ def main():
     cpudaqAddrs  = getVals(confFile, hostAddrPath)
     confPaths    = getVals(confFile, confPath)
 
-    for i in cpudaqAddrs:
-        print "CPU DAQ IP address: ", i
+    if verbose:
+        for i in cpudaqAddrs:
+            print "CPU DAQ IP address: ", i
 
     cpudaqAddr = list(set(cpudaqAddrs))
 
@@ -354,7 +300,7 @@ def main():
     ret = mycommand('killall omniNames')
     time.sleep(2)
 
-    print 'start new naming service and wait for booting'
+    print 'start new naming service and wait for booting...'
     cmd = 'OMNIORB_USEHOSTNAME=' + str(operatorAddr) + ' rtm-naming ' +  str(nsport) + ' -logdir /tmp'
 
     os.system( cmd )
@@ -362,7 +308,8 @@ def main():
     time.sleep(2)
 
     # generate a rtc.conf for DaqOperator
-    genConfFileForOperator(operatorAddr, nsport, daqmw_dir)
+    conf_path_operator = '.'
+    genConfFileForOperator(operatorAddr, nsport, conf_path_operator)
 
     ldpath = os.getenv('LD_LIBRARY_PATH')
     if (ldpath):
@@ -372,7 +319,8 @@ def main():
         ldpath = daq_lib_path
 
     #print 'CURRENT DIR: ', os.getcwd()
-    print 'ldpath: ', ldpath
+    if verbose:
+        print 'ldpath: ', ldpath
 
     global myldpath
     myldpath = 'LD_LIBRARY_PATH=' + ldpath + ' '
@@ -386,16 +334,15 @@ def main():
 
         print 'generate rtc.conf for each CPU DAQ'
         for addr in cpudaqAddr:
-            print 'CPUDAQ addr:', addr
+            #print 'CPUDAQ addr:', addr
             conf = genConfFileForCpudaq(addr, operatorAddr, nsport, daqmw_dir)
             sendData(addr, xinetdPort, conf)
         remoteCompsBooting()
-
-    time.sleep(7)
+    print 'booting the DAQ-Componets, wait...'
+    time.sleep(8)
     print 'booting the DAQ-Operator'
 
     ldpath = os.getenv('LD_LIBRARY_PATH')
-    print ldpath
 
     if (ldpath):
         mypath = ':' + daq_lib_path
@@ -404,13 +351,23 @@ def main():
         ldpath = daq_lib_path
 
     consMode = ''
-    if consoleMode:
+    if console:
         consMode = '-c'
 
-    # execute DaqOperator
-    com = 'LD_LIBRARY_PATH=' + ldpath + ' ' + operator + ' -f ' + daqmw_dir + '/rtc.conf.operator' + ' -h ' + str(operatorAddr) + ' -p ' + str(nsport) + ' ' + '-x ' + confFile + ' ' + str(consMode)
+    ld_lib_path   = 'LD_LIBRARY_PATH=' + ldpath + ' '
+    #rtc_conf_path = daqmw_dir + '/rtc.conf.operator '
+    rtc_conf_path = conf_path_operator + '/rtc.conf '
+    operator_path = operator + ' -f ' + rtc_conf_path
+    operator_addr = ' -h ' + str(operatorAddr) + ' '
+    ns_port       = ' -p ' + str(nsport) + ' '
+    config_file   = ' -x ' + confFile + ' '
+    console_mode  = str(consMode)
 
-    print com
+    # execute DaqOperator
+    com = ld_lib_path + operator_path + operator_addr + ns_port + config_file + console_mode
+    #com = 'LD_LIBRARY_PATH=' + ldpath + ' ' + operator + ' -h ' + str(operatorAddr) + ' -p ' + str(nsport) + ' ' + '-x ' + confFile + ' ' + str(consMode)
+    if verbose:
+        print com
     os.system( com )
 
 if __name__ == "__main__":
