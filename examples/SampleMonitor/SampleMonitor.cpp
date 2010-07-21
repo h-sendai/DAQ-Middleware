@@ -127,7 +127,7 @@ int SampleMonitor::daq_unconfigure()
         m_canvas = 0;
     }
 
-    for(int i = 0; i < CH_NUM; i++){
+    for (int i = 0; i < CH_NUM; i++){
         if (m_hist[i]) {
             delete m_hist[i];
             m_hist[i] = 0;
@@ -151,7 +151,7 @@ int SampleMonitor::daq_start()
     m_canvas->Divide(4,2);
 
     ////////////////       HISTOS      ///////////////////
-    for(int i = 0; i < CH_NUM; i++){
+    for (int i = 0; i < CH_NUM; i++){
         if (m_hist[i]) {
             delete m_hist[i];
             m_hist[i] = 0;
@@ -166,7 +166,7 @@ int SampleMonitor::daq_start()
     gStyle->SetStatH(0.2);
     gStyle->SetOptStat("em");
 
-    for(int i = 0; i < CH_NUM; i++) {
+    for (int i = 0; i < CH_NUM; i++) {
         m_hist[i] = new TH1F(Form("h%d", i), Form("h#%d",i), m_hist_bin,
                              m_hist_min, m_hist_max);
         m_hist[i]->GetXaxis()->SetNdivisions(5);
@@ -212,7 +212,7 @@ int SampleMonitor::reset_InPort()
 
 int SampleMonitor::decode_data(struct sampleData* mydata, int size)
 {
-    for(int i = 0; i < size/(int)sizeof(struct sampleData); i++) {
+    for (int i = 0; i < size/(int)sizeof(struct sampleData); i++) {
         if (m_debug) {
             std::cerr << "mydata.magic: " << std::hex << (int)mydata->magic
                       << std::endl;
