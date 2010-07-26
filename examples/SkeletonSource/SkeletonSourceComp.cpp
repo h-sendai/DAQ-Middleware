@@ -4,7 +4,7 @@
  * @brief 
  * @date 
  *
- * $Id: SkeletonSourceComp.cpp,v f0c54bd8bbea 2010/07/12 21:37:27 hiroshi $
+ * $Id$
  */
 
 #include <rtm/Manager.h>
