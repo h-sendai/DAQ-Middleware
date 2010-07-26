@@ -53,6 +53,8 @@ def opt():
                       help="specify DISPLAY env. val for X apps")
 
     (options, args) = parser.parse_args()
+    if len(args) != 1:
+        parser.error("ERROR: not specified config file")
 
     confFile   = args[0]
     schemaFile = options.schema
@@ -62,8 +64,6 @@ def opt():
     mydisp     = options.display
     verbose    = options.verbose
 
-    if len(args) != 1:
-        parser.error("ERROR: not specified config file")
     if os.path.exists(confFile):
         print 'Use config file ' + confFile + ' for configuration'
     else:
@@ -339,7 +339,7 @@ def main():
             sendData(addr, xinetdPort, conf)
         remoteCompsBooting()
     print 'booting the DAQ-Componets, wait...'
-    time.sleep(8)
+#    time.sleep(8)
     print 'booting the DAQ-Operator'
 
     ldpath = os.getenv('LD_LIBRARY_PATH')
