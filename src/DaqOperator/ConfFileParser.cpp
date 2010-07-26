@@ -20,18 +20,17 @@ using namespace xercesc;
 ConfFileParser::ConfFileParser()
     : m_comp_num(0), m_sitcp_num(0), m_debug(false)
 {
-    //std::cerr << "ConfFileParser create\n";
 
     try {
-	XMLPlatformUtils::Initialize();  //Initialize Xerces
+        XMLPlatformUtils::Initialize();  //Initialize Xerces
     }
     catch( XMLException& e)
     {
-	char* message = XMLString::transcode( e.getMessage() );
-	std::cerr << "XML toolkit initialization error: " 
-		  << message << std::endl;
-	XMLString::release( &message );
-	// throw exception here to return ERROR_XERCES_INIT
+        char* message = XMLString::transcode( e.getMessage() );
+        std::cerr << "### ERROR: XML toolkit initialization error: "
+                  << message << std::endl;
+        XMLString::release( &message );
+        // throw exception here to return ERROR_XERCES_INIT
     }
 
      TAG_root         = XMLString::transcode("configInfo");
@@ -61,40 +60,46 @@ ConfFileParser::~ConfFileParser()
 {
     //std::cerr << "ConfFileParser delete\n";
     try {
-	XMLPlatformUtils::Terminate();  // Terminate Xerces
+        XMLPlatformUtils::Terminate();  // Terminate Xerces
     }
     catch( xercesc::XMLException& e ) {
-	char* message = xercesc::XMLString::transcode( e.getMessage() );
-	std::cerr << "XML ttolkit teardown error: " << message << std::endl;
-	XMLString::release( &message );
+        char* message = xercesc::XMLString::transcode( e.getMessage() );
+        std::cerr << "### ERROR: XML ttolkit teardown error: "
+                  << message << std::endl;
+        XMLString::release( &message );
     }
 
     //std::cerr << "Terminate Xerces\n";
 
     try {
-	XMLString::release( &TAG_root );
-	XMLString::release( &TAG_groups );
-	XMLString::release( &TAG_group );
-	XMLString::release( &TAG_groupId );
-	XMLString::release( &TAG_components );
-	XMLString::release( &TAG_component );
-	XMLString::release( &TAG_compId );
-	XMLString::release( &TAG_compHostAddr );
-	XMLString::release( &TAG_compHostPort );
-	XMLString::release( &TAG_compInstName );
-	XMLString::release( &TAG_compExecPath );
-	XMLString::release( &TAG_compConfFile );
-	XMLString::release( &TAG_compStartOrd );
-	XMLString::release( &TAG_compOutPort );
-	XMLString::release( &TAG_compInPort );
-	XMLString::release( &TAG_compFromOut );
-	XMLString::release( &TAG_paramId );
-	if (TAG_params) XMLString::release( &TAG_params );
-	if (TAG_param)  XMLString::release( &TAG_param );
+        XMLString::release( &TAG_root );
+        XMLString::release( &TAG_groups );
+        XMLString::release( &TAG_group );
+        XMLString::release( &TAG_groupId );
+        XMLString::release( &TAG_components );
+        XMLString::release( &TAG_component );
+        XMLString::release( &TAG_compId );
+        XMLString::release( &TAG_compHostAddr );
+        XMLString::release( &TAG_compHostPort );
+        XMLString::release( &TAG_compInstName );
+        XMLString::release( &TAG_compExecPath );
+        XMLString::release( &TAG_compConfFile );
+        XMLString::release( &TAG_compStartOrd );
+        XMLString::release( &TAG_compOutPort );
+        XMLString::release( &TAG_compInPort );
+        XMLString::release( &TAG_compFromOut );
+        XMLString::release( &TAG_paramId );
+        if (TAG_params) {
+            XMLString::release( &TAG_params );
+        }
+        if (TAG_param) {
+            XMLString::release( &TAG_param );
+        }
    }
    catch( ... )
-   { 
-       std::cerr << "Unknown exception encountered in TagNamesdtor" << std::endl;
+   {
+       std::cerr << "### ERROR: Unknown exception encountered in TagNamesdtor" 
+                 << std::endl;
    }
 }
 
@@ -109,12 +114,12 @@ int ConfFileParser::checkXmlFile(const char* xmlFile)
    int iretStat = stat(xmlFile, &fileStatus);
    if ( iretStat == ENOENT )
        throw ( std::runtime_error(
-		   "Path file_name does not exist, or path is an empty string."));
+                   "Path file_name does not exist, or path is an empty string."));
    else if ( iretStat == ENOTDIR )
        throw ( std::runtime_error("A component of the path is not a directory."));
    else if ( iretStat == ELOOP )
        throw ( std::runtime_error(
-		   "Too many symbolic links encountered while traversing the path."));
+                   "Too many symbolic links encountered while traversing the path."));
    else if ( iretStat == EACCES )
        throw ( std::runtime_error("Permission denied."));
    else if ( iretStat == ENAMETOOLONG )
@@ -142,136 +147,144 @@ int ConfFileParser::checkXmlFile(const char* xmlFile)
  */
 int ConfFileParser::readConfFile(const char* xmlFile, bool isConfigure)
 {
-    //m_xml_file = xmlFile;
-    std::cerr << "***** readConfFile: " << xmlFile << std::endl;
-
+    if (m_debug) {
+        std::cerr << "***** readConfFile: " << xmlFile << std::endl;
+    }
     // Test to see if the file is ok.
     try {
-	checkXmlFile(xmlFile);
+        checkXmlFile(xmlFile);
 
-	m_xercesDomParser->parse(xmlFile);
+        m_xercesDomParser->parse(xmlFile);
 
-	DOMDocument* xmlDoc = m_xercesDomParser->getDocument();
+        DOMDocument* xmlDoc = m_xercesDomParser->getDocument();
 
-	DOMElement* root = xmlDoc->getDocumentElement();
-	if ( !root ) {
-	    throw(std::runtime_error( "empty XML document" ));
-	}
-	
-	DOMNodeList*      group = root->getElementsByTagName(TAG_group);
-	
-	std::string myroot = "root";
+        DOMElement* root = xmlDoc->getDocumentElement();
+        if ( !root ) {
+            throw(std::runtime_error( "empty XML document" ));
+        }
 
-	/// loop for daqGroup nodes
-	for(int gindex = 0; gindex < (int)group->getLength(); gindex++ ) {
+        DOMNodeList*      group = root->getElementsByTagName(TAG_group);
 
-	    CompInfoList compList;
-	    ComponentGroup compGroup;
+        std::string myroot = "root";
 
-	    DOMElement* gElem = static_cast<DOMElement*> (group->item(gindex));
+        /// loop for daqGroup nodes
+        for(int gindex = 0; gindex < (int)group->getLength(); gindex++ ) {
 
-	    std::string myKey;
+            CompInfoList compList;
+            ComponentGroup compGroup;
 
-	    std::string myKey0 = makeXPath(myroot, TAG_groups, 0); 
-	    myKey  = makeXPath(myKey0,  TAG_group, gindex);
+            DOMElement* gElem = static_cast<DOMElement*> (group->item(gindex));
 
-	    //std::cerr << "##### myKey: " << myKey << std::endl;
-	
-	    DOMAttr* attr = gElem->getAttributeNode(TAG_groupId);
-	    char* gid = XMLString::transcode(attr->getValue());
-	    std::string groupId = gid;
-	    std::cerr << "++++++ groupID: " << groupId << std::endl;
-	    XMLString::release(&gid);
-		
-	    compGroup.setGroupId(groupId);
+            std::string myKey;
 
-	    std::cerr << "  valu: " << XMLString::transcode(attr->getValue()) << std::endl;
+            std::string myKey0 = makeXPath(myroot, TAG_groups, 0);
+            myKey  = makeXPath(myKey0,  TAG_group, gindex);
 
-	    DOMElement*  ele  = (DOMElement*)group->item(gindex);
-	    DOMNodeList* comp = ele->getElementsByTagName(TAG_component);
+            DOMAttr* attr = gElem->getAttributeNode(TAG_groupId);
+            char* gid = XMLString::transcode(attr->getValue());
+            std::string groupId = gid;
+            if (m_debug) {
+                std::cerr << "++++++ groupID: " << groupId << std::endl;
+            }
+            XMLString::release(&gid);
+            compGroup.setGroupId(groupId);
+            if (m_debug) {
+                std::cerr << "  valu: "
+                          << XMLString::transcode(attr->getValue())
+                          << std::endl;
+            }
+            DOMElement*  ele  = (DOMElement*)group->item(gindex);
+            DOMNodeList* comp = ele->getElementsByTagName(TAG_component);
 
-	    int compNum = comp->getLength();
-	    m_comp_num += compNum;
+            int compNum = comp->getLength();
+            m_comp_num += compNum;
 
-	    /// loop for Component nodes
-	    for(int m = 0; m < compNum; m++){
-		ComponentInfoContainer compCont;
-		DOMElement* ele = (DOMElement*)comp->item(m);
-		// comp id
-		std::string key1;
-		if (isConfigure) {
-		    std::string key0 = makeXPath(myKey, TAG_components, 0);
-		    key1 = makeXPath(key0,  TAG_component, m);
-		    std::string key2 = makeXPath(key1,  TAG_compId);
-		    //std::cerr << "name: " << key2;
-		}
+            /// loop for Component nodes
+            for(int m = 0; m < compNum; m++){
+                ComponentInfoContainer compCont;
+                DOMElement* ele = (DOMElement*)comp->item(m);
+                // comp id
+                std::string key1;
+                if (isConfigure) {
+                    std::string key0 = makeXPath(myKey, TAG_components, 0);
+                    key1 = makeXPath(key0,  TAG_component, m);
+                    std::string key2 = makeXPath(key1,  TAG_compId);
+                    //std::cerr << "name: " << key2;
+                }
 
-		DOMAttr* cattr = ele->getAttributeNode(TAG_compId);
-		char* compId = XMLString::transcode(cattr->getValue());
-		std::cerr << "compId:" << compId << std::endl;
-		compCont.setId(compId);
+                DOMAttr* cattr = ele->getAttributeNode(TAG_compId);
+                char* compId = XMLString::transcode(cattr->getValue());
+                if (m_debug) {
+                    std::cerr << "compId:" << compId << std::endl;
+                }
+                compCont.setId(compId);
 
-		std::string addr = getElementByTagName(ele, TAG_compHostAddr, key1); ///get host address
-		std::string port = getElementByTagName(ele, TAG_compHostPort, key1); ///get host port
-		std::string inst = getElementByTagName(ele, TAG_compInstName, key1); ///get instance name
-		std::string exec = getElementByTagName(ele, TAG_compExecPath, key1); ///get comp exec. path
-		std::string conf = getElementByTagName(ele, TAG_compConfFile, key1); ///get rtc.conf path
-		std::string orde = getElementByTagName(ele, TAG_compStartOrd, key1); ///get start up order
-		compCont.setAddress(addr);
-		compCont.setPort(port);
-		compCont.setName(inst);
-		compCont.setExec(exec);
-		compCont.setConf(conf);
-		compCont.setStartupOrder(orde);
+                std::string addr = getElementByTagName(ele, TAG_compHostAddr, key1); ///get host address
+                std::string port = getElementByTagName(ele, TAG_compHostPort, key1); ///get host port
+                std::string inst = getElementByTagName(ele, TAG_compInstName, key1); ///get instance name
+                std::string exec = getElementByTagName(ele, TAG_compExecPath, key1); ///get comp exec. path
+                std::string conf = getElementByTagName(ele, TAG_compConfFile, key1); ///get rtc.conf path
+                std::string orde = getElementByTagName(ele, TAG_compStartOrd, key1); ///get start up order
+                compCont.setAddress(addr);
+                compCont.setPort(port);
+                compCont.setName(inst);
+                compCont.setExec(exec);
+                compCont.setConf(conf);
+                compCont.setStartupOrder(orde);
 
-		getElementsFromParent(ele, TAG_compInPort,  key1, groupId, &compCont); ///get inPorts
-		getElementsFromParent(ele, TAG_compOutPort, key1, groupId, &compCont); ///get outPorts
+                getElementsFromParent(ele, TAG_compInPort,  key1, groupId, &compCont); ///get inPorts
+                getElementsFromParent(ele, TAG_compOutPort, key1, groupId, &compCont); ///get outPorts
 
-		if (isConfigure) {
-		    std::string key3 = makeXPath(key1, TAG_params, 0);
-		    std::string mycompId = groupId + ":" + compId;
-		    getParams(ele, TAG_param, key3, mycompId, &compCont); ///get param
-		}
+                if (isConfigure) {
+                    std::string key3 = makeXPath(key1, TAG_params, 0);
+                    std::string mycompId = groupId + ":" + compId;
+                    getParams(ele, TAG_param, key3, mycompId, &compCont); ///get param
+                }
 
-		XMLString::release(&compId);
-		compList.push_back(compCont);
-	    } // for comp
-	    compGroup.setCompInfoList(compList);
-	    m_groupList.push_back(compGroup);
-	} // for group
-
+                XMLString::release(&compId);
+                compList.push_back(compCont);
+            } // for comp
+            compGroup.setCompInfoList(compList);
+            m_groupList.push_back(compGroup);
+        } // for group
     } catch(const XMLException& e) {
-	char* message = XMLString::transcode(e.getMessage());
-	std::cerr << message << std::endl;
-	XMLString::release(&message);
-	throw;
+        char* message = XMLString::transcode(e.getMessage());
+        std::cerr << "### ERROR: readConfFile" << std::endl;
+        std::cerr << message << std::endl;
+        XMLString::release(&message);
+        throw;
     } catch(const DOMException& e) {
-	char* message = XMLString::transcode(e.msg);
-	std::cerr << message << std::endl;
-	XMLString::release(&message);
-	throw;
+        char* message = XMLString::transcode(e.msg);
+        std::cerr << "### ERROR: readConfFile" << std::endl;
+        std::cerr << message << std::endl;
+        XMLString::release(&message);
+        throw;
     } catch(const SAXException& e) {
-	char* message = XMLString::transcode(e.getMessage());
-	std::cerr << message << std::endl;
-	XMLString::release(&message);
-	std::cerr << "### Check your config.xml file\n";
-	//throw;	
-	exit(1);
+        char* message = XMLString::transcode(e.getMessage());
+        std::cerr << "### ERROR: readConfFile" << std::endl;
+        std::cerr << message << std::endl;
+        XMLString::release(&message);
+        std::cerr << "### Check your config.xml file\n";
+        //throw;
+        exit(1);
     } catch (std::exception& e) {
-	std::cerr << e.what() << std::endl;
-	throw;
+        std::cerr << "### ERROR: readConfFile" << std::endl;;
+        std::cerr << e.what() << std::endl;
+        throw;
     } catch(...) {
-	std::cerr << "Unexpected Exception in ConfFileParser" << std::endl;
-	throw;
+        std::cerr << "### ERROR: readConfFile" << std::endl;;
+        std::cerr << "Unexpected Exception in ConfFileParser" << std::endl;
+        throw;
     }
 
     delete m_xercesDomParser;
     delete m_errHandler;
-    
-    XMLPlatformUtils::Terminate();
-    std::cerr << "XMLPlatformUtils::Terminate()\n";
 
-    std::cerr << "readConfFile() exit\n";
+    XMLPlatformUtils::Terminate();
+    if (m_debug) {
+        std::cerr << "XMLPlatformUtils::Terminate()\n";
+        std::cerr << "readConfFile() exit\n";
+    }
     return m_comp_num;
 }
 
@@ -283,18 +296,13 @@ int ConfFileParser::getElementsFromParent(
     int nodeLen = (signed)nodeList->getLength();
 
     for(int index = 0; index < nodeLen; index++) {
-	DOMElement* nodeEle = (DOMElement*)nodeList->item(index);
-	if (nodeEle) {
-	    DOMNode* myNode = nodeEle->getFirstChild();
-	    char *textCont = XMLString::transcode(myNode->getTextContent());
-	    if (m_debug) {
-		//std::cerr << "  inp:" << inp << std::endl;
-	    }
-	    std::string name = makeXPath(xpath, chName, index);
-	    //std::cerr << "name: " << name;
-	    //std::cerr << "  valu: " << textCont << std::endl;
-	    XMLString::release(&textCont);
-	}
+        DOMElement* nodeEle = (DOMElement*)nodeList->item(index);
+        if (nodeEle) {
+            DOMNode* myNode = nodeEle->getFirstChild();
+            char *textCont = XMLString::transcode(myNode->getTextContent());
+            std::string name = makeXPath(xpath, chName, index);
+            XMLString::release(&textCont);
+        }
     }
     return 0;
 }
@@ -306,43 +314,42 @@ int ConfFileParser::getElementsFromParent(
     DOMNodeList* nodeList = myEle->getElementsByTagName(chName);
     char* tagName = XMLString::transcode(chName);
     int nodeLen = (signed)nodeList->getLength();
-    //std::cerr << "$$$$ tagName: " << tagName << std::endl;
 
     for(int index = 0; index < nodeLen; index++) {
 
-	DOMElement* nodeEle = (DOMElement*)nodeList->item(index);
-	if (nodeEle) {
-	    DOMNode* myNode = nodeEle->getFirstChild();
-	    char* textCont = XMLString::transcode(myNode->getTextContent());
-	    std::string myport = textCont;
+        DOMElement* nodeEle = (DOMElement*)nodeList->item(index);
+        if (nodeEle) {
+            DOMNode* myNode = nodeEle->getFirstChild();
+            char* textCont = XMLString::transcode(myNode->getTextContent());
+            std::string myport = textCont;
 
-	    std::string name = makeXPath(xpath, chName, index);
-	    ///std::cerr << "name: " << name;
-	    ///std::cerr << "  valu: " << textCont << std::endl;
-	    if (strcmp(tagName, "inPort") == 0) {
-		char* from = XMLString::transcode(nodeEle->getAttributeNode(TAG_compFromOut)->getValue() );
-		///std::cerr << "#### from: " << XMLString::transcode(
-		///    nodeEle->getAttributeNode(TAG_compFromOut)->getValue() ) << std::endl;
-		///std::string inport  = gid + ":" + myport;
-		///std::string outfrom = gid + ":" + from;
-		std::string inport  = myport;
-		std::string outfrom = from;
-		///std::cerr << "$$$$$ outport: " << inport << std::endl;
-		compCont->setInport(inport);
-		compCont->setFromOutPort(outfrom);
-		XMLString::release(&from);
-	    }
-	    else if (strcmp(tagName, "outPort") == 0) {
-		///std::string outport = gid + ":" + myport;
-		std::string outport = myport;
-		///std::cerr << "$$$$$ outport: " << outport << std::endl;
-		compCont->setOutport(outport);
-	    }
-	    else {
-		std::cerr << "### ERROR: ConfFileParser::getElementsFromParent(): Bad Tag in configuration file\n";
-	    }
-	    XMLString::release(&textCont);
-	}//if
+            std::string name = makeXPath(xpath, chName, index);
+
+            if (strcmp(tagName, "inPort") == 0) {
+                char* from 
+                    = XMLString::transcode(nodeEle->getAttributeNode(TAG_compFromOut)->getValue() );
+                ///std::cerr << "#### from: " << XMLString::transcode(
+                ///    nodeEle->getAttributeNode(TAG_compFromOut)->getValue() ) << std::endl;
+                ///std::string inport  = gid + ":" + myport;
+                ///std::string outfrom = gid + ":" + from;
+                std::string inport  = myport;
+                std::string outfrom = from;
+                ///std::cerr << "$$$$$ outport: " << inport << std::endl;
+                compCont->setInport(inport);
+                compCont->setFromOutPort(outfrom);
+                XMLString::release(&from);
+            }
+            else if (strcmp(tagName, "outPort") == 0) {
+                ///std::string outport = gid + ":" + myport;
+                std::string outport = myport;
+                ///std::cerr << "$$$$$ outport: " << outport << std::endl;
+                compCont->setOutport(outport);
+            }
+            else {
+                std::cerr << "### ERROR: ConfFileParser::getElementsFromParent(): Bad Tag in configuration file\n";
+            }
+            XMLString::release(&textCont);
+        }//if
     }//for
 
     //m_paramList.push_back(compParam);
@@ -351,8 +358,7 @@ int ConfFileParser::getElementsFromParent(
     return 0;
 }
 
-int ConfFileParser::getParams(xercesc::DOMElement* myEle, XMLCh* chName, std::string xpath, 
-			      std::string compId, ComponentInfoContainer* compCont)
+int ConfFileParser::getParams(xercesc::DOMElement* myEle, XMLCh* chName, std::string xpath, std::string compId, ComponentInfoContainer* compCont)
 {
     DOMNodeList* nodeList = myEle->getElementsByTagName(chName);
     char* tagName = XMLString::transcode(chName);
@@ -368,58 +374,58 @@ int ConfFileParser::getParams(xercesc::DOMElement* myEle, XMLCh* chName, std::st
     int pindex = 0;
     for(int index = 0; index < nodeLen; index++) {
 
-	DOMElement* nodeEle = (DOMElement*)nodeList->item(index);
+        DOMElement* nodeEle = (DOMElement*)nodeList->item(index);
 
-	if (nodeEle) {
-	    DOMNodeList* myNodes = nodeEle->getChildNodes();
-	    if( myNodes->getLength() == 0 ) {
-		std::cerr << "#### ERROR: ConfFileParser::getParams(): empty node found\n";
-		std::cerr << "#### check config.xml file\n";
-		throw;
-	    }
-	    DOMNode* myNode = nodeEle->getFirstChild();
-	    char* textCont = XMLString::transcode(myNode->getTextContent());
+        if (nodeEle) {
+            DOMNodeList* myNodes = nodeEle->getChildNodes();
+            if( myNodes->getLength() == 0 ) {
+                std::cerr << "#### ERROR: ConfFileParser::getParams(): empty node found\n";
+                std::cerr << "#### check config.xml file\n";
+                throw;
+            }
+            DOMNode* myNode = nodeEle->getFirstChild();
+            char* textCont = XMLString::transcode(myNode->getTextContent());
 
-	    std::string val = textCont;
-	    std::string name = makeXPath(xpath, chName, index);
+            std::string val = textCont;
+            std::string name = makeXPath(xpath, chName, index);
 
-	    if (strcmp(tagName, "param") == 0) {
-		char* paramid ;
+            if (strcmp(tagName, "param") == 0) {
+                char* paramid ;
 
-		if (nodeEle->getAttributeNode(TAG_paramId) != 0) {
-		    paramid = XMLString::transcode(nodeEle->getAttributeNode(TAG_paramId)->getValue() );
-		}
-		else {
-		    std::cerr << "### ERROR: Bad attribute name in param element\n";
-		    std::cerr << "### Check the configuration file\n";
-		    throw;
-		}
+                if (nodeEle->getAttributeNode(TAG_paramId) != 0) {
+                    paramid = XMLString::transcode(nodeEle->getAttributeNode(TAG_paramId)->getValue() );
+                }
+                else {
+                    std::cerr << "### ERROR: Bad attribute name in param element\n";
+                    std::cerr << "### Check the configuration file\n";
+                    throw;
+                }
 
-		std::string paramId = paramid;
-		std::string name1   = name + "/@pid";
+                std::string paramId = paramid;
+                std::string name1   = name + "/@pid";
 
-		if (m_debug) {
-		    std::cerr << "name1: " << name1;
-		    std::cerr << " valu: " << paramid << std::endl;
-		    std::cerr << "name2: " << name;
-		    std::cerr << " valu: " << textCont << std::endl;
-		}
-		nvList[pindex].name  = name1.c_str();
-		nvList[pindex].value = paramId.c_str();
-		nvList[pindex + 1].name  = name.c_str();
-		nvList[pindex + 1].value = val.c_str();
+                if (m_debug) {
+                    std::cerr << "name1: " << name1;
+                    std::cerr << " valu: " << paramid << std::endl;
+                    std::cerr << "name2: " << name;
+                    std::cerr << " valu: " << textCont << std::endl;
+                }
+                nvList[pindex].name  = name1.c_str();
+                nvList[pindex].value = paramId.c_str();
+                nvList[pindex + 1].name  = name.c_str();
+                nvList[pindex + 1].value = val.c_str();
 
-		//std::cerr << "### pindex = " << pindex << std::endl;
+                //std::cerr << "### pindex = " << pindex << std::endl;
 
-		pindex += 2;
-		XMLString::release(&paramid);
-	    }
-	    else {
-		std::cerr << "### ERROR: ConfFileParser::getParameters(): Bad Tag in conf file\n";
-	    }
-	    compParam.setList(nvList);
-	    XMLString::release(&textCont);
-	}//if
+                pindex += 2;
+                XMLString::release(&paramid);
+            }
+            else {
+                std::cerr << "### ERROR: ConfFileParser::getParameters(): Bad Tag in conf file\n";
+            }
+            compParam.setList(nvList);
+            XMLString::release(&textCont);
+        }//if
     }//for
     m_paramList.push_back(compParam);
     XMLString::release(&tagName);
@@ -432,17 +438,17 @@ std::string ConfFileParser::makeXPath(std::string path1, XMLCh* path2, int index
 
     std::stringstream xpath;
     if (path1 == "root") {
-	if (index == -1) {	
-	    xpath << "@" << cpath2;
-	} else {
-	    xpath << cpath2 << "[" << index << "]";
-	}
+        if (index == -1) {
+            xpath << "@" << cpath2;
+        } else {
+            xpath << cpath2 << "[" << index << "]";
+        }
     } else {
-	if (index == -1) {	
-	    xpath << path1 << "/" << "@" << cpath2;
-	} else {
-	    xpath << path1 << "/" << cpath2 << "[" << index << "]";
-	}
+        if (index == -1) {
+            xpath << path1 << "/" << "@" << cpath2;
+        } else {
+            xpath << path1 << "/" << cpath2 << "[" << index << "]";
+        }
     }
     XMLString::release(&cpath2);
     //std::cerr << "name: " << xpath.str() << std::endl;
@@ -455,9 +461,9 @@ std::string ConfFileParser::makeXPath(std::string path1, XMLCh* path2)
 
     std::stringstream xpath;
     if (path1 == "root") {
-	xpath << "@" << cpath2;
+        xpath << "@" << cpath2;
     } else {
-	xpath << path1 << "/" << "@" << cpath2;
+        xpath << path1 << "/" << "@" << cpath2;
     }
     XMLString::release(&cpath2);
     //std::cerr << "name: " << xpath.str() << std::endl;
@@ -470,10 +476,10 @@ std::string ConfFileParser::makeXPath(std::string path1, DOMAttr* path2)
 
     std::stringstream xpath;
     if (path1 == "root") {
-	xpath << "@" << cpath2;
+        xpath << "@" << cpath2;
 
     } else {
-	xpath << path1 << "/" << "@" << cpath2;
+        xpath << path1 << "/" << "@" << cpath2;
     }
     XMLString::release(&cpath2);
     //std::cerr << "name: " << xpath.str() << std::endl;
@@ -484,23 +490,22 @@ std::string ConfFileParser::makeXPath(std::string path1, std::string path2, int 
 {
     std::stringstream xpath;
     if (path1 == "root") {
-	if (index == -1) {	
-	    xpath << "@" << path2;
-	} else {
-	    xpath << path2 << "[" << index << "]";
-	}
+        if (index == -1) {
+            xpath << "@" << path2;
+        } else {
+            xpath << path2 << "[" << index << "]";
+        }
 
     } else {
-	if (index == -1) {	
-	    xpath << path1 << "/" << "@" << path2;
-	} else {
-	    xpath << path1 << "/" << path2 << "[" << index << "]";
-	}
+        if (index == -1) {
+            xpath << path1 << "/" << "@" << path2;
+        } else {
+            xpath << path1 << "/" << path2 << "[" << index << "]";
+        }
     }
     //std::cerr << "name: " << xpath.str();
     return xpath.str();
 }
-
 
 std::string ConfFileParser::getElementByTagName(DOMElement* ele, XMLCh* chName, std::string xpath)
 {
@@ -508,22 +513,19 @@ std::string ConfFileParser::getElementByTagName(DOMElement* ele, XMLCh* chName, 
     DOMNodeList* list = ele->getElementsByTagName(chName);
     DOMElement* ch_ele = (DOMElement*)list->item(0);
     if (ch_ele) {
-	DOMNode* ch_node = ch_ele->getFirstChild();
-	char *ch = XMLString::transcode(ch_node->getTextContent());
-	if (m_debug) {
-	    //std::cerr << "  ch:" << ch << std::endl;
-	}
+        DOMNode* ch_node = ch_ele->getFirstChild();
+        char *ch = XMLString::transcode(ch_node->getTextContent());
+        if (m_debug) {
+            //std::cerr << "  ch:" << ch << std::endl;
+        }
 
-	int index = 0;
-	std::string name = makeXPath(xpath, chName, index);
-	//std::cerr << "name: " << name;
-	//std::cerr << "  valu: " << ch   << std::endl;
-	val = ch;
-	XMLString::release(&ch);
+        int index = 0;
+        std::string name = makeXPath(xpath, chName, index);
+        val = ch;
+        XMLString::release(&ch);
     }
     return val;
 }
-
 
 CompGroupList ConfFileParser::getGroupList()
 {
@@ -540,34 +542,34 @@ ParamList ConfFileParser::getParamList()
    return m_paramList;
 }
 
-
 void ConfFileParser::setList(std::vector<NameValue>& list, char* name, char* value)
 {
-	char* name2 = (char*)malloc(strlen(name)+1);
-	strcpy(name2, name);
+    char* name2 = (char*)malloc(strlen(name)+1);
+    strcpy(name2, name);
 
-	char* value2 = (char*)malloc(strlen(value)+1);
-	strcpy(value2, value);
-	
-	NameValue nv;
-	nv.name = name2;
-	nv.value = value2;
-	list.push_back(nv);
+    char* value2 = (char*)malloc(strlen(value)+1);
+    strcpy(value2, value);
+
+    NameValue nv;
+    nv.name = name2;
+    nv.value = value2;
+    list.push_back(nv);
 }
 
 void ConfFileParser::setSeq(std::vector<NameValue> vec, NVList& seq)
 {
-	if (m_debug) {
-		std::cerr << "setSeq: enter" << std::endl;
-	}
-	int size = vec.size();
+    if (m_debug) {
+        std::cerr << "setSeq: enter" << std::endl;
+    }
+    int size = vec.size();
 
-	for (int i = 0; i < size; ++i) {
-		NameValue nv = vec.at(i);
-		seq[i].name =  nv.name;
-		seq[i].value = nv.value;
-		if (m_debug) {
-			std::cerr << "  nv( " << seq[i].name << ", " << seq[i].value << ")"<< std::endl;
-		}
-	}
+    for (int i = 0; i < size; ++i) {
+        NameValue nv = vec.at(i);
+        seq[i].name =  nv.name;
+        seq[i].value = nv.value;
+        if (m_debug) {
+            std::cerr << "  nv( " << seq[i].name << ", " << seq[i].value 
+                      << ")"<< std::endl;
+        }
+    }
 }
