@@ -4,7 +4,7 @@
  * @brief 
  * @date 
  *
- * $Id$
+ * $Id: SkeletonSourceComp.cpp,v f0c54bd8bbea 2010/07/12 21:37:27 hiroshi $
  */
 
 #include <rtm/Manager.h>
@@ -32,30 +32,30 @@ void MyModuleInit(RTC::Manager* manager)
     portlist = comp->get_ports();
 
     for (CORBA::ULong i(0), n(portlist->length()); i < n; ++i) {
-    PortService_ptr port;
-    port = (*portlist)[i];
-    std::cerr << "================================================="
-          << std::endl;
-    std::cerr << "Port" << i << " (name): ";
-    std::cerr << port->get_port_profile()->name << std::endl;
-    std::cerr << "-------------------------------------------------"
-          << std::endl;    
-    RTC::PortInterfaceProfileList iflist;
-    iflist = port->get_port_profile()->interfaces;
-    
-    for (CORBA::ULong i(0), n(iflist.length()); i < n; ++i) {
-        std::cerr << "I/F name: ";
-        std::cerr << iflist[i].instance_name << std::endl;
-        std::cerr << "I/F type: ";
-        std::cerr << iflist[i].type_name << std::endl;
-        const char* pol;
-        pol = iflist[i].polarity == 0 ? "PROVIDED" : "REQUIRED";
-        std::cerr << "Polarity: " << pol << std::endl;
+        PortService_ptr port;
+        port = (*portlist)[i];
+        std::cerr << "================================================="
+              << std::endl;
+        std::cerr << "Port" << i << " (name): ";
+        std::cerr << port->get_port_profile()->name << std::endl;
+        std::cerr << "-------------------------------------------------"
+              << std::endl;    
+        RTC::PortInterfaceProfileList iflist;
+        iflist = port->get_port_profile()->interfaces;
+
+        for (CORBA::ULong i(0), n(iflist.length()); i < n; ++i) {
+            std::cerr << "I/F name: ";
+            std::cerr << iflist[i].instance_name << std::endl;
+            std::cerr << "I/F type: ";
+            std::cerr << iflist[i].type_name << std::endl;
+            const char* pol;
+            pol = iflist[i].polarity == 0 ? "PROVIDED" : "REQUIRED";
+            std::cerr << "Polarity: " << pol << std::endl;
         }
-    std::cerr << "- properties -" << std::endl;
-    NVUtil::dump(port->get_port_profile()->properties);
-    std::cerr << "-------------------------------------------------" 
-          << std::endl;
+        std::cerr << "- properties -" << std::endl;
+        NVUtil::dump(port->get_port_profile()->properties);
+        std::cerr << "-------------------------------------------------" 
+                  << std::endl;
     }
 
     ExecutionContextList_var eclist;
