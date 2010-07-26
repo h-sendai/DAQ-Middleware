@@ -34,6 +34,7 @@ static const char* samplereader_spec[] =
 SampleReader::SampleReader(RTC::Manager* manager)
     : DAQMW::DaqComponentBase(manager),
       m_OutPort("samplereader_out", m_out_data),
+      m_recv_byte_size(0),
       m_out_status(BUF_SUCCESS),
 
       m_debug(false)
@@ -101,14 +102,14 @@ int SampleReader::parse_params(::NVList* list)
 
         if ( sname == "srcAddr" ) {
             srcAddrSpecified = true;
-            if (m_debug) { 
+            if (m_debug) {
                 std::cerr << "source addr: " << svalue << std::endl;
             }
             m_srcAddr = svalue;
         }
         if ( sname == "srcPort" ) {
             srcPortSpecified = true;
-            if (m_debug) { 
+            if (m_debug) {
                 std::cerr << "source port: " << svalue << std::endl;
             }
             char* offset;
@@ -258,22 +259,20 @@ int SampleReader::daq_run()
         return 0;
     }
 
-    unsigned int recv_byte_size = 0;
-
     if (m_out_status == BUF_SUCCESS) {   // previous OutPort.write() successfully done
-        recv_byte_size = read_data_from_detectors();
-        if (recv_byte_size > 0) {
-             set_data(recv_byte_size, m_loop); // set data to OutPort Buffer
+        int ret = read_data_from_detectors();
+        if (ret > 0) {
+            m_recv_byte_size = ret;
+            set_data(m_recv_byte_size, m_loop); // set data to OutPort Buffer
         }
     }
 
     if (write_OutPort() < 0) {
-        std::cerr << ".";
         ;     // Timeout. do nothing.
     }
     else {    // OutPort write successfully done
-        m_loop++;                        // increase sequence num.
-        m_total_size += recv_byte_size;  // increase total data byte size
+        m_loop++;                          // increase sequence num.
+        m_total_size += m_recv_byte_size;  // increase total data byte size
     }
 
     return 0;

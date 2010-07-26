@@ -62,6 +62,7 @@ private:
     static const int EVENT_BYTE_SIZE  = 8;    // event byte size
     static const int SEND_BUFFER_SIZE = 1024; //
     unsigned char m_data[SEND_BUFFER_SIZE];
+    unsigned int  m_recv_byte_size;
 
     BufferStatus m_out_status;
 
