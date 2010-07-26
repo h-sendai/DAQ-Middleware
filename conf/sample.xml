@@ -45,8 +45,7 @@
                     <outPorts>
                     </outPorts>
                     <params>
-                        <param pid="samplingRate">dispatcher_out2/10</param>
-                        <param pid="condition_file_name">/home/daq/bin/condition.json</param>
+                        <param pid="update_rate">100</param>
                     </params>
                 </component>
             </components>
