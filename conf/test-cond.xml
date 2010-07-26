@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="utf-8" ?>
-<condition>
-        <EchoMonitor>
-            <histogram_n_bin>100</histgogram_n_bin>
-            <monitor_update_rate>10</monitor_update_rate>
-        </EchoMonitor>
-</condition>

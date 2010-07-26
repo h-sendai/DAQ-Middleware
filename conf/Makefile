@@ -5,13 +5,6 @@ MODE = 0644
 
 FILES += condition.xml
 FILES += config.xsd
-FILES += example1.xml
-FILES += example2.xml
-FILES += example3.xml
-FILES += example4.xml
-FILES += myconfig.xml
-FILES += test-cond.xml
-FILES += test-mlf.xml
 FILES += sample.xml
 FILES += skel.xml
 
