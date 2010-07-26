@@ -36,14 +36,13 @@ SampleMonitor::SampleMonitor(RTC::Manager* manager)
     : DAQMW::DaqComponentBase(manager),
       m_InPort("samplemonitor_in",   m_in_data),
       m_in_status(BUF_SUCCESS),
-
       m_canvas(0),
       m_hist(0),
       m_bin(0),
       m_min(0),
       m_max(0),
-      m_monitor_update_rate(10),
-
+      m_monitor_update_rate(100),
+      m_event_byte_size(0),
       m_debug(false)
 {
     // Registration: InPort/OutPort/Service
@@ -54,12 +53,6 @@ SampleMonitor::SampleMonitor(RTC::Manager* manager)
     init_command_port();
     init_state_table();
     set_comp_name("SAMPLEMONITOR");
-
-    //init histograms
-    m_hist = new TH1F* [CH_NUM];
-    for (int i = 0; i < CH_NUM; i++) {
-        m_hist[i] = 0;
-    }
 }
 
 SampleMonitor::~SampleMonitor()
@@ -127,11 +120,8 @@ int SampleMonitor::daq_unconfigure()
         m_canvas = 0;
     }
 
-    for (int i = 0; i < CH_NUM; i++){
-        if (m_hist[i]) {
-            delete m_hist[i];
-            m_hist[i] = 0;
-        }
+    if (m_hist) {
+        delete m_hist;
     }
     return 0;
 }
@@ -147,15 +137,12 @@ int SampleMonitor::daq_start()
         delete m_canvas;
         m_canvas = 0;
     }
-    m_canvas = new TCanvas("c1", "histos", 0, 0, 800, 400);
-    m_canvas->Divide(4,2);
+    m_canvas = new TCanvas("c1", "histos", 0, 0, 600, 400);
 
     ////////////////       HISTOS      ///////////////////
-    for (int i = 0; i < CH_NUM; i++){
-        if (m_hist[i]) {
-            delete m_hist[i];
-            m_hist[i] = 0;
-        }
+    if (m_hist) {
+        delete m_hist;
+        m_hist = 0;
     }
 
     int m_hist_bin = 100;
@@ -166,15 +153,12 @@ int SampleMonitor::daq_start()
     gStyle->SetStatH(0.2);
     gStyle->SetOptStat("em");
 
-    for (int i = 0; i < CH_NUM; i++) {
-        m_hist[i] = new TH1F(Form("h%d", i), Form("h#%d",i), m_hist_bin,
-                             m_hist_min, m_hist_max);
-        m_hist[i]->GetXaxis()->SetNdivisions(5);
-        m_hist[i]->GetYaxis()->SetNdivisions(4);
-        m_hist[i]->GetXaxis()->SetLabelSize(0.07);
-        m_hist[i]->GetYaxis()->SetLabelSize(0.06);
-    }
-    std::cerr << "daq_start exit" << std::endl;
+    m_hist = new TH1F("hist", "hist", m_hist_bin, m_hist_min, m_hist_max);
+    m_hist->GetXaxis()->SetNdivisions(5);
+    m_hist->GetYaxis()->SetNdivisions(4);
+    m_hist->GetXaxis()->SetLabelSize(0.07);
+    m_hist->GetYaxis()->SetLabelSize(0.06);
+
     return 0;
 }
 
@@ -210,26 +194,34 @@ int SampleMonitor::reset_InPort()
     return 0;
 }
 
-int SampleMonitor::decode_data(struct sampleData* mydata, int size)
+int SampleMonitor::decode_data(const unsigned char* mydata)
 {
-    for (int i = 0; i < size/(int)sizeof(struct sampleData); i++) {
-        if (m_debug) {
-            std::cerr << "mydata.magic: " << std::hex << (int)mydata->magic
-                      << std::endl;
-            std::cerr << "mydata.format_ver: " << std::hex
-                      << (int)mydata->format_ver << std::endl;
-            std::cerr << "mydata.module_num: " << std::hex
-                      << (int)mydata->module_num << std::endl;
-            std::cerr << "mydata.reserved: " << (int)mydata->reserved
-                      << std::endl;
-            std::cerr << "mydata.data: " << std::dec
-                      << (int)ntohl(mydata->data)  << std::endl;
-        }
+    m_sampleData.magic      = mydata[0];
+    m_sampleData.format_ver = mydata[1];
+    m_sampleData.module_num = mydata[2];
+    m_sampleData.reserved   = mydata[3];
+    unsigned int netdata    = *(unsigned int*)&mydata[4];
+    m_sampleData.data       = ntohl(netdata);
 
-        float fdata = ntohl(mydata->data)/1000.0; // 1000 times value is received
-        m_hist[(int)mydata->module_num]->Fill(fdata);
+    if (m_debug) {
+        std::cerr << "magic: "      << std::hex << (int)m_sampleData.magic      << std::endl;
+        std::cerr << "format_ver: " << std::hex << (int)m_sampleData.format_ver << std::endl;
+        std::cerr << "module_num: " << std::hex << (int)m_sampleData.module_num << std::endl;
+        std::cerr << "reserved: "   << std::hex << (int)m_sampleData.reserved   << std::endl;
+        std::cerr << "data: "       << std::dec << (int)m_sampleData.data       << std::endl;
+    }
 
-        mydata++;
+    return 0;
+}
+
+int SampleMonitor::fill_data(const unsigned char* mydata, const int size)
+{
+    for (int i = 0; i < size/(int)ONE_EVENT_SIZE; i+=(int)ONE_EVENT_SIZE) {
+        decode_data(mydata);
+        float fdata = m_sampleData.data/1000.0; // 1000 times value is received
+        m_hist->Fill(fdata);
+
+        mydata+=ONE_EVENT_SIZE;
     }
     return 0;
 }
@@ -275,27 +267,24 @@ int SampleMonitor::daq_run()
     }
 
     check_header_footer(m_in_data, recv_byte_size); // check header and footer
-    unsigned int event_byte_size = get_event_size(recv_byte_size);
-    //std::cerr << "event_byte_size:" << event_byte_size << std::endl;
+    m_event_byte_size = get_event_size(recv_byte_size);
 
     /////////////  Write component main logic here. /////////////
-    // online_analyze();
-    unsigned char mydata[1024];
-    memcpy(&mydata[0], &m_in_data.data[HEADER_BYTE_SIZE], event_byte_size);
+    memcpy(&m_recv_data[0], &m_in_data.data[HEADER_BYTE_SIZE], m_event_byte_size);
 
-    decode_data((struct sampleData*)&mydata[0], event_byte_size);
+    fill_data(&m_recv_data[0], m_event_byte_size);
 
+    if(m_monitor_update_rate == 0) {
+        m_monitor_update_rate = 1000;
+    }
     if((m_loop % m_monitor_update_rate) == 0) {
-        for (int i = 0; i < 8; i++) {
-            m_canvas->cd(i + 1);
-            m_hist[i]->Draw();
-        }
+        m_hist->Draw();
         m_canvas->Update();
     }
     /////////////////////////////////////////////////////////////
 
-    m_loop++;                            // increase sequence num.
-    m_total_size += event_byte_size;     // increase total data byte size
+    m_loop++;                              // increase sequence num.
+    m_total_size += m_event_byte_size;     // increase total data byte size
 
     return 0;
 }

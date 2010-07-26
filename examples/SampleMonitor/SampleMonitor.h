@@ -65,19 +65,21 @@ private:
 
     unsigned int read_InPort();
     //int online_analyze();
-    int decode_data(struct sampleData* mydata, int size);
+    int decode_data(const unsigned char* mydata);
+    int fill_data(const unsigned char* mydata, const int size);
 
     BufferStatus m_in_status;
 
     ////////// ROOT Histogram //////////
     TCanvas *m_canvas;
-    TH1F   **m_hist;
+    TH1F    *m_hist;
     int      m_bin;
     double   m_min;
     double   m_max;
     int      m_monitor_update_rate;
-
-    static const int CH_NUM = 8;
+    unsigned char m_recv_data[4096];
+    unsigned int  m_event_byte_size;
+    struct sampleData m_sampleData;
 
     bool m_debug;
 };
