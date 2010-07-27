@@ -44,18 +44,16 @@ namespace DAQMW
               m_runNumber(0),
               m_eventByteSize(0),
               m_loop(0),
-              m_total_event(0),
-              m_total_size(0),
-              m_debug(false),
+              m_totalEventNum(0),
+              m_totalDataSize(0),
               m_trans_lock(false),
               m_DAQServicePort("DAQService"),
               m_command(CMD_NOP),
               m_state(LOADED),
               m_state_prev(LOADED),
-
               m_isOnError(false),
-              m_isTimerAlarm(false)
-
+              m_isTimerAlarm(false),
+              m_debug(false)
         {
             mytimer = new Timer(STATUS_CYCLE_SEC);
         }
@@ -70,23 +68,13 @@ namespace DAQMW
     protected:
 
         DAQServiceSVC_impl m_daq_service0;
-        std::string m_comp_name;
-
         Status m_status;
-        unsigned int m_runNumber;
-        unsigned m_eventByteSize;
-        unsigned long long m_loop;
-        unsigned long long m_total_event;
-        unsigned long long m_total_size;
-
-        bool      m_debug;
 
         static const unsigned int  HEADER_BYTE_SIZE = 8;
         static const unsigned int  FOOTER_BYTE_SIZE = 8;
         static const unsigned char HEADER_MAGIC     = 0xe7;
         static const unsigned char FOOTER_MAGIC     = 0xcc;
         static const unsigned int  EVENT_BUF_OFFSET = HEADER_BYTE_SIZE;
-
 
         /**
          *  The data structure transferring between DAQ-Components is
@@ -104,7 +92,7 @@ namespace DAQMW
          *  Footer        0xcc   0xcc   reserved  reserved seq(24:31) seq(16:23) seq(8:15) seq(0:7)
          */
 
-        virtual int set_header(unsigned char* header, unsigned data_byte_size) {
+        virtual int set_header(unsigned char* header, unsigned int data_byte_size) {
             header[0] = HEADER_MAGIC;
             header[1] = HEADER_MAGIC;
             header[2] = 0;
@@ -116,7 +104,7 @@ namespace DAQMW
             return 0;
         }
 
-        virtual int set_footer(unsigned char* footer, unsigned sequence_num)
+        virtual int set_footer(unsigned char* footer, unsigned long long sequence_num)
         {
             footer[0] = FOOTER_MAGIC;
             footer[1] = FOOTER_MAGIC;
@@ -129,7 +117,7 @@ namespace DAQMW
             return 0;
         }
 
-        bool check_header(unsigned char* header, unsigned received_byte)
+        bool check_header(unsigned char* header, unsigned int received_byte)
         {
             bool ret = false;
 
@@ -155,7 +143,7 @@ namespace DAQMW
             return ret;
         }
 
-        bool check_footer(unsigned char* footer, unsigned loop_cnt)
+        bool check_footer(unsigned char* footer, unsigned long long loop_cnt)
         {
             bool ret = false;
             if (footer[0] == FOOTER_MAGIC && footer[1] == FOOTER_MAGIC) {
@@ -191,7 +179,7 @@ namespace DAQMW
                 header[i] = in_data.data[i];
             }
             if (check_header(header, event_byte_size) == false) {
-                std::cerr << "### ERROR: header invalid @" << m_loop
+                std::cerr << "### ERROR: header invalid in loop" << m_loop
                           << std::endl;
                 fatal_error_report(FatalType::HEADER_DATA_MISMATCH);
             }
@@ -225,6 +213,74 @@ namespace DAQMW
         {
             m_comp_name = name;
             return 0;
+        }
+
+        int set_run_number(unsigned int runNumber)
+        {
+            m_runNumber = runNumber;
+            return 0;
+        }
+
+        unsigned int get_run_number()
+        {
+            return m_runNumber;
+        }
+
+        int set_event_byte_size(unsigned int eventByteSize)
+        {
+            m_eventByteSize = eventByteSize;
+            return 0;
+        }
+
+        int inc_sequence_num()
+        {
+            m_loop++;
+            return 0;
+        }
+
+        int reset_sequence_num()
+        {
+            m_loop = 0;
+            return 0;
+        }
+
+        unsigned long long get_sequence_num()
+        {
+            return m_loop;
+        }
+
+        int inc_total_data_size(unsigned int byteSize)
+        {
+            m_totalDataSize += byteSize;
+            return 0;
+        }
+
+        int reset_total_data_size()
+        {
+            m_totalDataSize = 0;
+            return 0;
+        }
+
+        unsigned long long get_total_byte_size()
+        {
+            return m_totalDataSize;
+        }
+
+        int inc_total_event_num(unsigned int eventNum)
+        {
+            m_totalEventNum += eventNum;
+            return 0;
+        }
+
+        int reset_total_event_num()
+        {
+            m_totalEventNum = 0;
+            return 0;
+        }
+
+        unsigned long long get_total_event_num()
+        {
+            return m_totalEventNum;
         }
 
         bool check_trans_lock(){
@@ -498,7 +554,7 @@ namespace DAQMW
                         std::cerr << "### caught daq exp:" << e.what() << std::endl;
                     }
                     catch(...) {
-                        std::cerr << "---- caught exception on DaqComponentBase\n";
+                        std::cerr << "### caught unknown exception on DaqComponentBase\n";
                         return ret;
                     }
                     clockwork_status_report();
@@ -510,11 +566,30 @@ namespace DAQMW
             return ret;
         } /// daq_do()
 
+        int set_debug_on()
+        {
+            m_debug = true;
+            return 0;
+        }
+
+        int set_debug_off()
+        {
+            m_debug = false;
+            return 0;
+        }
+
     private:
         static const int DAQ_CMD_SIZE      = 10;
         static const int DAQ_STATE_SIZE    =  6;
         static const int DAQ_IDLE_TIME_SEC =  1;
         static const int STATUS_CYCLE_SEC  =  2;
+
+        std::string m_comp_name;
+        unsigned int m_runNumber;
+        unsigned int m_eventByteSize;
+        unsigned long long m_loop;
+        unsigned long long m_totalEventNum;
+        unsigned long long m_totalDataSize;
 
         bool m_trans_lock;
 
@@ -528,8 +603,9 @@ namespace DAQMW
 
         std::string m_err_message;
 
-        bool      m_isOnError;
-        bool      m_isTimerAlarm;
+        bool m_isOnError;
+        bool m_isTimerAlarm;
+        bool m_debug;
 
         typedef int (DAQMW::DaqComponentBase::*DAQFunc)();
 
@@ -561,7 +637,7 @@ namespace DAQMW
 
         int daq_base_unconfigure()
         {
-            m_total_size = 0;
+            m_totalDataSize = 0;
             set_status(COMP_WORKING);
             daq_unconfigure();
             return 0;
@@ -569,7 +645,7 @@ namespace DAQMW
 
         int daq_base_start()
         {
-            m_total_size = 0;
+            m_totalDataSize = 0;
             m_loop = 0;
             set_status(COMP_WORKING);
             daq_start();
@@ -587,7 +663,7 @@ namespace DAQMW
             set_status(COMP_WORKING);
             daq_stop();
 
-            std::cerr << "event byte size = " << m_total_size << std::endl;
+            std::cerr << "event byte size = " << m_totalDataSize << std::endl;
             return 0;
         }
 
@@ -633,8 +709,8 @@ namespace DAQMW
             Status* mystatus = new Status;
             mystatus->comp_name = CORBA::string_dup(m_comp_name.c_str());
             mystatus->state = m_state;
-            ///mystatus->event_num = m_total_event;
-            mystatus->event_size = m_total_size;
+            ///mystatus->event_num = m_totalEventNum;
+            mystatus->event_size = m_totalDataSize;
             mystatus->comp_status = comp_status;
 
             m_daq_service0.setStatus(*mystatus);
