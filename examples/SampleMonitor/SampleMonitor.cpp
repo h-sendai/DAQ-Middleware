@@ -247,6 +247,7 @@ unsigned int SampleMonitor::read_InPort()
     else {
         recv_byte_size = m_in_data.data.length();
     }
+
     if (m_debug) {
         std::cerr << "m_in_data.data.length():" << recv_byte_size
                   << std::endl;
