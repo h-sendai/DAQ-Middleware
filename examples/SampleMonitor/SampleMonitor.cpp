@@ -247,7 +247,6 @@ unsigned int SampleMonitor::read_InPort()
     else {
         recv_byte_size = m_in_data.data.length();
     }
-
     if (m_debug) {
         std::cerr << "m_in_data.data.length():" << recv_byte_size
                   << std::endl;
@@ -278,14 +277,15 @@ int SampleMonitor::daq_run()
     if(m_monitor_update_rate == 0) {
         m_monitor_update_rate = 1000;
     }
-    if((m_loop % m_monitor_update_rate) == 0) {
+
+    unsigned long sequence_num = get_sequence_num();
+    if((sequence_num % m_monitor_update_rate) == 0) {
         m_hist->Draw();
         m_canvas->Update();
     }
     /////////////////////////////////////////////////////////////
-
-    m_loop++;                              // increase sequence num.
-    m_total_size += m_event_byte_size;     // increase total data byte size
+    inc_sequence_num();                      // increase sequence num.
+    inc_total_data_size(m_event_byte_size);  // increase total data byte size
 
     return 0;
 }

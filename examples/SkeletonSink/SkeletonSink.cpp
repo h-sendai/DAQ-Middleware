@@ -171,7 +171,6 @@ unsigned int SkeletonSink::read_InPort()
     else {
         recv_byte_size = m_in_data.data.length();
     }
-
     if (m_debug) {
         std::cerr << "m_in_data.data.length():" << recv_byte_size
                   << std::endl;
@@ -198,8 +197,8 @@ int SkeletonSink::daq_run()
     // online_analyze();
     /////////////////////////////////////////////////////////////
 
-    m_loop++;                            // increase sequence num.
-    m_total_size += event_byte_size;     // increase total data byte size
+    inc_sequence_num();                       // increase sequence num.
+    inc_total_data_size(event_byte_size);     // increase total data byte size
 
     return 0;
 }

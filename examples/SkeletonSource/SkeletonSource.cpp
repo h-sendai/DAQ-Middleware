@@ -195,7 +195,8 @@ int SkeletonSource::daq_run()
     if (m_out_status == BUF_SUCCESS) {   // previous OutPort.write() successfully done
         recv_byte_size = read_data_from_detectors();
         if (recv_byte_size > 0) {
-             set_data(recv_byte_size, m_loop); // set data to OutPort Buffer
+            unsigned long sequence_num = get_sequence_num();
+            set_data(recv_byte_size, sequence_num); // set data to OutPort Buffer
         }
     }
 
@@ -203,8 +204,8 @@ int SkeletonSource::daq_run()
         ;     // Timeout. do nothing.
     }
     else {    // OutPort write successfully done
-        m_loop++;                        // increase sequence num.
-        m_total_size += recv_byte_size;  // increase total data byte size
+        inc_sequence_num();                   // increase sequence num.
+        inc_total_data_size(recv_byte_size);  // increase total data byte size
     }
 
     return 0;

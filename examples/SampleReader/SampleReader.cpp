@@ -263,7 +263,8 @@ int SampleReader::daq_run()
         int ret = read_data_from_detectors();
         if (ret > 0) {
             m_recv_byte_size = ret;
-            set_data(m_recv_byte_size, m_loop); // set data to OutPort Buffer
+            unsigned long sequence_num = get_sequence_num();
+            set_data(m_recv_byte_size, sequence_num); // set data to OutPort Buffer
         }
     }
 
@@ -271,8 +272,8 @@ int SampleReader::daq_run()
         ;     // Timeout. do nothing.
     }
     else {    // OutPort write successfully done
-        m_loop++;                          // increase sequence num.
-        m_total_size += m_recv_byte_size;  // increase total data byte size
+        inc_sequence_num();                // increase sequence num.
+        inc_total_data_size(m_recv_byte_size);  // increase total data byte size
     }
 
     return 0;
