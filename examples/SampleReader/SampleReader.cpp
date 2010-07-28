@@ -272,7 +272,7 @@ int SampleReader::daq_run()
         ;     // Timeout. do nothing.
     }
     else {    // OutPort write successfully done
-        inc_sequence_num();                // increase sequence num.
+        inc_sequence_num();                     // increase sequence num.
         inc_total_data_size(m_recv_byte_size);  // increase total data byte size
     }
 
