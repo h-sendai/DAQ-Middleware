@@ -70,7 +70,7 @@ int main (int argc, char** argv)
     RTC::Manager* manager;
     manager = RTC::Manager::init(argc, argv);
 
-    ///for root application
+    // for root application
     TApplication theApp("App", &argc, argv);
 
     // Initialize manager
