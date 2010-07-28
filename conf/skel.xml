@@ -1,12 +1,10 @@
 <?xml version="1.0"?>
-<!-- DON'T REMOVE THE ABOVE LINE.            -->
-<!-- DON'T PUT ANY LINES ABOVE THE 1ST LINE. -->
-<!-- Sample config.xml to run SampleReader and SampleMonitor.                 -->
-<!-- Please rewrite execPath (2 places), confFile (2 places) suitable         -->
+<!-- DON'T REMOVE THE ABOVE LINE.                                             -->
+<!-- DON'T PUT ANY LINES ABOVE THE 1ST LINE.                                  -->
+<!-- Sample config.xml to run Skeleton Component.                             -->
+<!-- Please rewrite execPath and confFile (2 places) suitable                 -->
 <!-- for your directory structure.                                            -->
 <!-- confFile (/path/to/rtc.conf) will be created automatically at this path. -->
-<!-- If you use condition file, please update condition_file_name             -->
-<!-- to the path of your condition.json                                       -->
 <configInfo>
     <daqOperator>
         <hostAddr>127.0.0.1</hostAddr>
@@ -18,7 +16,7 @@
                     <hostAddr>127.0.0.1</hostAddr>
                     <hostPort>50000</hostPort>
                     <instName>Skeleton0.rtc</instName>
-                    <execPath>/home/nakayosi/work-1.0.0/DAQ-Middleware-run-py/examples/Skeleton/SkeletonComp</execPath>
+                    <execPath>/home/daq/MyDaq/Skeleton/SkeletonComp</execPath>
                     <confFile>/tmp/daqmw/rtc.conf</confFile>
                     <startOrd>1</startOrd>
                     <inPorts>

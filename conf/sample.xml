@@ -1,13 +1,11 @@
 <?xml version="1.0"?>
-<!-- DON'T REMOVE THE ABOVE LINE.            -->
-<!-- DON'T PUT ANY LINES ABOVE THE 1ST LINE. -->
-<!-- Sample config.xml to run SampleReader and SampleMonitor.                 -->
-<!-- Please rewrite execPath (2 places), confFile (2 places) suitable         -->
-<!-- for your directory structure.                                            -->
-<!-- run.py will create rtc.conf in /tmp/daqmw/rtc.conf                       -->
-<!-- If you use run.py, set confFile as /tmp/daqmw/rtc.conf                   -->
-<!-- If you use condition file, please update condition_file_name             -->
-<!-- to the path of your condition.json                                       -->
+<!-- DON'T REMOVE THE ABOVE LINE.                                     -->
+<!-- DON'T PUT ANY LINES ABOVE THE 1ST LINE.                          -->
+<!-- Sample config.xml to run SampleReader and SampleMonitor.         -->
+<!-- Please rewrite execPath (2 places), confFile (2 places) suitable -->
+<!-- for your directory structure.                                    -->
+<!-- run.py will create rtc.conf in /tmp/daqmw/rtc.conf               -->
+<!-- If you use run.py, set confFile as /tmp/daqmw/rtc.conf           -->
 <configInfo>
     <daqOperator>
         <hostAddr>127.0.0.1</hostAddr>
@@ -45,7 +43,6 @@
                     <outPorts>
                     </outPorts>
                     <params>
-                        <param pid="update_rate">100</param>
                     </params>
                 </component>
             </components>
