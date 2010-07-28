@@ -216,7 +216,7 @@ int SampleMonitor::decode_data(const unsigned char* mydata)
 
 int SampleMonitor::fill_data(const unsigned char* mydata, const int size)
 {
-    for (int i = 0; i < size/(int)ONE_EVENT_SIZE; i+=(int)ONE_EVENT_SIZE) {
+    for (int i = 0; i < size/(int)ONE_EVENT_SIZE; i++) {
         decode_data(mydata);
         float fdata = m_sampleData.data/1000.0; // 1000 times value is received
         m_hist->Fill(fdata);
