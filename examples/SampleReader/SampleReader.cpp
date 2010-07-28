@@ -117,11 +117,11 @@ int SampleReader::parse_params(::NVList* list)
         }
 
     }
-    if(!srcAddrSpecified) {
+    if (!srcAddrSpecified) {
         std::cerr << "### ERROR:data source address not specified\n";
         fatal_error_report(USER_DEFINED_ERROR1, "NO SRC ADDRESS");
     }
-    if(!srcPortSpecified) {
+    if (!srcPortSpecified) {
         std::cerr << "### ERROR:data source port not specified\n";
         fatal_error_report(USER_DEFINED_ERROR2, "NO SRC PORT");
     }
@@ -156,7 +156,7 @@ int SampleReader::daq_start()
 
     // Check data port connections
     bool outport_conn = check_dataPort_connections( m_OutPort );
-    if(!outport_conn) {
+    if (!outport_conn) {
         std::cerr << "### NO Connection" << std::endl;
         fatal_error_report(DATAPATH_DISCONNECTED);
     }
@@ -196,11 +196,11 @@ int SampleReader::read_data_from_detectors()
     /// write your logic here
     /// read 1024 byte data from data server
     int status = m_sock->readAll(m_data, SEND_BUFFER_SIZE);
-    if(status == DAQMW::Sock::ERROR_FATAL) {
+    if (status == DAQMW::Sock::ERROR_FATAL) {
         std::cerr << "### ERROR: m_sock->readAll" << std::endl;
         fatal_error_report(USER_DEFINED_ERROR1, "SOCKET FATAL ERROR");
     }
-    else if(status == DAQMW::Sock::ERROR_TIMEOUT) {
+    else if (status == DAQMW::Sock::ERROR_TIMEOUT) {
         std::cerr << "### Timeout: m_sock->readAll" << std::endl;
         fatal_error_report(USER_DEFINED_ERROR2, "SOCKET TIMEOUT");
     }

@@ -275,12 +275,12 @@ int SampleMonitor::daq_run()
 
     fill_data(&m_recv_data[0], m_event_byte_size);
 
-    if(m_monitor_update_rate == 0) {
+    if (m_monitor_update_rate == 0) {
         m_monitor_update_rate = 1000;
     }
 
     unsigned long sequence_num = get_sequence_num();
-    if((sequence_num % m_monitor_update_rate) == 0) {
+    if ((sequence_num % m_monitor_update_rate) == 0) {
         m_hist->Draw();
         m_canvas->Update();
     }
