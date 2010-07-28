@@ -8,6 +8,7 @@ SRC_DIRS += SampleReader
 SRC_DIRS += Skeleton
 SRC_DIRS += SkeletonSink
 SRC_DIRS += SkeletonSource
+SRC_DIRS += ConditionSampleMonitor
 
 all:
 
