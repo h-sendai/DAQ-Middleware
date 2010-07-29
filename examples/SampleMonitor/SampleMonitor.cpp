@@ -165,6 +165,10 @@ int SampleMonitor::daq_start()
 int SampleMonitor::daq_stop()
 {
     std::cerr << "*** SampleMonitor::stop" << std::endl;
+
+    m_hist->Draw();
+    m_canvas->Update();
+
     reset_InPort();
 
     return 0;
