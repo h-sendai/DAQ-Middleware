@@ -480,11 +480,11 @@ namespace DAQMW
 
             bool status = true;
 
-            if (m_command != CMD_NOP) {
-                status = set_state(m_command);
+            if (m_command != CMD_NOP) {          // got other command
+                status = set_state(m_command);   // set next state
 
                 if (status) {
-                    while (check_trans_lock()) {
+                    while (check_trans_lock()) { // check if transition is locked
                         if (m_debug) {
                             std::cerr << "### trans locked" << std::endl;
                         }
@@ -514,8 +514,9 @@ namespace DAQMW
                         else {
                             daq_onError();
                         }
-                    }
-                    ///valid command, do action as transition
+                    } // while
+
+                    ///valid command, do transition
                     try {
                         ret = transAction(m_command);
                     }
@@ -543,15 +544,26 @@ namespace DAQMW
                               << std::endl;
                 }
                 set_done();
-            } else {
+            }
+            else {
                 ///same command as previous, stay same state, do same action
                 if ( !m_isOnError ) {
                     try {
                         doAction(m_state);
                     }
-                    catch(DaqComponentException& e) {
+                    catch(DaqCompDefinedException& e ) {
                         std::cerr << mytimer->getDate() << " ";
-                        std::cerr << "### caught daq exp:" << e.what() << std::endl;
+                        FatalType::Enum mytype = e.type();
+                        int mycode             = e.reason();
+                        const char* mydesc     = e.what();
+                        fatal_report_to_operator(mytype, mydesc, mycode);
+                    }
+                    catch(DaqCompUserException& e) {
+                        std::cerr << mytimer->getDate() << " ";
+                        FatalType::Enum mytype = e.type();
+                        int mycode             = e.reason();
+                        const char* mydesc     = e.what();
+                        fatal_report_to_operator(mytype, mydesc, mycode);
                     }
                     catch(...) {
                         std::cerr << "### caught unknown exception on DaqComponentBase\n";
