@@ -1,7 +1,3 @@
-1. config.xml schema changed
-   added <sourcePath> element
+2010-08-01 Hiroshi Sendai
 
-2. fatal error changed
-
-3. Monitor: stop using TApplication 
-
+Initial Release.
