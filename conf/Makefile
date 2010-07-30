@@ -7,6 +7,7 @@ FILES += condition.xml
 FILES += config.xsd
 FILES += sample.xml
 FILES += skel.xml
+FILES += tiny.xml
 
 all:
 

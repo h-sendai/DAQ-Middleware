@@ -9,6 +9,8 @@ SRC_DIRS += Skeleton
 SRC_DIRS += SkeletonSink
 SRC_DIRS += SkeletonSource
 SRC_DIRS += ConditionSampleMonitor
+SRC_DIRS += TinySink
+SRC_DIRS += TinySource
 
 all:
 
