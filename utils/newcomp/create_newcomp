@@ -127,7 +127,7 @@ for my $c (keys %input) {
 
 sub usage {
 	print STDERR << "END_USAGE";
-Usage: $progname [-f] [-t component_type] NewCompName
+Usage: $progname [-c] [-f] [-t component_type] NewCompName
 
 Create skeleton component files with NewCompName in NewCompName directory.
 If this directory does not exist, it will be created automatically
@@ -151,7 +151,7 @@ END_USAGE
 
 	print STDERR << 'END_USAGE_2';
 
-Option:
+Other option:
 -c Don't create directory but create component files in the current directory
 -f Overwrite exisiting file(s)
 END_USAGE_2
