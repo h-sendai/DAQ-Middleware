@@ -41,7 +41,7 @@ SampleMonitor::SampleMonitor(RTC::Manager* manager)
       m_bin(0),
       m_min(0),
       m_max(0),
-      m_monitor_update_rate(100),
+      m_monitor_update_rate(30),
       m_event_byte_size(0),
       m_debug(false)
 {
