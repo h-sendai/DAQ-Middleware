@@ -2,7 +2,7 @@
 <!-- DON'T REMOVE THE ABOVE LINE.                                             -->
 <!-- DON'T PUT ANY LINES ABOVE THE 1ST LINE.                                  -->
 <!-- Sample config.xml to run Skeleton Component.                             -->
-<!-- Please rewrite execPath and confFile (2 places) suitable                 -->
+<!-- Please rewrite execPath and confFile suitable                            -->
 <!-- for your directory structure.                                            -->
 <!-- confFile (/path/to/rtc.conf) will be created automatically at this path. -->
 <configInfo>
