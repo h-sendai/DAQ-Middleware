@@ -4,7 +4,7 @@
         <SampleMonitor>
             <hist_bin>100</hist_bin>
             <hist_min>0</hist_min>
-            <hist_max>200</hist_max>
+            <hist_max>150</hist_max>
             <monitor_update_rate>10</monitor_update_rate>
         </SampleMonitor>
     </common>
