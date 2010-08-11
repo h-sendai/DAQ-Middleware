@@ -1,6 +1,6 @@
 prefix = /usr
 
-VERSION = 1.0.0
+VERSION = $(shell cat VERSION)
 
 SUBDIRS += bin
 SUBDIRS += conf

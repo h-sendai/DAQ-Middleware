@@ -4,6 +4,7 @@ DIR = $(prefix)/share/daqmw/docs
 MODE = 0644
 
 FILES += README
+FILES += DAQ-Middleware-1.0.0-Tech.pdf
 
 all:
 

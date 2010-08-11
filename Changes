@@ -1,3 +1,22 @@
-2010-08-01 Hiroshi Sendai
+1.0.1 2010-08-XX Hiroshi Sendai
 
-Initial Release.
+Summary
+
+- All users have to recompile their components to have get_run_number() work
+  properly.
+- Libraries (Sock, Json) have not been changed.
+- We have dispatcher in the example directory.
+- We have documentation in the documentation directory (/usr/share/daqmw/docs).
+
+Details
+
+BUG FIX: get_run_number() did not return the run number but always returned 0.
+BUF FIX: DaqOperator coredumped if the component is SkeletonComp only.
+FEATURE: Add dispatcher component in the example directory
+         (/usr/share/daqmw/examples).
+FEATURE: Add documentation (DAQ-Middleware Technical Manual and Developer's
+         Manual).
+
+1.0.0 2010-08-01 Hiroshi Sendai
+
+DAQ-Middleware 1.0.0 Initial Release.
