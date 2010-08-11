@@ -5,9 +5,6 @@ MODE = 0755
 
 FILES += condition_xml2json
 FILES += xml2json-with-attribute.xslt
-FILES += genmake.py
-FILES += run-comps.sh
-FILES += run-local.py
 FILES += run.py
 FILES += daqmw-rpm 
 
