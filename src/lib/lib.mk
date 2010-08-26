@@ -26,6 +26,7 @@ $(LIBRARY): $(OBJS) $(CPPOBJS)
 $(LIBRARY_SO): $(SHOBJS) $(CPPSHOBJS)
 #	gcc -shared -Wl,-soname,libfoo.so.1 -o libfoo.so.1.0 *.o
 	$(CC) -shared -Wl,-soname,$(LIBRARY_SO_API) -o $(LIBRARY_SO_API_PATCHLEVEL) $(SHOBJS) $(CPPSHOBJS)
+	rm -f $(LIBRARY_SO) $(LIBRARY_SO_API)
 	ln -s $(LIBRARY_SO_API) $(LIBRARY_SO)
 	ln -s $(LIBRARY_SO_API_PATCHLEVEL) $(LIBRARY_SO_API)
 
