@@ -221,6 +221,14 @@ namespace DAQMW
             return 0;
         }
 
+        int set_run_number()
+        {
+            std::cerr << "set_run_number" << std::endl;
+            m_runNumber = m_daq_service0.getRunNo();
+            std::cerr << "m_runNumber: " << m_runNumber << std::endl;
+            return 0;
+        }
+
         unsigned int get_run_number()
         {
             return m_runNumber;
@@ -659,6 +667,7 @@ namespace DAQMW
         {
             m_totalDataSize = 0;
             m_loop = 0;
+            set_run_number();
             set_status(COMP_WORKING);
             daq_start();
             return 0;
