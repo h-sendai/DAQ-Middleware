@@ -228,29 +228,37 @@ int find_comps(CorbaNaming* naming, CompGroupList* daq_group_list)
                                                          "port.port_type");
 
                 if (port_type == "DataInPort") {
-                    std::cerr << "*** DataInPort\n";
                     std::vector<std::string> myInport = p.getInport();
                     std::vector<std::string> myFrom   = p.getFromOutPort();
                     if (debug) {
-                        std::cerr << "    myInport:" << myInport[inport_count] << std::endl;
-                        std::cerr << "    myFrom:"   << myFrom[inport_count]   << std::endl;
+                        std::cerr << "*** DataInPort\n";
+                        std::cerr << "    myInport:" << myInport[0] << std::endl;
+                        std::cerr << "    myFrom:"   << myFrom[0]   << std::endl;
                     }
 
-                    inport_info.inport_name = gid + p.getId() + ":" + myInport[0];
+                    if (myInport.size() > 0) {
+                        inport_info.inport_name = gid + p.getId() + ":" + myInport[0];
+                        inport_info.from_name   = gid + myFrom[inport_count];
+                        if (debug) {
+                            std::cerr << "  inport_info.inport_name:" << inport_info.inport_name << std::endl;
+                            std::cerr << "  inport_info.from_name:"   << inport_info.from_name   << std::endl;
+                        }
 
-                    inport_info.from_name   = gid + myFrom[inport_count];
-                    inport_info.inport_ptr  = port;
-                    inport_list.push_back(inport_info);
-                    inport_count++;
+                        inport_info.inport_ptr  = port;
+                        inport_list.push_back(inport_info);
+                        inport_count++;
+                    }
                 }
                 else if (port_type == "DataOutPort") {
-                    std::cerr << "*** DataOutPort\n";
                     std::vector<std::string> myOutport = p.getOutport();
-                    std::cerr << "    myOutport:" << myOutport[outport_count] << std::endl;
-                    outport_info.outport_name = gid + p.getId() + ":" + myOutport[outport_count];
-                    outport_info.outport_ptr  = port;
-                    outport_list.push_back(outport_info);
-                    outport_count++;
+                    if (myOutport.size() > 0) {
+                        std::cerr << "*** DataOutPort\n";
+                        std::cerr << "    myOutport:" << myOutport[outport_count] << std::endl;
+                        outport_info.outport_name = gid + p.getId() + ":" + myOutport[outport_count];
+                        outport_info.outport_ptr  = port;
+                        outport_list.push_back(outport_info);
+                        outport_count++;
+                    }
                 }
                 else if (port_type == "CorbaPort") {
                     service_info.comp_id = gid + ":" +p.getId();
