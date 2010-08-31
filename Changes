@@ -16,6 +16,8 @@ FEATURE: Add dispatcher component in the example directory
          (/usr/share/daqmw/examples).
 FEATURE: Add documentation (DAQ-Middleware Technical Manual and Developer's
          Manual).
+CLEANUP: Remove ConfFileParser::setList(std::vector & list, char*, char*)
+         from ConfFileParser.cpp because no one does not use this method.
 
 1.0.0 2010-08-01 Hiroshi Sendai
 
