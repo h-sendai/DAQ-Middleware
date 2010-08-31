@@ -33,6 +33,7 @@ static const char* skeletonsource_spec[] =
 SkeletonSource::SkeletonSource(RTC::Manager* manager)
     : DAQMW::DaqComponentBase(manager),
       m_OutPort("skeletonsource_out", m_out_data),
+      m_recv_byte_size(0),
       m_out_status(BUF_SUCCESS),
 
       m_debug(false)
@@ -176,7 +177,11 @@ int SkeletonSource::write_OutPort()
             return -1;
         }
     }
-    return 0; // successfully done
+    else {
+        m_out_status = BUF_SUCCESS; // successfully done
+    }
+
+    return 0;
 }
 
 int SkeletonSource::daq_run()
@@ -190,13 +195,11 @@ int SkeletonSource::daq_run()
         return 0;
     }
 
-    unsigned int recv_byte_size = 0;
-
     if (m_out_status == BUF_SUCCESS) {   // previous OutPort.write() successfully done
-        recv_byte_size = read_data_from_detectors();
-        if (recv_byte_size > 0) {
+        m_recv_byte_size = read_data_from_detectors();
+        if (m_recv_byte_size > 0) {
             unsigned long sequence_num = get_sequence_num();
-            set_data(recv_byte_size, sequence_num); // set data to OutPort Buffer
+            set_data(m_recv_byte_size, sequence_num); // set data to OutPort Buffer
         }
     }
 
@@ -204,8 +207,8 @@ int SkeletonSource::daq_run()
         ;     // Timeout. do nothing.
     }
     else {    // OutPort write successfully done
-        inc_sequence_num();                   // increase sequence num.
-        inc_total_data_size(recv_byte_size);  // increase total data byte size
+        inc_sequence_num();                     // increase sequence num.
+        inc_total_data_size(m_recv_byte_size);  // increase total data byte size
     }
 
     return 0;

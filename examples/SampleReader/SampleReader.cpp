@@ -244,8 +244,11 @@ int SampleReader::write_OutPort()
             return -1;
         }
     }
-    m_out_status = BUF_SUCCESS;
-    return 0; // successfully done
+    else {
+        m_out_status = BUF_SUCCESS; // successfully done
+    }
+
+    return 0;
 }
 
 int SampleReader::daq_run()

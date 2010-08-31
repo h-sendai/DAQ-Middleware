@@ -57,6 +57,7 @@ private:
 
     static const int SEND_BUFFER_SIZE = 4096;
     unsigned char m_data[SEND_BUFFER_SIZE];
+    unsigned int m_recv_byte_size;
 
     BufferStatus m_out_status;
     bool m_debug;
