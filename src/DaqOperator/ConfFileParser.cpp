@@ -542,20 +542,6 @@ ParamList ConfFileParser::getParamList()
    return m_paramList;
 }
 
-void ConfFileParser::setList(std::vector<NameValue>& list, char* name, char* value)
-{
-    char* name2 = (char*)malloc(strlen(name)+1);
-    strcpy(name2, name);
-
-    char* value2 = (char*)malloc(strlen(value)+1);
-    strcpy(value2, value);
-
-    NameValue nv;
-    nv.name = name2;
-    nv.value = value2;
-    list.push_back(nv);
-}
-
 void ConfFileParser::setSeq(std::vector<NameValue> vec, NVList& seq)
 {
     if (m_debug) {
