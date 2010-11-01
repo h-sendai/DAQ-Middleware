@@ -11,6 +11,8 @@ SRC_DIRS += SkeletonSource
 SRC_DIRS += ConditionSampleMonitor
 SRC_DIRS += TinySink
 SRC_DIRS += TinySource
+SRC_DIRS += Dispatcher
+SRC_DIRS += BestEffortDispatcher
 
 all:
 
