@@ -598,6 +598,19 @@ namespace DAQMW
             return 0;
         }
 
+        int set_status(CompStatus comp_status)
+        {
+            Status* mystatus = new Status;
+            mystatus->comp_name = CORBA::string_dup(m_comp_name.c_str());
+            mystatus->state = m_state;
+            ///mystatus->event_num = m_totalEventNum;
+            mystatus->event_size = m_totalDataSize;
+            mystatus->comp_status = comp_status;
+
+            m_daq_service0.setStatus(*mystatus);
+            return 0;
+        }
+
     private:
         static const int DAQ_CMD_SIZE      = 10;
         static const int DAQ_STATE_SIZE    =  6;
@@ -722,19 +735,6 @@ namespace DAQMW
             std::cerr << m_err_message << std::endl;
             set_status(COMP_FATAL);
             sleep(DAQ_IDLE_TIME_SEC);
-            return 0;
-        }
-
-        int set_status(CompStatus comp_status)
-        {
-            Status* mystatus = new Status;
-            mystatus->comp_name = CORBA::string_dup(m_comp_name.c_str());
-            mystatus->state = m_state;
-            ///mystatus->event_num = m_totalEventNum;
-            mystatus->event_size = m_totalDataSize;
-            mystatus->comp_status = comp_status;
-
-            m_daq_service0.setStatus(*mystatus);
             return 0;
         }
 
