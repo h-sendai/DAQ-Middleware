@@ -26,6 +26,7 @@
 #include <string>
 #include <arpa/inet.h>
 #include <signal.h>
+#include <stdio.h>
 
 namespace DAQMW {
 
