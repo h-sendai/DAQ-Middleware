@@ -11,6 +11,5 @@ SRCS += $(COMP_NAME).cpp
 SRCS += $(COMP_NAME)Comp.cpp
 SRCS += ConfFileParser.cpp
 SRCS += CreateDom.cpp
-SRCS += ServerSocket.cpp
 
 include /usr/share/daqmw/mk/comp.mk

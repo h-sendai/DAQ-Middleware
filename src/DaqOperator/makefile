@@ -23,7 +23,6 @@ SRCS += $(COMP_NAME).cpp
 SRCS += $(COMP_NAME)Comp.cpp
 SRCS += ConfFileParser.cpp
 SRCS += CreateDom.cpp
-SRCS += ServerSocket.cpp
 
 FILES += ComponentInfoContainer.h
 FILES += ConfFileParser.cpp
@@ -36,8 +35,6 @@ FILES += DaqOperatorComp.cpp
 FILES += Makefile
 FILES += Parameter.h
 FILES += ParameterServer.h
-FILES += ServerSocket.cpp
-FILES += ServerSocket.h
 FILES += callback.h
 
 install: all
