@@ -4,6 +4,9 @@
 
 #include <string>
 #include <vector>
+
+#include <stdio.h>
+
 #include "ComponentInfoContainer.h"
 
 using namespace xercesc;
