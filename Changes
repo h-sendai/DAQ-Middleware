@@ -18,6 +18,12 @@ FEATURE: Add documentation (DAQ-Middleware Technical Manual and Developer's
          Manual).
 CLEANUP: Remove ConfFileParser::setList(std::vector & list, char*, char*)
          from ConfFileParser.cpp because no one does not use this method.
+CLEANUP: Remove src/DaqOperator/ServerSocket.{h,cpp}.  No one does not use
+         this.
+CLEANUP: add #include <stdio.h> in src/lib/SiTCP/CPP/Sock/Sock.h and
+         src/DaqOperator/CreateDom.h to be able to compile with gcc44.
+CLEANUP: Move set_status() from private to protected in
+         src/DaqComponent/DaqComponentBase.h (pointed out by Hosoya san).
 
 1.0.0 2010-08-01 Hiroshi Sendai
 
