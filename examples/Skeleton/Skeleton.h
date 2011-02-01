@@ -10,15 +10,7 @@
 #ifndef SKELETON_H
 #define SKELETON_H
 
-#include <rtm/Manager.h>
-#include <rtm/DataFlowComponentBase.h>
-#include <rtm/CorbaPort.h>
-#include <rtm/DataInPort.h>
-#include <rtm/DataOutPort.h>
-#include <rtm/idl/BasicDataTypeSkel.h>
-
 #include "DaqComponentBase.h"
-#include "DAQServiceSVC_impl.h" // Service implementation headers
 
 using namespace RTC;
 
