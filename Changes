@@ -1,3 +1,11 @@
+1.0.2 2011-02-XX Hiroshi Sendai
+
+Summary
+
+- Add sample implementation of the logger component in examples directory
+  (/usr/share/daqmw/examples/Logger).  Sample configuration file is at
+  /usr/share/daqmw/conf/4comps.xml .
+
 1.0.1 2011-01-21 Hiroshi Sendai
 
 Summary
