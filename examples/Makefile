@@ -3,6 +3,7 @@ prefix = /usr
 DESTDIR = $(prefix)/share/daqmw/examples
 #MODE = 0644
 
+SRC_DIRS += SampleLogger
 SRC_DIRS += SampleMonitor
 SRC_DIRS += SampleReader
 SRC_DIRS += Skeleton

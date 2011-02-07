@@ -8,6 +8,7 @@ FILES += config.xsd
 FILES += sample.xml
 FILES += skel.xml
 FILES += tiny.xml
+FILES += 4comps.xml
 
 all:
 
