@@ -93,10 +93,10 @@ namespace DAQMW
 
                 "CANNOT_OPEN_CONFIGFILE",
                 "CONFIGFILE_PARSE_ERROR",
+                "NO_CONFIG_PARAMS",
 
                 "CANNOT_OPEN_COND_FILE",
                 "COND_FILE_PARSE_ERROR",
-                "NO_CONFIG_PARAMS",
 
                 "CANNOT_CONNECT_COMMANDPATH",
                 "COMMANDPATH_DISCONNECTED",
