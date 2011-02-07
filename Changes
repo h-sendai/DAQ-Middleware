@@ -5,6 +5,14 @@ Summary
 - Add sample implementation of the logger component in examples directory
   (/usr/share/daqmw/examples/Logger).  Sample configuration file is at
   /usr/share/daqmw/conf/4comps.xml .
+- All users have to recompile their components to have display valid strings
+  when fatal error occured.
+
+Details
+
+BUG FIX: Correction of the order of strings at toString() in FatalType.h
+FEATURE: Add SampleLogger in examples directory.
+CLEANUP: Remove unneccessary include files from example source.
 
 1.0.1 2011-01-21 Hiroshi Sendai
 
