@@ -51,7 +51,7 @@
                </inPorts>
                <outPorts/>
                <params>
-                  <param pid="dirName">/tmp/data</param>
+                  <param pid="dirName">/tmp</param>
                   <param pid="isLogging">yes</param>
                   <param pid="maxFileSizeInMegaByte">1024</param>
                </params>
