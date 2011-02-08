@@ -5,7 +5,7 @@ MODE = 0644
 
 FILES += README
 FILES += DAQ-Middleware-1.0.0-Tech.pdf
-FILES += DAQ-Middleware-1.0.1-DevManual.pdf
+FILES += DAQ-Middleware-1.0.2-DevManual.pdf
 FILES += Changes
 FILES += VERSION
 
