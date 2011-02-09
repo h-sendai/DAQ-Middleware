@@ -55,7 +55,7 @@ $(COMP_NAME)Comp.o: $(COMP_NAME)Comp.cpp $(COMP_NAME).h
 #	install -m 755 $(COMP_NAME)Comp $(BINDIR)
 
 clean:
-	@rm -f $(OBJS) $(COMP_NAME)Comp.o $(COMP_NAME)Comp
+	@rm -f $(wildcard *.o) $(COMP_NAME)Comp.o $(COMP_NAME)Comp
 	@rm -f *Skel.h *Skel.cpp
 	@rm -f *Stub.h *Stub.cpp
 	@rm -f *~
