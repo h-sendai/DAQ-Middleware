@@ -349,6 +349,12 @@ namespace DAQMW
             return 0;
         }
 
+        int reset_onError()
+        {
+            m_isOnError = false;
+            return 0;
+        }
+
         /**
          * Convert OutPort RTC::DataPortStatus to DAQMW::BufferStatus
          * We use RTC::RingBuffer with the following condition:
@@ -671,6 +677,9 @@ namespace DAQMW
         int daq_base_unconfigure()
         {
             m_totalDataSize = 0;
+            if (m_isOnError) {
+                reset_onError(); /// reset error flag
+            }
             set_status(COMP_WORKING);
             daq_unconfigure();
             return 0;
@@ -689,8 +698,7 @@ namespace DAQMW
         int daq_base_stop()
         {
             if (m_isOnError) {
-                m_isOnError = false; /// reset error flag
-                std::cerr << "*** Error flag was reset\n";
+                reset_onError(); /// reset error flag
             }
 
             m_err_message = "";
