@@ -6,7 +6,7 @@ SRCS += $(COMP_NAME).cpp
 SRCS += $(COMP_NAME)Comp.cpp
 
 # Socket library
-LDLIBS += -L/usr/lib/daqmw -lSock
+LDLIBS += -L$(DAQMW_LIB_DIR) -lSock
 
 # sample install target
 #

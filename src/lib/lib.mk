@@ -44,8 +44,16 @@ clean:
 #INSTALL_LIB_DIR = $(prefix)/lib
 #INSTALL_INC_DIR = $(prefix)/include
 
+LIB_DIR=lib
+try_lib64 = $(shell ls -d /usr/lib64 2>/dev/null)
+arch = $(shell uname -m)
+ifeq "$(strip $(try_lib64))" "/usr/lib64"
+ifeq "$(strip $(arch))"      "x86_64"
+LIB_DIR=lib64
+endif
+endif
 DAQMW_SUFFIX    = daqmw
-INSTALL_LIB_DIR = $(prefix)/lib/$(DAQMW_SUFFIX)
+INSTALL_LIB_DIR = $(prefix)/$(LIB_DIR)/$(DAQMW_SUFFIX)
 INSTALL_INC_DIR = $(prefix)/include/$(DAQMW_SUFFIX)
 
 install:

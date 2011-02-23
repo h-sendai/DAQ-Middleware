@@ -108,12 +108,12 @@ NVList* DAQServiceSVC_impl::getCompParams()
     return &m_comp_params;
 }
 
-void DAQServiceSVC_impl::setRunNo(const long run_no) 
+void DAQServiceSVC_impl::setRunNo(const CORBA::Long run_no) 
 {
     m_run_no = run_no;
 }
 
-long DAQServiceSVC_impl::getRunNo() 
+CORBA::Long DAQServiceSVC_impl::getRunNo()
 {
     return m_run_no;
 }

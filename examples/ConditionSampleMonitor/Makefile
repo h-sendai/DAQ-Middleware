@@ -15,7 +15,7 @@ SRCS += Condition$(COMP_NAME).cpp
 
 CPPFLAGS += -I$(shell ${ROOTSYS}/bin/root-config --incdir)
 LDLIBS   += $(shell ${ROOTSYS}/bin/root-config --glibs)
-LDLIBS   += -L/usr/lib/daqmw -lJsonSpirit -lboost_regex
+LDLIBS   += -L$(DAQMW_LIB_DIR) -lJsonSpirit -lboost_regex
 
 # sample install target
 #

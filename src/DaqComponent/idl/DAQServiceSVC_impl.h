@@ -37,21 +37,21 @@ public:
     Status* getStatus();
     void setCompParams(const NVList& comp_params);
     NVList* getCompParams();
-    void setRunNo(const long run_no);
-    long getRunNo();
+    void setRunNo(const CORBA::Long run_no);
+    CORBA::Long getRunNo();
     void setFatalStatus(const FatalErrorStatus& fatalStaus);
 
     FatalErrorStatus* getFatalStatus();
 
 private:
     DAQCommand m_command;
-    long m_new;
+    int m_new;
     DAQDone m_done;
     DAQLifeCycleState m_state;
     Status m_status;
     FatalErrorStatus m_fatalStatus;
     NVList m_comp_params;
-    long   m_run_no;
+    CORBA::Long   m_run_no;
 };
 
 #endif // DAQSERVICESVC_IMPL_H

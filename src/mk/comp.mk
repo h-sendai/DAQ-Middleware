@@ -33,6 +33,16 @@ IDLFLAGS = `rtm-config --idlflags` -I`rtm-config --prefix`/include/rtm/idl
 WRAPPER  = rtm-skelwrapper
 WRAPPER_FLAGS = --include-dir="" --skel-suffix=Skel --stub-suffix=Stub
 
+LIB_DIR=lib
+try_lib64 = $(shell ls -d /usr/lib64 2>/dev/null)
+arch = $(shell uname -m)
+ifeq "$(strip $(try_lib64))" "/usr/lib64"
+ifeq "$(strip $(arch))"      "x86_64"
+LIB_DIR=lib64
+endif
+endif
+DAQMW_LIB_DIR=/usr/$(LIB_DIR)/daqmw
+
 $(COMP_NAME)Comp: .depend $(OBJS)
 	$(CXX) -o $@ $(OBJS) $(LDFLAGS) $(LDLIBS)
 
