@@ -1,12 +1,16 @@
+# GNU make 3.80 does not allow else ifdef clause.
+INCLUDE_PATH = /usr/include/daqmw
+
 ifdef DAQMWSRCROOT
 # in source tree
 INCLUDE_PATH = $(DAQMWSRCROOT)/src/DaqComponent
-# use special install directory
-else ifdef DAQMWINSTALLROOT
-INCLUDE_PATH = $(DAQMWINSTALLROOT)/include/daqmw
-else
-INCLUDE_PATH = /usr/include/daqmw
 endif
+
+# use special install directory
+ifdef DAQMWINSTALLROOT
+INCLUDE_PATH = $(DAQMWINSTALLROOT)/include/daqmw
+endif
+
 IDL_PATH = $(INCLUDE_PATH)/idl
 
 AUTO_GEN_DIR = autogen
