@@ -14,12 +14,15 @@ usage()
     cat <<EOF 1>&2
 Usage: $progname [install | uninstall | distclean]
 
-$progname install:   Setup repository configuration (if not yet) and install
-                     DAQ-Middleware and its dependencies.
-$progname uninstall: Uninstall DAQ-Middleware and its dependencies.
-                     Repository configuration remains.
-$progname distclean: Uninstall DAQ-Middleware, its dependencies and
-                     repository configuration and its cache.
+$progname install:    Setup repository configuration (if not yet) and install
+                      DAQ-Middleware and its dependencies.
+$progname installdep: Setup repository configuration (if not yet) and install
+                      DAQ-Middleware dependencies.  DAQ-Middleware will NOT
+                      be installed.
+$progname uninstall:  Uninstall DAQ-Middleware and its dependencies.
+                      Repository configuration remains.
+$progname distclean:  Uninstall DAQ-Middleware, its dependencies and
+                      repository configuration and its cache.
 EOF
 }
 
@@ -30,7 +33,17 @@ do_install()
 
     # second, install repository configuration file and rpms
     rpm -ihv $repo_rpm_url
-    yum -y --enablerepo=$repo_name install DAQ-Middleware
+    yum -y --disablerepo='*' --enablerepo=$repo_name install DAQ-Middleware
+}
+
+do_installdep()
+{
+    # first, clean up all rpms and repository configuration file
+    do_distclean 
+
+    # second, install repository configuration file and rpms
+    rpm -ihv $repo_rpm_url
+    yum -y --disablerepo='*' --enablerepo=$repo_name install OpenRTM-aist xerces-c-devel xalan-c-devel
 }
 
 do_uninstall()
@@ -90,10 +103,11 @@ fi
 
 command=$1
 case $command in 
-    install) do_install; ;;
-    uninstall) do_uninstall; ;;
-    distclean) do_distclean; ;;
-    *) usage; exit 1 ;;
+    install)    do_install;    ;;
+    installdep) do_installdep; ;;
+    uninstall)  do_uninstall;  ;;
+    distclean)  do_distclean;  ;;
+    *)          usage; exit 1  ;;
 esac
 
 # do not remove following exit to use __DATA__ section
