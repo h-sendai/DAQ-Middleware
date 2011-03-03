@@ -1,3 +1,23 @@
+1.1.0 2011-03-XX Hiroshi Sendai
+
+Summary
+
+- Add x86_64 architecture support.
+- Backward compatibility to DAQ-Middleware for MLF (2010.10 etc) on reset_onError()
+- All users have to recompile their components to use backward compatibility feature.
+
+Details
+
+FEATURE: Support x86_64 architecture on Scientific Linux 5.x, CentOS 5 and
+         RedHat Enterprise Linux.  Libraries will be installed to
+         /usr/lib64/daqmw if the machine running on x86_64 and there is
+         /usr/lib64 directory.
+FEATURE: Don't remove source files.  Previous comp.mk would remove
+         source files if source file name is *.cc.
+FEATURE: Stricter check on ROOT development environment on ROOTSYS variable
+         of the SampleMonitor's Makefile.
+BUG FIX: Backward compatibility on reset_onError().
+
 1.0.2 2011-02-08 Hiroshi Sendai
 
 Summary

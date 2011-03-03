@@ -1,7 +1,5 @@
 prefix = /usr
 
-VERSION = 1.0.0
-
 SUBDIRS += newcomp
 
 .PHONY: $(SUBDIRS)
