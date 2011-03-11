@@ -1,6 +1,6 @@
 prefix = /usr
 
-DESTDIR = $(prefix)/share/daqmw/examples
+INSTALL_DIR = $(prefix)/share/daqmw/examples
 #MODE = 0644
 
 SRC_DIRS += SampleLogger
@@ -20,10 +20,10 @@ all:
 clean:
 
 install:
-	@mkdir -p $(DESTDIR)
-	@set -e; for dir in $(SRC_DIRS); do cp -r $${dir} $(DESTDIR); done
+	@mkdir -p $(INSTALL_DIR)
+	@set -e; for dir in $(SRC_DIRS); do cp -r $${dir} $(INSTALL_DIR); done
 
 uninstall:
 	@echo "---> uninstalling example files."
-	@for dir in $(SRC_DIRS); do rm -fr $(DESTDIR)/$${dir}; done
+	@for dir in $(SRC_DIRS); do rm -fr $(INSTALL_DIR)/$${dir}; done
 	@echo "---> done"
