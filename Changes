@@ -25,6 +25,7 @@ FEATURE: Don't remove source files.  Previous comp.mk would remove
          source files if source file name is *.cc.
 FEATURE: Stricter check on ROOT development environment on ROOTSYS variable
          of the SampleMonitor's Makefile.
+CLEANUP: Remove unused data_header_footer.h.
 
 1.0.2 2011-02-08 Hiroshi Sendai
 
