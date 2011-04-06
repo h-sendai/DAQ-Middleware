@@ -47,7 +47,7 @@ private:
 
     int parse_params(::NVList* list);
     int read_data_from_detectors();
-    int set_data(unsigned int data_byte_size, unsigned int seq_num);
+    int set_data(unsigned int data_byte_size);
     int write_OutPort();
 
     DAQMW::Sock* m_sock;               /// socket for data server

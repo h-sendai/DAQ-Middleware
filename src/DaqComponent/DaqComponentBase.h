@@ -104,16 +104,16 @@ namespace DAQMW
             return 0;
         }
 
-        virtual int set_footer(unsigned char* footer, unsigned long long sequence_num)
+        virtual int set_footer(unsigned char* footer)
         {
             footer[0] = FOOTER_MAGIC;
             footer[1] = FOOTER_MAGIC;
             footer[2] = 0;
             footer[3] = 0;
-            footer[4] = (sequence_num & 0xff000000) >> 24;
-            footer[5] = (sequence_num & 0x00ff0000) >> 16;
-            footer[6] = (sequence_num & 0x0000ff00) >>  8;
-            footer[7] = (sequence_num & 0x000000ff);
+            footer[4] = (m_loop & 0xff000000) >> 24;
+            footer[5] = (m_loop & 0x00ff0000) >> 16;
+            footer[6] = (m_loop & 0x0000ff00) >>  8;
+            footer[7] = (m_loop & 0x000000ff);
             return 0;
         }
 
@@ -137,13 +137,14 @@ namespace DAQMW
             }
             else {
                 std::cerr << "### ERROR: Bad Magic Num:"
-                          << std::hex << (unsigned)header[0] << " " << (unsigned)header[1] << std::endl;
+                          << std::hex << (unsigned)header[0] << " " << (unsigned)header[1]
+                          << std::endl;
             }
             std::cerr << std::dec;
             return ret;
         }
 
-        bool check_footer(unsigned char* footer, unsigned long long loop_cnt)
+        bool check_footer(unsigned char* footer)
         {
             bool ret = false;
             if (footer[0] == FOOTER_MAGIC && footer[1] == FOOTER_MAGIC) {
@@ -151,13 +152,13 @@ namespace DAQMW
                                       + ( footer[5] << 16 )
                                       + ( footer[6] <<  8 )
                                       +   footer[7];
-                if (seq_num == loop_cnt) {
+                if (seq_num == m_loop) {
                     ret = true;
                 }
                 else {
-                    std::cerr << "### ERROR: Sequence No. missmatch" << std::endl;
+                    std::cerr << "### ERROR: Sequence No. missmatch"  << std::endl;
                     std::cerr << "sequece no. in footer :" << seq_num << std::endl;
-                    std::cerr << "loop cnts at component:" << loop_cnt << std::endl;
+                    std::cerr << "loop cnts at component:" << m_loop  << std::endl;
                 }
             }
             return ret;
@@ -187,7 +188,7 @@ namespace DAQMW
             for (unsigned int i = 0; i < FOOTER_BYTE_SIZE; i++) {
                 footer[i] = in_data.data[block_byte_size - FOOTER_BYTE_SIZE + i];
             }
-            if (check_footer(footer, m_loop) == false) {
+            if (check_footer(footer) == false) {
                 std::cerr << "### ERROR: footer invalid" << std::endl;
                 fatal_error_report(FatalType::FOOTER_DATA_MISMATCH);
             }

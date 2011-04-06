@@ -211,13 +211,13 @@ int SampleReader::read_data_from_detectors()
     return received_data_size;
 }
 
-int SampleReader::set_data(unsigned int data_byte_size, unsigned int seq_num)
+int SampleReader::set_data(unsigned int data_byte_size)
 {
     unsigned char header[8];
     unsigned char footer[8];
 
     set_header(&header[0], data_byte_size);
-    set_footer(&footer[0], seq_num);
+    set_footer(&footer[0]);
 
     ///set OutPort buffer length
     m_out_data.data.length(data_byte_size + HEADER_BYTE_SIZE + FOOTER_BYTE_SIZE);
@@ -266,8 +266,7 @@ int SampleReader::daq_run()
         int ret = read_data_from_detectors();
         if (ret > 0) {
             m_recv_byte_size = ret;
-            unsigned long sequence_num = get_sequence_num();
-            set_data(m_recv_byte_size, sequence_num); // set data to OutPort Buffer
+            set_data(m_recv_byte_size); // set data to OutPort Buffer
         }
     }
 

@@ -150,7 +150,7 @@ int SkeletonSource::set_data(unsigned int data_byte_size, unsigned int seq_num)
     unsigned char footer[8];
 
     set_header(&header[0], data_byte_size);
-    set_footer(&footer[0], seq_num);
+    set_footer(&footer[0]);
 
     ///set OutPort buffer length
     m_out_data.data.length(data_byte_size + HEADER_BYTE_SIZE + FOOTER_BYTE_SIZE);
