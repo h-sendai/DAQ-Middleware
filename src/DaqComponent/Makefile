@@ -10,7 +10,6 @@ FILES += DaqComponentBase.h
 FILES += DaqComponentException.h
 FILES += FatalType.h
 FILES += Timer.h
-FILES += data_header_footer.h
 FILES += json2conlist.h
 
 all:
