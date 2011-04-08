@@ -3,11 +3,18 @@
 Summary
 
 - Add x86_64 architecture support.
-- Backward compatibility to DAQ-Middleware for MLF (2010.10 etc) on reset_onError()
-- All users have to recompile their components to use backward compatibility feature.
+- API changes: set_footer() and check_footer() are now has one argument
+  for footer buffer.  All users have to rewrite their source code if you
+  use set_footer() and check_footer().  To use new API, remove second
+  argument of set_footer() and check_footer.
+- Backward compatibility to DAQ-Middleware for MLF (2010.10 etc) on
+  reset_onError().  All users have to recompile their components to use
+  backward compatibility feature.
 
 Details
 
+API:     set_footer() and check_footer() has only one argument for footer
+         buffer.
 BUG FIX: Backward compatibility on reset_onError().
 FEATURE: Support x86_64 architecture on Scientific Linux 5.x, CentOS 5 and
          RedHat Enterprise Linux.  Changes are:
