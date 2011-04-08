@@ -150,7 +150,7 @@ int TinySource::read_data_from_detectors()
     return received_data_size;
 }
 
-int TinySource::set_data(unsigned int data_byte_size, unsigned int seq_num)
+int TinySource::set_data(unsigned int data_byte_size)
 {
     unsigned char header[8];
     unsigned char footer[8];
@@ -202,8 +202,7 @@ int TinySource::daq_run()
     if (m_out_status == BUF_SUCCESS) {   // previous OutPort.write() successfully done
         recv_byte_size = read_data_from_detectors();
         if (recv_byte_size > 0) {
-            unsigned long sequence_num = get_sequence_num();
-            set_data(recv_byte_size, sequence_num); // set data to OutPort Buffer
+            set_data(recv_byte_size);    // set data to OutPort Buffer
         }
     }
 
