@@ -4,7 +4,7 @@ all: $(COMP_NAME)Comp
 
 CPPFLAGS += -I/usr/include/daqmw
 
-LDLIBS += -L/usr/lib/daqmw -lSock
+LDLIBS += -L$(DAQMW_LIB_DIR) -lSock
 LDLIBS += -lxerces-c
 
 SRCS += $(COMP_NAME).cpp
