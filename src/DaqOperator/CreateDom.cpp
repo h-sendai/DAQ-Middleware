@@ -1,3 +1,16 @@
+// -*- C++ -*-
+/*!
+ * @file CreateDom.cpp
+ * @brief 
+ * @date 1-January-2008
+ * @author Kazuo Nakayoshi <kazuo.nakayoshi@kek.jp>
+ *
+ * Copyright (C) 2008-2011
+ *     Kazuo Nakayoshi
+ *     High Energy Accelerator Research Organization (KEK), Japan.
+ *     All rights reserved.
+ *
+ */
 #include <iostream>
 
 #include <xercesc/dom/DOM.hpp>
@@ -368,7 +381,8 @@ void CreateDom::makeLog(groupStatus status)
 	char num[12];
 	//sprintf(num, "%llu", status.event_num);
 	//sprintf(num, "%llu", status.comp_status.event_num);
-	sprintf(num, "%llu", status.comp_status.event_size);
+	//yasu	sprintf(num, "%llu", status.comp_status.event_size);
+	sprintf(num, "%llu", (long long unsigned int)status.comp_status.event_size);
 	make(m_logElem, "eventNum", num);
 
 	// component status
