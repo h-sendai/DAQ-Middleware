@@ -10,7 +10,6 @@ int main(int argc, char** argv) {
   int status;
   unsigned int packet[2], data;
   char buffer[1000];
-  unsigned char p[8];
 
   try {
     Sock* sock = new Sock();

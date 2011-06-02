@@ -10,7 +10,6 @@ int main(int argc, char** argv) {
   int status;
   unsigned int packet[2], data;
   unsigned char buffer[1000];
-  unsigned char p[8];
 
   Sock* sock = new Sock("192.168.0.16", 23);
   //  Sock* sock = new Sock("192.168.0.19", 23);

@@ -1,33 +1,22 @@
 /*!
  * @file Sock.cpp
  * @brief Implementation of the Sock class.
- * @date
- * @author Yoshiji Yasu
+ * @date 25-May-2011
+ * @author Yoshiji Yasu (yoshiji.yasu@kek.jp)
+ * @version 1.0
  *
- * Copyright (C) 2008
+ * Copyright (C) 2008-2011
  *     Yoshiji Yasu
- *     Electronics System Group,
- *     KEK, Japan.
+ *     High Energy Accelerator Research Organization (KEK), Japan.
  *     All rights reserved.
- *
- * Modified 6-Nov-2008 by Y.Y
  *
  */
 
-#include <iostream>
-#include <string.h>
-#include <errno.h>
-#include <fcntl.h>
-#include <netinet/tcp.h>
-#include <netdb.h>
 #include "Sock.h"
 
 namespace DAQMW {
 
-  /// Implementation of SockException class
-  SockException::SockException(const std::string& msg) : m_msg(msg) {
-    m_reason = 0;
-  }
+  SockException::SockException(const std::string& msg) : m_msg(msg) {}
 
   SockException::~SockException() throw() {}
 
@@ -35,35 +24,51 @@ namespace DAQMW {
     return m_msg.c_str();
   }
 
-  int SockException::reason() {
-    return m_reason;
-  }
-
   Sock::Sock()
-    : m_sock ( -1 ), m_timeout(2.0), m_connectTimeout(2.0), m_debug(false) {
-    memset ( &m_addr, 0, sizeof ( m_addr ) );
+    : m_connectTimeout(2.0), m_debug(false) {
+    memset ( &m_addr, 0, sizeof ( m_addr ) ); // This is for recvfrom(UDP)
+    m_sock = -1;
+    m_timeout = 2.0;
   }
 
   Sock::Sock(const std::string host, const int port ) 
-    : m_sock ( -1 ), m_timeout(2.0), m_connectTimeout(2.0), m_debug(false) {
+    : m_connectTimeout(2.0), m_debug(false) {
+    m_sock = -1;
+    m_timeout = 2.0;
     m_ipAddress = host;
     m_port = port;
     memset ( &m_addr, 0, sizeof ( m_addr ) );
     if(m_debug) {
-      std::cerr << "ipaddress = "<<  m_ipAddress 
+      std::cerr << "Sock::Sock:ipaddress = "<<  m_ipAddress 
 		<< "  port = " << m_port << std::endl;
     }
+    // for sendTo(UDP)
+    memset(&m_addr_other, 0, sizeof (m_addr_other));
+    m_addr_other.sin_family = AF_INET;
+    m_addr_other.sin_port = htons(m_port);
+    if (m_debug)
+      std::cout << "Sock::Sock:m_addr_other.sin_port = " << m_addr_other.sin_port << std::endl;
+    int status = inet_pton(AF_INET, m_ipAddress.c_str(),
+                           &m_addr_other.sin_addr );
+    if(status <= 0) {
+      perror("### ERROR: Sock::constructor:inet_pton");
+    }
+    m_slen = sizeof(m_addr_other); // This is for recvfrom(UDP)
   }
 
   Sock::~Sock() {
-    if ( Sock::is_valid() )
+    if ( Sock::isValidSock() )
       ::close ( m_sock );
   }
 
   // For Server
-  int Sock::create() {
+  int Sock::create(void) {
+    return createTCP();
+  }
+
+  int Sock::createTCP() {
     m_sock = socket ( AF_INET, SOCK_STREAM, 0 );
-    if ( ! is_valid() ) {
+    if ( ! isValidSock() ) {
       perror("### ERROR: Sock::create():socket");
       throw SockException("Sock::create error");
     }
@@ -75,9 +80,23 @@ namespace DAQMW {
     return SUCCESS;
   }
 
+  int Sock::createUDP(void) {
+    m_sock = socket(AF_INET, SOCK_DGRAM, 0);
+    if (!isValidSock()) {
+      perror("### ERROR: Sock::createUDP():socket");
+      throw SockException("Sock::createUDP error");
+    }
+    if (m_debug)
+      std::cerr << "Sock::createUDP() done\n";
+    setOptReUse(true); // if error, error will be thrown.
+    if (m_debug)
+      std::cerr << "Sock::setsockopt() REUSE done\n";
+    return SUCCESS;
+  }
+
   int Sock::bind ( const int port ) {
     int status;
-    if ( ! is_valid() ){
+    if ( ! isValidSock() ){
       perror("### ERROR: Sock::bind(const int):invalid socket");
       throw SockException("Sock::bind invalid socket");
     }
@@ -85,8 +104,8 @@ namespace DAQMW {
     m_addr.sin_addr.s_addr = INADDR_ANY;
     m_addr.sin_port = htons ( port );
     status = ::bind ( m_sock,
-			   ( struct sockaddr * ) &m_addr,
-			   sizeof ( m_addr ) );
+		      ( struct sockaddr * ) &m_addr,
+		      sizeof ( m_addr ) );
     if ( status == -1 ) {
       perror("### ERROR: Sock::bind(int):bind");
       throw SockException("Sock::bind error");
@@ -99,7 +118,7 @@ namespace DAQMW {
 
   int Sock::bind ( const int port, const char* ipAddress ) {
     int status;
-    if ( ! is_valid() ){
+    if ( ! isValidSock() ){
       perror("### ERROR: Sock::bind(int, char*):invalid socket");
       throw SockException("Sock::bind invalid socket");
     }
@@ -107,8 +126,8 @@ namespace DAQMW {
     m_addr.sin_addr.s_addr = inet_addr(ipAddress);
     m_addr.sin_port = htons ( port );
     status = ::bind ( m_sock,
-			   ( struct sockaddr * ) &m_addr,
-			   sizeof ( m_addr ) );
+		      ( struct sockaddr * ) &m_addr,
+		      sizeof ( m_addr ) );
     if ( status == -1 ) {
       perror("### ERROR: Sock::bind(int, char*):bind");
       throw SockException("Sock::bind error");
@@ -119,17 +138,17 @@ namespace DAQMW {
     }
   }
 
-    int Sock::listen() const {
-      int status = ::listen ( m_sock, MAXCONNECTIONS );
-      if ( status == -1 ) {
-	perror("### ERROR: Sock::listen():listen");
-	throw SockException("Sock::listen error");
-      } else {
-	if(m_debug)
-	  std::cerr << "Sock::listen() done\n";
-	return SUCCESS;
-      }
+  int Sock::listen() const {
+    int status = ::listen ( m_sock, MAXCONNECTIONS );
+    if ( status == -1 ) {
+      perror("### ERROR: Sock::listen():listen");
+      throw SockException("Sock::listen error");
+    } else {
+      if(m_debug)
+	std::cerr << "Sock::listen() done\n";
+      return SUCCESS;
     }
+  }
 
   int Sock::accept ( Sock& new_socket ) const {
     int addr_length = sizeof ( m_addr );
@@ -138,8 +157,7 @@ namespace DAQMW {
     if ( new_socket.m_sock < 0 ) { 
       perror("### ERROR: Sock::accept(Sock&):accept");
       throw SockException("Sock::accept error");
-    }
-    else {
+    } else {
       if(m_debug)
 	std::cerr << "Sock::accept(Sock&) done\n";
       return SUCCESS;
@@ -171,12 +189,13 @@ namespace DAQMW {
     return SUCCESS;
   }
 
-  int  Sock::connect ( const std::string host, const int port ) {
-    //int time = static_cast<int>(m_connectTimeout);
-    
-    if ( ! is_valid() ) {
+  int Sock::connect ( const std::string host, const int port ) {
+    if ( ! isValidSock() ) {
       m_sock = socket ( AF_INET, SOCK_STREAM, 0 );
-      //      std::cerr << "Sock::connect: socket was created" << std::endl;
+      if (m_debug)
+	std::cerr << "Sock::connect(string,int): socket is created" << std::endl;
+      if (!isValidSock())
+        return ERROR_FATAL;
     }
     m_addr.sin_family = AF_INET;
     m_addr.sin_port = htons ( port );
@@ -184,30 +203,45 @@ namespace DAQMW {
     int status = inet_pton ( AF_INET, host.c_str(), &m_addr.sin_addr );
     if (status < 0) {
       perror("### ERROR: Sock::connect(string, int) inet_pton");
-      throw SockException("Sock::connect(string, int) inet_pton error");
+      return ERROR_FATAL;
     } else if(status == 0) { // specified by hostname not ip
       struct hostent *hostinfo = gethostbyname(host.c_str());
       if(hostinfo != NULL) {
 	m_addr.sin_addr.s_addr = *(unsigned int*)hostinfo->h_addr_list[0];
       } else {
 	std:: cerr << "### ERROR: Sock::connect(string, int) gethostbyname" << std::endl;
-	throw SockException("Sock::connect(string, int) gethostbyname error");
+	return ERROR_FATAL;
       }
     }
+    if (m_debug)
+      std::cerr << "Sock::connect(string,int): inet_pton() done" << std::endl;
     setAlarmTimer();
+
+    status = setOptReUse(true);
+    if (status < 0)
+      return status;
+    status = setOptRecvTimeOut(m_timeout);
+    if (status < 0)
+      return status;
+    status = setOptSendTimeOut(m_timeout);
+    if (status < 0)
+      return status;
+
     status = ::connect ( m_sock, ( sockaddr * ) &m_addr, sizeof ( m_addr ) );
     alarm(0);
     if(status < 0) {
       if(errno== EINTR)
 	return ERROR_TIMEOUT;
       perror("### ERROR: Sock::connect(string, int) connect");
-      throw SockException("Sock::connect(string, int) connect error");
+      return ERROR_FATAL;
     }
+    if (m_debug)
+      std::cerr << "Sock::connect(string,int): connect done" << std::endl;
+
     return SUCCESS;
   }
 
   int Sock::connect(int type) {
-    //int time = static_cast<int>(m_connectTimeout);
     struct timeval tv;
     int socketType;
     int status;
@@ -226,7 +260,7 @@ namespace DAQMW {
       break;
     default:
       std::cerr << "Sock::connect(int): invalide type" << std::endl;
-      throw SockException("### Sock::connect(int) invalid type");
+      return ERROR_FATAL;
     }
     if(m_sock==-1) // if socket is not created, create now.
       m_sock = socket ( AF_INET, socketType, 0 );
@@ -250,12 +284,16 @@ namespace DAQMW {
       perror("### ERROR: Sock::connect(int):setsockopt:ReceiveTimeout");
       return ERROR_FATAL;
     }
+    if (m_debug)
+      std::cerr << "Sock::connect(int):setsockopt:RecvTimeout done" << std::endl;
     // Send(send/write) timeout is set.
     if ( (status = setsockopt ( m_sock, SOL_SOCKET, SO_SNDTIMEO, 
 				&tv, sizeof(tv))) < 0) {
       perror("### ERROR: Sock::connect(int):setsockopt:SendTimeout");
       return ERROR_FATAL;
     }
+    if (m_debug)
+      std::cerr << "Sock::connect(int):setsockopt:SendTimeout done" << std::endl;
 
     m_addr.sin_family = AF_INET;
     m_addr.sin_port = htons ( m_port );
@@ -269,7 +307,7 @@ namespace DAQMW {
     }
     setAlarmTimer(); // set connection timeout.
     status = ::connect ( m_sock, ( const sockaddr * ) &m_addr,
-			     (socklen_t)sizeof ( m_addr ) );
+			 (socklen_t)sizeof ( m_addr ) );
     alarm(0);
     if(status < 0) {
       if(errno==EINTR) {
@@ -346,14 +384,16 @@ namespace DAQMW {
       nleft -= nwritten;
       ptr   += nwritten;
     }
-    return(s.size() - nleft);
+    if(nleft != 0)
+      throw SockException("Sock::sendAll(const string) error:not same size");
+    else
+    return SUCCESS;
   }
 
   int Sock::sendAll ( const unsigned int* s, int size ) const {
     ssize_t nwritten;
     unsigned char* ptr = (unsigned char*)s;
     size_t nleft = size;
-    //    std::cerr << "Sock::sendAll(const unsigned int*, int) enter" << std::endl;
     while (nleft > 0) {
     again:
       if ( (nwritten = ::send ( m_sock, ptr, nleft, MSG_NOSIGNAL )) < 0) {
@@ -367,7 +407,10 @@ namespace DAQMW {
       nleft -= nwritten;
       ptr   += nwritten;
     }
-    return(size - nleft);
+    if(nleft != 0)
+      throw SockException("Sock::sendAll(const unsigned int*, int) error: not same size");
+    else
+      return SUCCESS;
   }
 
   int Sock::recv ( std::string& s ) const {
@@ -381,12 +424,11 @@ namespace DAQMW {
       } else if((errno == ETIMEDOUT)||(errno == EAGAIN)) {
 	return ERROR_TIMEOUT;
       }
-      std::cerr << "### ERROR: status == -1   errno == " 
-		<< errno << "  in Socket::recv(string&)\n";
+      perror("### ERROR: Sock::recv(string&)");
       throw SockException("Sock::recv(string&) fatal error");	
     } else if(status == 0) {  // far end node link will be off.
-      std::cerr << "### ERROR: status == 0 in Socket::recv(string&)\n";
-      throw SockException("Sock::recv(string&) fatal error");	
+      perror("### ERROR: Sock::recv(string&)");
+      throw SockException("Sock::recv(string&) fatal error: far end node link off");
     } else {
       s = buf;
       return status;
@@ -402,14 +444,12 @@ namespace DAQMW {
       if((errno == ETIMEDOUT)||(errno == EAGAIN)) {
 	return ERROR_TIMEOUT;
       } else {
-	if(m_debug)
-	  std::cerr << "status == -1   errno == " 
-		    << errno << "  in Socket::recv\n";
+	perror("### ERROR: Sock::recv(unsigned int*, int)");
 	throw SockException("Sock::recv(int*, int) error");
       }
     } else if(status == 0) {  // far end node link will be off.
-      std::cerr << "### ERROR: status == 0 in Socket::recv(string&)\n";
-      throw SockException("Sock::recv(string&) fatal error");	
+      perror("### ERROR: Sock::recv(unsigned int*,int)");
+      throw SockException("Sock::recv(unsigned int*,int) fatal error: far end node link off");
     }
     return status;
   }
@@ -429,15 +469,17 @@ namespace DAQMW {
       } else if((errno == ETIMEDOUT)||(errno == EAGAIN)) {
 	return ERROR_TIMEOUT;
       }
-      std::cerr << "### ERROR: status == -1   errno == " 
-		<< errno << "  in Socket::recvAll(string&)\n";
+      perror("### ERROR: Sock::recvAll(string&,int&):recv fatal error");
       throw SockException("Sock::recvAll(string&, int&) fatal error");
     } else if(status == 0) {  // far end node link will be off.
-      std::cerr << "### ERROR: status == 0 in Socket::recv(string&, int&)\n";
-      throw SockException("Sock::recv(string&, int&) fatal error");	
+      perror("### ERROR: Sock::recvAll(string&,int&):recv far end node link off");
+      throw SockException("Sock::recv(string&, int&) fatal error: far end node link off");
     } else {
       s = buf;
-      return status;
+      if (status != size)
+        throw SockException("Sock::recv(string&, int&) fatal error: not same size");
+      else
+        return SUCCESS;
     }
   }
 
@@ -450,16 +492,16 @@ namespace DAQMW {
       } else if((errno == ETIMEDOUT)||(errno == EAGAIN)) {
 	return ERROR_TIMEOUT;
       } else {
-	if(m_debug)
-	  std::cerr << "status == -1   errno == " 
-		    << errno << "  in Socket::recv(int*, int)\n";
+	perror("### ERROR: Sock::recvAll(unsigned int, int):recv fatal error");
 	throw SockException("Sock::recv(unsigned int*, int) fatal error");
       }
     } else if(status == 0) { // far end node link will be off.
-      std::cerr << "### ERROR: status == 0 in Socket::recv(unsigned int*, int)\n";
-      throw SockException("Sock::recv(unsigned int*, int) fatal error");	
+      perror("### ERROR: Sock::recvAll(unsigned int, int):recv far end node link off");
+      throw SockException("Sock::recv(unsigned int*, int) fatal error: far end node link off");
+      if (status != size)
+	throw SockException("Sock::recv(unsigned int*, int) fatal error: not same size");
     }
-    return status;
+    return SUCCESS;
   }
 
   // This flag requests that the implementation does not send SIGPIPE on
@@ -473,44 +515,42 @@ namespace DAQMW {
 	goto again;
       } else if((errno == ETIMEDOUT)||(errno == EAGAIN)) {
 	return ERROR_TIMEOUT;
-      } else
-	return ERROR_FATAL;
-    } else {
+      } else if (errno == EPIPE) {
+        perror("### ERROR: Sock::write(unsigned char*,int):send far end node link off");
+      } else {
+        perror("### ERROR: Sock::write(unsigned char*,int):send fatal error");
+      }
+      return ERROR_FATAL;
+    } else { // success
       return status;
     }
   }
-  /*
-    int n = ::write ( m_sock, buffer, nbytes );
-    if(n < 0) {
-      if((errno == ETIMEDOUT)||(errno == EAGAIN)) {
-        return ERROR_TIMEOUT;
-      }
-      return ERROR_FATAL;
-    }
-    return n;
-  }
-  */
+
   int Sock::read ( unsigned char* buffer, int nbytes ) const {
   again:
     int n = ::read ( m_sock, buffer, nbytes );
+    if (m_debug)
+      std::cout << "n = ::read() = " << n << std::endl;
     if(n < 0) {
       if(errno == EINTR) {
 	goto again;
       } else if((errno == ETIMEDOUT)||(errno == EAGAIN)) {
 	return ERROR_TIMEOUT;
-      } else
+      } else {
+	perror("### ERROR: Sock::read(unsigned char*,int):read fatal error");
 	return ERROR_FATAL;
-    } else if(n == 0) // far end node link will be off.
+      }
+    } else if(n == 0) { // far end node link will be off.
+      perror("### ERROR: Sock::read(unsigned char*,int):read far end node link off");
       return ERROR_FATAL;
+    }
     return n;
   }
 
-  // 
   // This flag requests that the implementation does not send SIGPIPE on
   // error on stream oriented sockets when the other end breaks
   // connection. The EPIPE error is still returned as normal.
   int Sock::writeAll(unsigned char* buffer, int nbytes) const {
-
     ssize_t nwritten;
     unsigned char* ptr = buffer;
     size_t nleft = nbytes;
@@ -522,103 +562,124 @@ namespace DAQMW {
 	  goto again;
 	} else if((errno == ETIMEDOUT)||(errno == EAGAIN)) {
 	  return ERROR_TIMEOUT;
-	} else 	
+	} else if (errno == EPIPE) {
+          perror("### ERROR: Sock::write(unsigned char*,int):send far end node link off");
+        } else {
+	  perror("### ERROR: Sock::writeAll(unsigned char*,int):send fatal error");
 	  return ERROR_FATAL;
-      }
-      nleft -= nwritten;
-      ptr   += nwritten;
-    }
-    return(nbytes - nleft);
-  }
-  /*
-    ssize_t nwritten;
-    unsigned char* ptr = buffer;
-    size_t nleft = nbytes;
-
-    while (nleft > 0) {
-      if ( (nwritten = ::write(m_sock, ptr, nleft)) <= 0) {
-	if((errno == ETIMEDOUT)||(errno == EAGAIN)) {
-	  return ERROR_TIMEOUT;
 	}
-	return ERROR_FATAL;
       }
       nleft -= nwritten;
       ptr   += nwritten;
     }
-    return(nbytes - nleft);
+    if (nleft != 0) {
+      perror("### ERROR: Sock::writeAll(unsigned int, int):send not same size");
+      return ERROR_NOTSAMESIZE;
+    } else
+      return SUCCESS;
   }
-  */
 
   int Sock::readAll(unsigned char* buffer, int nbytes) const {
   again:
     int status = ::recv ( m_sock, buffer, nbytes, MSG_WAITALL);
     if ( status < 0 ) {
       if(errno == EINTR) {
-	std::cerr << "readAll(unsigned char*, int): signal is received." << std::endl;
 	goto again;
       }
       if((errno == ETIMEDOUT)||(errno == EAGAIN)) {
 	return ERROR_TIMEOUT;
       } else {
-	if(m_debug)
-	  std::cerr << "status == -1   errno == " 
-		    << errno << "  in Socket::readAll(unsigned char*, int)\n";
+	perror("### ERROR: Sock::readAll(unsigned char*,int):recv fatal error");
 	return ERROR_FATAL;
       }
     } else if(status == 0) { // far end node link will be off.
+      perror("### ERROR: Sock::readAll(unsigned char*,int):recv far end node link off");
       return ERROR_FATAL;
     }
-    return status;
-  }
-  /*
-    ssize_t nread;
-    unsigned char* ptr = buffer;
-    size_t nleft = nbytes;
-    while (nleft > 0) {
-      if ( (nread = ::read(m_sock, ptr, nleft)) < 0) {
-	if((errno == ETIMEDOUT)||(errno == EAGAIN)) {
-	  return ERROR_TIMEOUT;
-	}
-	if (errno == EINTR) {
-	  nread = 0;
-	}
-	else {
-	  return ERROR_FATAL;
-	}
-      } else if (nread == 0) {
-	break;
-      }
-      nleft -= nread;
-      ptr   += nread;
+    if(status != nbytes) {
+      perror("### ERROR: Sock::readAll(unsigned int, int):recv not same size");
+      return ERROR_NOTSAMESIZE;
     }
-    return(nbytes - nleft);
-  */
+    return SUCCESS;
+  }
+
+  int Sock::writeTo(const unsigned char* buffer, int nbytes) {
+    m_slen = sizeof(m_addr_other);
+  again:
+    int status = ::sendto(m_sock, buffer, nbytes, MSG_NOSIGNAL,
+                          (struct sockaddr*)&m_addr_other, m_slen);
+    if (m_debug)
+      std::cout << "Sock::writeTo:port # sent = " << m_addr_other.sin_port << std::endl;
+    if (status < 0) {
+      if(errno == EINTR) {
+        goto again;
+      }
+      if((errno == ETIMEDOUT)||(errno == EAGAIN)) {
+        return ERROR_TIMEOUT;
+      } else if (errno == EPIPE) {
+        perror("### ERROR: Sock::writeTo(unsigned char*,int):sendto far end node link off");
+      } else {
+	perror("### ERROR: Sock::writeTo(unsigned char*,int):sendto fatal error");
+        return ERROR_FATAL;
+      }
+    }
+    return status; // number of data received
+  }
+
+  int Sock::readFrom(unsigned char* buffer, int nbytes)
+  {
+  again:
+    int status = ::recvfrom(m_sock, buffer, nbytes, 0,
+                            (struct sockaddr*)&m_addr_other, &m_slen);
+    if (m_debug)
+      std::cout << "Sock::readFrom:port # sent = " << m_addr_other.sin_port << \
+	std::endl;
+    if (status < 0) {
+      if(errno == EINTR) {
+	std::cerr << "readFrom(unsigned char*, int): signal is received.";
+	std::cerr << std::endl;
+        goto again;
+      }
+      if((errno == ETIMEDOUT)||(errno == EAGAIN)) {
+        return ERROR_TIMEOUT;
+      } else {
+        perror("### ERROR: Sock::readFrom(unsigned char*,int):recvfrom fatal error");
+        return ERROR_FATAL;
+      }
+    } else if(status == 0) { // far end node link will be off.
+      perror("### ERROR: Sock::readFrom(unsigned char*,int):recvfrom far end node link off");
+      return ERROR_FATAL;
+    }
+    return status; // number of data received
+  }
 
   void Sock::disconnect(void) {
-    if(m_debug) {
-      std::cerr << "Sock::disconnect:enter" << std::endl;
-    }
     ::close(m_sock);
-    m_sock = -1; // we cannot reuse the socket.
+    m_sock = -1;
+    if (m_debug)
+      std::cerr << "Sock::disconnect:close done" << std::endl;
   }
 
-  int Sock::setOptNonBlocking ( const bool b ) const {
+  int Sock::setOptNonBlocking ( const bool flag ) const {
     int opts;
     
     opts = fcntl ( m_sock, F_GETFL );
     if ( opts == -1 ) {
+      perror("### ERROR: Sock::setNonBlocking(F_GETFL) error");
       throw SockException("Sock::setNonBlocking(F_GETFL) error");
     }
-    if ( b ) {
+    if ( flag ) {
       opts = ( opts | O_NONBLOCK );
-    }
-    else {
+    } else {
       opts = ( opts & ~O_NONBLOCK );
     }
     fcntl ( m_sock, F_SETFL,opts );
     if ( opts == -1 ) {
+      perror("### ERROR: Sock::setNonBlocking(F_SETFL) error");
       throw SockException("Sock::setNonBlocking(F_SETFL) error");
     }
+    if (m_debug)
+      std::cerr << "Sock::setNonBlocking() done" << std::endl;
     return SUCCESS;
   }
 
@@ -630,8 +691,11 @@ namespace DAQMW {
       on = 0;
     if ( setsockopt ( m_sock, SOL_SOCKET, SO_REUSEADDR, 
 		      ( const char* ) &on, sizeof ( on ) ) == -1 ) {
+      perror("### ERROR: Sock::setOptReUse:setsockopt(SO_REUSEADDR) error");
       throw SockException("Sock::create setsockopt(SO_REUSEADDR) error");
     }
+    if (m_debug)
+      std::cerr << "Sock::setOptReUse() done" << std::endl;
     return SUCCESS;
   }
 
@@ -643,6 +707,7 @@ namespace DAQMW {
       on = 0;
     if( setsockopt ( m_sock, IPPROTO_TCP, TCP_NODELAY, 
 		     ( const char* ) &on, sizeof (on) ) == -1){
+      perror("### ERROR: Sock::setOptNoDelay() error");
       throw SockException("Sock::create setsockopt(TCP_NODELAY) error");
     }
     if(m_debug)
@@ -656,12 +721,15 @@ namespace DAQMW {
     m_timeout = time;
     if ((status = float2timeval(m_timeout, &tv)) < 0) {
       if(m_debug)
-	std::cerr << "### fail conversion from timeout values to timeval structure\n";
+	perror("### ERROR: Sock::setOptRecvTimeOut():float2timeval error");
     }
     if ( (status = setsockopt ( m_sock, SOL_SOCKET, SO_RCVTIMEO, 
 				&tv, sizeof(tv))) < 0) {
+      perror("### ERROR: Sock::setOptRecvTimeOut:setsockopt error");
       throw SockException("### Sock::connect setsockopt(SO_RCVTIMEO) error");
     }
+    if (m_debug)
+      std::cerr << "Sock::setOptRecvTimeOut() done\n";
     return SUCCESS;
   }
 
@@ -670,13 +738,15 @@ namespace DAQMW {
     int status;
     m_timeout = time;
     if ((status = float2timeval(m_timeout, &tv)) < 0) {
-      if(m_debug)
-	std::cerr << "### fail conversion from timeout values to timeval structure\n";
+      perror("### ERROR: Sock::setOptSendTimeOut():float2timeval error");
     }
     if ( (status = setsockopt ( m_sock, SOL_SOCKET, SO_SNDTIMEO, 
 				&tv, sizeof(tv))) < 0) {
+      perror("### ERROR: Sock::setOptSendTimeOut: fatal error");
       throw SockException("### Sock::connect setsockopt(SO_SNDTIMEO) error");
     }
+    if (m_debug)
+      std::cerr << "Sock::setOptSendTimeOut() done\n";
     return SUCCESS;
   }
 
@@ -685,8 +755,11 @@ namespace DAQMW {
     int status;
     if ( (status = setsockopt ( m_sock, SOL_SOCKET, SO_RCVBUF, 
 				&val, sizeof(val))) < 0) {
+      perror("### ERROR: Sock::setOptRecvBuf: fatal error");
       throw SockException("### Sock::connect setsockopt(SO_RCVBUF) error");
     }
+    if (m_debug)
+      std::cerr << "Sock::setOptRecvBuf() done\n";
     return SUCCESS;
   }
 
@@ -695,24 +768,19 @@ namespace DAQMW {
     int status;
     if ( (status = setsockopt ( m_sock, SOL_SOCKET, SO_SNDBUF, 
 				&val, sizeof(val))) < 0){
+      perror("### ERROR: Sock::setOptSendBuf: fatal error");
       throw SockException("### Sock::connect setsockopt(SO_SNDBUF) error");
     }
+    if (m_debug)
+      std::cerr << "Sock::setOptSendBuf() done\n";
     return SUCCESS;
   }
 
-  // written by Hiroshi Sendai
   int Sock::float2timeval(float sec, struct timeval *tv) const {
     unsigned int i;
     unsigned long tv_sec;
     unsigned long tv_usec;
     
-    /*
-      if (sec > 3600.0) {
-      fprintf(stderr, "sleep time too large: %4.3f\n", sec);
-      return -1;
-      }
-    */
-	
     /* round to mili sec */
     i = static_cast<int>(sec) * 1000;
     tv_sec  = i / 1000;
@@ -727,4 +795,16 @@ namespace DAQMW {
   int Sock::getSockFd() const {
     return m_sock;
   }
+
+  int Sock::readNum(int* msgSize) const {
+    int status = ioctl(m_sock, FIONREAD, msgSize);
+    if(status < 0) {
+      perror("### ERROR: Sock::readNum:ioctl fatal error");
+      return ERROR_FATAL;
+    }
+    if (m_debug)
+      std::cerr << "Sock::readNum() done\n";
+    return SUCCESS;
+  }
+
 }
