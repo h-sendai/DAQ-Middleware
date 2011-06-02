@@ -1,0 +1,25 @@
+#!/bin/sh
+
+set -e
+
+os=$(uname -s)
+arch=$(uname -m)
+
+destdir=$1
+
+if [ $os = "Linux" ]; then
+    install_dir=${destdir}/etc/ld.so.conf.d
+    conf_file=${install_dir}/daqmw.conf
+    if [ -d ${destdir}/etc/ld.so.conf.d ]; then
+        if [ $arch = "i686" ]; then
+            echo /usr/lib/daqmw > $conf_file
+        fi
+        if [ $arch = "x86_64" ]; then
+            echo /usr/lib64/daqmw > $conf_file
+        fi
+    fi
+    if [ -z $destdir ]; then
+        echo "exec. ldconfig"
+        ldconfig
+    fi
+fi

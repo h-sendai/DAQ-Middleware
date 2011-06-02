@@ -22,12 +22,11 @@ clean:
 	
 install:
 	@set -e; for dir in $(SUBDIRS); do $(MAKE) -C $${dir} $@; done
-#README
-#Changes
-#INSTALL
+	./install_ld_conf $(DESTDIR)
 
 uninstall:
 	@set -e; for dir in $(SUBDIRS); do $(MAKE) -C $${dir} $@; done
+	rm -f $(DESTDIR)/etc/ld.so.conf.d/daqmw.conf
 
 dist:
 	hg archive -t tgz ~/rpm/SOURCES/DAQ-Middleware-$(VERSION).tar.gz
