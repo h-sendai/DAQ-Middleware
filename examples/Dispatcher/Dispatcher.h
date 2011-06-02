@@ -53,6 +53,7 @@ private:
     int read_data_from_detectors();
     int set_data_OutPort1(unsigned int data_byte_size);
     int set_data_OutPort2(unsigned int data_byte_size);
+    int reset_InPort();
     unsigned int read_InPort();
     int write_OutPort1();
     int write_OutPort2();

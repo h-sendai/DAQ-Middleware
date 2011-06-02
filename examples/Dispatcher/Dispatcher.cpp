@@ -129,7 +129,7 @@ int Dispatcher::daq_start()
 int Dispatcher::daq_stop()
 {
     std::cerr << "*** Dispatcher::stop" << std::endl;
-
+    reset_InPort();
     return 0;
 }
 
@@ -168,6 +168,17 @@ int Dispatcher::set_data_OutPort2(unsigned int data_byte_size)
     m_out2_data.data.length(data_byte_size);
     memcpy(&(m_out2_data.data[0]), &(m_in_data.data[0]), data_byte_size);
 
+    return 0;
+}
+
+int Dispatcher::reset_InPort()
+{
+    TimedOctetSeq dummy_data;
+
+    while (m_InPort.isEmpty() == false) {
+        m_InPort >> dummy_data;
+    }
+    //std::cerr << "*** Dispatcher::InPort flushed\n";
     return 0;
 }
 
@@ -215,6 +226,9 @@ int Dispatcher::write_OutPort1()
             fatal_error_report(OUTPORT_ERROR);
         }
         if (m_out1_status == BUF_TIMEOUT) { // Timeout
+            if (check_trans_lock()) {     // Check if stop command has come.
+                set_trans_unlock();       // Transit to CONFIGURE state.
+            }
             m_out1_timeout_counter++;
             return -1;
         }
@@ -237,6 +251,9 @@ int Dispatcher::write_OutPort2()
             fatal_error_report(OUTPORT_ERROR);
         }
         if (m_out2_status == BUF_TIMEOUT) { // Timeout
+            if (check_trans_lock()) {     // Check if stop command has come.
+                set_trans_unlock();       // Transit to CONFIGURE state.
+            }
             m_out2_timeout_counter++;
             return -1;
         }
