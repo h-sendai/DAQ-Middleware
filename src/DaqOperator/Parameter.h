@@ -1,9 +1,33 @@
+
+// -*- C++ -*-
+/*!
+ * @file Parameter.h
+ * @brief 
+ * @date 1-January-2009
+ * @author Yoshiji Yasu (yoshiji.yasu@kek.jp)
+ *
+ * Copyright (C) 2009-2011
+ *     Yoshiji Yasu
+ *     High Energy Accelerator Research Organization (KEK), Japan.
+ *     All rights reserved.
+ *
+ */
+
+#ifndef PARAMETER_H
+#define PARAMETER_H
+
 #include <iostream>
 #include <string>
-//#include "ParameterServer.h"
 
 typedef int (*CallBackFunction)();
-//typedef int (*CallBackFunction)(ParameterServer s);
+
+/*!
+ * @class Parameter
+ * @brief Parameter class
+ * 
+ * This class is a parameter for ParameterServer class
+ *
+ */
 class Parameter {
  public:
   void set( std::string* valueP, CallBackFunction call ){
@@ -20,3 +44,5 @@ class Parameter {
   std::string* m_valuePointer;
   CallBackFunction m_callBackFunc;
 };
+
+#endif // PARAMETER_H

@@ -1,3 +1,16 @@
+// -*- C++ -*-
+/*!
+ * @file json2conlist.h
+ * @brief json2conlist class
+ * @date 1-January-2009
+ * @author Yoshiji Yasu (yoshiji.yasu@kek.jp)
+ *
+ * Copyright (C) 2009-2011
+ *     Yoshiji Yasu
+ *     High Energy Accelerator Organization (KEK), Japan
+ *     All rights reserved.
+ *
+ */
 
 #ifndef JSON2CONLIST_H
 #define JSON2CONLIST_H
@@ -20,6 +33,13 @@ typedef std::map< std::string, std::string > conList;
 typedef std::pair< std::string, std::string > conPair;
 typedef std::map< std::string, std::string >::iterator conIt;
 
+/*!
+ * @class Json2ConList
+ * @brief Json2ConList class
+ * 
+ * 
+ *
+ */
 class Json2ConList {
 
  private:
@@ -156,5 +176,5 @@ class Json2ConList {
     cout << "* json2conlist::print()_end" << endl;
   }
 };
-#endif
+#endif // JSON2CONLIST_H
 

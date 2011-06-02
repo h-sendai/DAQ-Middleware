@@ -1,9 +1,32 @@
 // -*- C++ -*-
+/*!
+ * @file FatalType.h
+ * @brief Definition of Fata errors
+ * @date 2008-1-1
+ * @author Kazuo Nakayoshi (kazuo.nakayoshi@kek.jp)
+ *
+ * Copyright (C) 2008-2011
+ *     Kazuo Nakayoshi
+ *     High Energy Accelerator Research Organization (KEK), Japan.
+ *     All rights reserved.
+ *
+ */
 #ifndef FATALTYPE_H
 #define FATALTYPE_H
 
+/*!
+ * @namespace DAQMW
+ * @brief common namespace of DAQ-Middleware
+ */
 namespace DAQMW
 {
+  /*!
+   * @class FatalType
+   * @brief FatalType class
+   * 
+   * 
+   *
+   */
     namespace FatalType
     {
         enum Enum

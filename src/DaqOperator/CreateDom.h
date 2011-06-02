@@ -1,4 +1,17 @@
 // -*- C++ -*-
+/*!
+ * @file CreateDom.h
+ * @brief 
+ * @date 1-January-2008
+ * @author Kazuo Nakayoshi <kazuo.nakayoshi@kek.jp>
+ *
+ * Copyright (C) 2008-2011
+ *     Kazuo Nakayoshi
+ *     High Energy Accelerator Research Organization (KEK), Japan.
+ *     All rights reserved.
+ *
+ */
+
 #ifndef CREATEDOM_H
 #define CREATEDOM_H
 
@@ -11,7 +24,19 @@
 
 using namespace xercesc;
 
+/*!
+ * @namespace DAQMW
+ * @brief common namespace of DAQ-Middleware
+ */
 namespace DAQMW {
+
+/*!
+ * @class CreateDom
+ * @brief CreateDom class
+ * 
+ * 
+ *
+ */
 class CreateDom
 {
 	struct Result {

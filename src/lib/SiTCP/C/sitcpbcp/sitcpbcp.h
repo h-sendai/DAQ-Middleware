@@ -1,14 +1,23 @@
-/*
- sitcpbcp.h, written by Yoshiji Yasu (KEK), 2008
- modified: July 2008, TCP interface is now not necessary
-*/
+// -*- C++ -*-
+/*!
+ * @file sitcpbcp.h
+ * @brief 
+ * @date 1-July-2008
+ * @author Hiroshi Sendai (hiroshi.sendai@kek.jp)
+ * @author Yoshiji Yasu (yoshiji.yasu@kek.jp)
+ *
+ * Copyright (C) 2008-2011
+ *     Hiroshi Sendai and Yoshiji Yasu
+ *     High Energy Accelerator Research Organization (KEK), Japan
+ *     All rights reserved.
+ *
+ */
 
 #ifndef SITCPBCP_H
 #define SITCPBCP_H
 
 #include <stdlib.h>
 #include <string.h>
-
 #include "sock.h"
 
 /* 
@@ -17,9 +26,6 @@
  */
 extern int sitcpbcp_debug;
 
-//The data type is defined in network byte order
-//Therefore, the header should not be converted into network order except
-// "address"(htons(address)).
 typedef struct bcp_header {
   unsigned char type;
   unsigned char command;

@@ -1,7 +1,15 @@
-// -*-C++-*-
+// -*- C++ -*-
 /*!
- * @file  DAQServiceSVC_impl.cpp
+ * @file DAQServiceSVC_impl.cpp
  * @brief Service implementation code of DAQService.idl
+ * @date 1-January-2008
+ * @author Kazuo Nakayoshi (kazuo.nakayoshi@kek.jp)
+ * @author Yoshiji Yasu (yoshiji.yasu@kek.jp)
+ *
+ * Copyright (C) 2008-2011
+ *     Kazuo Nakayoshi and Yoshiji Yasu
+ *     High Energy Accelerator Research Organization (KEK), Japan.
+ *     All rights reserved.
  *
  */
 

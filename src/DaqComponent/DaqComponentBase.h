@@ -2,13 +2,13 @@
 /*!
  * @file DaqComponentBase.h
  * @brief DAQ Component Base class
- * @date
- * @author Yoshiji Yasu, Kazuo Nakayoshi
+ * @date 1-Januaary-2008
+ * @author Kazuo Nakayoshi (kazuo.nakayoshi@kek.jp)
+ * @author Yoshiji Yasu (yoshiji.yasu@kek.jp)
  *
- * Copyright (C) 2008
- *     Yoshiji Yasu, Kazuo Nakayoshi
- *     Electronics System Group,
- *     KEK, Japan.
+ * Copyright (C) 2008-2001
+ *     Kazuo Nakayoshi and Yoshiji Yasu
+ *     High Energy Accelerator Research Organization (KEK), Japan.
  *     All rights reserved.
  *
  */
@@ -31,8 +31,19 @@
 #include "DaqComponentException.h"
 #include "Timer.h"
 
+/*!
+ * @namespace DAQMW
+ * @brief common namespace of DAQ-Middleware
+ */
 namespace DAQMW
 {
+  /*!
+   * @class DaqComponentBase
+   * @brief DaqComponentBase class
+   * 
+   * This is default condition class. User uses the class as base class.
+   *
+   */
     class DaqComponentBase:
         public RTC::DataFlowComponentBase
     {

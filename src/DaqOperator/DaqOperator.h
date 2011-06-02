@@ -7,8 +7,7 @@
  *
  * Copyright (C) 2008
  *     Kazuo Nakayoshi
- *     Electronics System Group,
- *     KEK, Japan.
+ *     High Energy Accelerator Research Organization (KEK), Japan.
  *     All rights reserved.
  *
  */
@@ -56,6 +55,13 @@ struct serviceInfo {
 
 typedef std::vector< serviceInfo > DaqServiceList;
 
+/*!
+ * @class DaqOperator
+ * @brief DaqOperator class
+ * 
+ * 
+ *
+ */
 class DaqOperator
     : public RTC::DataFlowComponentBase
 {

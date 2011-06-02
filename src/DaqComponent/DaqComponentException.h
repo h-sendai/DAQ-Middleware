@@ -1,12 +1,36 @@
 // -*- C++ -*-
+/*!
+ * @file DaqComponentException.h
+ * @brief DAQ Component Exception class
+ * @date 1-January-2008
+ * @author Kazuo Nakayoshi (kauzo.nakayoshi@kek.jp)
+ * @author Yoshiji Yasu (yoshiji.yasu@kek.jp)
+ *
+ * Copyright (C) 2008-2011
+ *     Kazuo Nakayoshi and Yoshiji Yasu
+ *     High Energy Accelerator Research Organization (KEK), Japan.
+ *     All rights reserved.
+ *
+ */
 #ifndef DAQCOMPEXCEPTION_H
 #define DAQCOMPEXCEPTION_H
 
 #include <exception>
 #include "FatalType.h"
 
+/*!
+ * @namespace DAQMW
+ * @brief common namespace of DAQ-Middleware
+ */
 namespace DAQMW
 {
+  /*!
+   * @class DaqComponentException
+   * @brief DaqComponentException class
+   * 
+   * This is default condition class. User uses the class as base class.
+   *
+   */
     class DaqComponentException 
 	: public std::exception
     {

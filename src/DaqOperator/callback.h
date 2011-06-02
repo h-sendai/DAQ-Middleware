@@ -1,4 +1,16 @@
 // -*- C++ -*-
+/*!
+ * @file callback.h
+ * @brief 
+ * @date 1-January-2008
+ * @author Kazuo Nakayoshi <kazuo.nakayoshi@kek.jp>
+ *
+ * Copyright (C) 2008-2011
+ *     Kazuo Nakayoshi
+ *     High Energy Accelerator Research Organization (KEK), Japan.
+ *     All rights reserved.
+ *
+ */
 
 #ifndef CALLBACK_H
 #define CALLBACK_H

@@ -2,6 +2,14 @@
 /*!
  * @file  DAQServiceSVC_impl.h
  * @brief Service implementation header of DAQService.idl
+ * @date 1-January-2008
+ * @author Kazuo Nakayoshi (kazuo.nakayoshi@kek.jp)
+ * @author Yoshiji Yasu (yoshiji.yasu@kek.jp)
+ *
+ * Copyright (C) 2008-2011
+ *     Kazuo Nakayoshi and Yoshiji Yasu
+ *     High Energy Accelerator Research Organization (KEK), Japan.
+ *     All rights reserved.
  *
  */
 

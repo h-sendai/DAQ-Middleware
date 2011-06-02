@@ -2,7 +2,13 @@
 /*!
  * @file DaqOperatorComp.cpp
  * @brief DAQ Controller application
- * @date $Date$
+ * @date
+ * @author Kazuo Nakayoshi <kazuo.nakayoshi@kek.jp>
+ *
+ * Copyright (C) 2008
+ *     Kazuo Nakayoshi
+ *     High Energy Accelerator Research Organization (KEK), Japan.
+ *     All rights reserved.
  *
  */
 

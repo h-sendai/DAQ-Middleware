@@ -1,16 +1,38 @@
+// -*- C++ -*-
+/*!
+ * @file Timer.h
+ * @brief Timer class
+ * @date 1-January-2008
+ * @author Kazuo Nakayoshi (kazuo.nakayoshi@kek.jp)
+ *
+ * Copyright (C) 2008-2011
+ *     Kazuo Nakayoshi
+ *     High Energy Accelerator Research Organization (KEK), Japan.
+ *     All rights reserved.
+ *
+ */
 #ifndef TIMER_H
 #define TIMER_H
 
 #include <iostream>
 #include <sys/time.h>
 
+/*!
+ * @namespace DAQMW
+ * @brief common namespace of DAQ-Middleware
+ */
 namespace DAQMW {
-
+  /*!
+   * @class Timer
+   * @brief Timer class
+   * 
+   * 
+   *
+   */
 class Timer
 {
 public:
     Timer(unsigned int alarmInSec) 
-  //: m_timer_alarm(false)
     {
 	std::cerr << "Timer constructor\n";
 	m_alarm_time_usec = alarmInSec*1000000;
@@ -62,8 +84,7 @@ private:
     suseconds_t m_alarm_time_usec;
     timeval m_previous_time;
     timeval m_current_time;
-    //bool m_timer_alarm;
 };
 
 } //namespace
-#endif
+#endif // TIMER_H

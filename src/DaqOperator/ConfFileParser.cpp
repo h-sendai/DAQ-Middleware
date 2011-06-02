@@ -2,13 +2,12 @@
 /*!
  * @file ConfFileParser.cpp
  * @brief Configuration File Parsing class implementation
- * @date
+ * @date 1-January-2008
  * @author Kazuo Nakayoshi <kazuo.nakayoshi@kek.jp>
  *
- * Copyright (C) 2008
+ * Copyright (C) 2008-2011
  *     Kazuo Nakayoshi
- *     Electronics System Group,
- *     KEK, Japan.
+ *     High Energy Accelerator Research Organization (KEK), Japan.
  *     All rights reserved.
  *
  */

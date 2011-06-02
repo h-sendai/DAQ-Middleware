@@ -2,13 +2,13 @@
 /*!
  * @file DAQService.idl
  * @brief DAQ Service interface definition
- * @date
- * @author Yoshiji Yasu, Kazuo Nakayoshi
+ * @date 1-January-2008
+ * @author Kazuo Nakayoshi (kazuo.nakayoshi@kek.jp)
+ * @author Yoshiji Yasu (yoshiji.yasu@kek.jp)
  *
- * Copyright (C) 2008
- *     Yoshiji Yasu, Kazuo Nakayoshi
- *     Electronics System Group,
- *     KEK, Japan.
+ * Copyright (C) 2008-2011
+ *     Kazuo Nakayoshi and Yoshiji Yasu
+ *     High Energy Accelerator Research Organization (KEK), Japan.
  *     All rights reserved.
  *
  */

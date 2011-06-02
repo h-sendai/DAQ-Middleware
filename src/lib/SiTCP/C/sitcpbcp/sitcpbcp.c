@@ -1,7 +1,17 @@
-/*
- sitcpbcp.h, written by Yoshiji Yasu (KEK), 2008
- modified: July 2008, TCP interface is now not necessary
-*/
+// -*- C++ -*-
+/*!
+ * @file sitcpbcp.c
+ * @brief 
+ * @date 1-July-2008
+ * @author Hiroshi Sendai (hiroshi.sendai@kek.jp)
+ * @author Yoshiji Yasu (yoshiji.yasu@kek.jp)
+ *
+ * Copyright (C) 2008-2011
+ *     Hiroshi Sendai and Yoshiji Yasu
+ *     High Energy Accelerator Research Organization (KEK), Japan
+ *     All rights reserved.
+ *
+ */
 
 #include <errno.h>
 #include "sitcpbcp.h"

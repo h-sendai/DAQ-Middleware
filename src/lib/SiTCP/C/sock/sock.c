@@ -1,6 +1,18 @@
-/*
- sock.c
-*/
+// -*- C++ -*-
+/*!
+ * @file sock.c
+ * @brief Socket library
+ * @date 1-January-2008
+ * @author Hiroshi Sendai (hiroshi.sendai@kek.jp),
+ * @author Yoshiji Yasu (yoshiji.yasu@kek.jp)
+ *
+ * Copyright (C) 2008-2011
+ *     Hiroshi Sendai and Yoshiji Yasu
+ *     High Energy Accelerator Research Organization (KEK), Japan
+ *     All rights reserved.
+ *
+ */
+
 #include <stdio.h>
 #include "sock.h"
 

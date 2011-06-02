@@ -1,5 +1,16 @@
-/* 
- sock.h
+// -*- C++ -*-
+/*!
+ * @file sock.h
+ * @brief Socket library
+ * @date 1-January-2008
+ * @author Hiroshi Sendai (hiroshi.sendai@kek.jp),
+ * @author Yoshiji Yasu (yoshiji.yasu@kek.jp)
+ *
+ * Copyright (C) 2008-2011
+ *     Hiroshi Sendai and Yoshiji Yasu
+ *     High Energy Accelerator Research Organization (KEK), Japan
+ *     All rights reserved.
+ *
  */
 
 #ifndef _SOCK_C_H
@@ -55,4 +66,4 @@ int sock_read_select(sock_header* header, unsigned char* buffer, int nbytes);
 int float2timeval(float sec, struct timeval *tv);
 int connect_sitcp(char *ip_address, int port, float timeout, int type);
 
-#endif
+#endif // _SOCK_C_H
