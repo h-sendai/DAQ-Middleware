@@ -1,13 +1,16 @@
 
-# Change SOCK_DIR and SOCK_LIB as you need, please!
-# SOCK_DIR: directory which has Sock.h and libSock.a.
+INSTALL_DIR = /var/www/html/daqmw/operatorPanel
+LIB_DIR=lib
+try_lib64 = $(shell ls -d /usr/lib64 2>/dev/null)
+arch = $(shell uname -m)
+ifeq "$(strip $(try_lib64))" "/usr/lib64"
+ifeq "$(strip $(arch))"      "x86_64"
+LIB_DIR=lib64
+endif
+endif
 
-#SOCK_DIR      = /home/nakayosi/work/Socket/C++
-
-SOCK_DIR       = ../../SiTCP/CPP/Sock
-SOCK_LIB       = ${SOCK_DIR}/libSock.a
-
-# You don't have to change followings.
+SOCK_INC       = ../../src/lib/SiTCP/CPP/Sock
+SOCK_LIB       = -L../../src/lib/SiTCP/CPP/Sock -lSock
 
 SWIG           = /usr/bin/swig
 SWIG_FLAGS     = -c++ -python
@@ -26,9 +29,17 @@ all: ${SHAREDLIB}
 
 ${SHAREDLIB}: ${SRCS}
 	${SWIG} ${SWIG_FLAGS} ${INTERFACE}
-	${CXX} ${CXX_FLAGS} -I${SOCK_DIR} -I${PYTHON_INC_DIR} ${WRAPFILE}
+	${CXX} ${CXX_FLAGS} -I${SOCK_INC} -I${PYTHON_INC_DIR} ${WRAPFILE}
 	${CXX} -shared ${WRAPFILE_O} ${SOCK_LIB} -o ${SHAREDLIB}
-#${CXX} -shared ${WRAPFILE_O} -o ${SHAREDLIB}
+
+install:
+	mkdir -p $(INSTALL_DIR)
+	install -m 0644 _ParameterClient.so $(INSTALL_DIR)
+	install -m 0644 operatorPanel0.html $(INSTALL_DIR)
+	install -m 0644 ParameterClient.py $(INSTALL_DIR)
+	install -m 0644 daq.py $(INSTALL_DIR)
+	install -m 0644 writedata.py $(INSTALL_DIR)
+	install -m 0666 runNumber.txt $(INSTALL_DIR)
 
 clean:
 	rm -f ${IFILE}.py ${WRAPFILE} ${WRAPFILE_O} ${SHAREDLIB}
