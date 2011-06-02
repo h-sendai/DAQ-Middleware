@@ -51,7 +51,7 @@ $(COMP_NAME)Comp: .depend $(OBJS)
 	$(CXX) -o $@ $(OBJS) $(LDFLAGS) $(LDLIBS)
 
 #$(COMP_NAME).h: DAQServiceSVC_impl.h
-$(COMP_NAME).o: $(COMP_NAME).h $(COMP_NAME).cpp
+$(COMP_NAME).o: $(COMP_NAME).h $(COMP_NAME).cpp $(FILES)
 $(COMP_NAME)Comp.o: $(COMP_NAME)Comp.cpp $(COMP_NAME).h
 
 .depend:
