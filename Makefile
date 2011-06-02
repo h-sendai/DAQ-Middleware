@@ -2,15 +2,14 @@ prefix = /usr
 
 VERSION = $(shell cat VERSION)
 
+SUBDIRS += src
 SUBDIRS += bin
 SUBDIRS += conf
 SUBDIRS += docs
 SUBDIRS += etc
 SUBDIRS += examples
-SUBDIRS += src
 SUBDIRS += utils
-
-# SUBDIRS += www
+SUBDIRS += www
 
 .PHONY: $(SUBDIRS)
 
