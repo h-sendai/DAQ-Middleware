@@ -1,8 +1,9 @@
-prefix = /usr
+DESTDIR =
+prefix  = /usr
 
 SUBDIRS += idl
 
-DIR = $(prefix)/include/daqmw
+DIR = $(DESTDIR)$(prefix)/include/daqmw
 MODE = 0644
 
 FILES += Condition.h

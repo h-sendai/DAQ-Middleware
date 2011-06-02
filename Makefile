@@ -1,3 +1,4 @@
+DESTDIR =
 prefix = /usr
 
 VERSION = $(shell cat VERSION)

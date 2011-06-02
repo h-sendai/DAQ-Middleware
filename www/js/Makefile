@@ -1,18 +1,12 @@
 DESTDIR =
-HTTPD_CONF_DIR = $(DESTDIR)/etc/httpd/conf.d
+WWW_DOCUMENT_ROOT = /var/www/html
+DAQ_HTML_DIR = $(DESTDIR)$(WWW_DOCUMENT_ROOT)/daqmw
+INSTALL_DIR  = $(DAQ_HTML_DIR)/js
 
-INSTALL_FILES += daq.conf
+INSTALL_FILES += daq.js
+INSTALL_FILES += prototype.js
 
-SUBDIRS += js
-SUBDIRS += operatorPanel
-SUBDIRS += parts
-
-.PHONY: subdirs $(SUBDIRS)
-
-#all: $(SUBDIRS)
-#
-#$(SUBDIRS):
-#	@$(MAKE) -C $@
+SUBDIRS +=
 
 all: $(SUBDIRS)
 	@set -e; for dir in $(SUBDIRS); do $(MAKE) -C $${dir} $@; done
@@ -21,14 +15,12 @@ clean:
 	@set -e; for dir in $(SUBDIRS); do $(MAKE) -C $${dir} $@; done
 
 install:
-	install -d $(HTTPD_CONF_DIR)
-	install -m 0644 $(INSTALL_FILES) $(HTTPD_CONF_DIR)
+	install -d $(INSTALL_DIR)
+	install -m 0644 $(INSTALL_FILES) $(INSTALL_DIR)
 	@set -e; for dir in $(SUBDIRS); do $(MAKE) -C $${dir} $@; done
 
 uninstall:
-	@for file in $(INSTALL_FILES); do rm -f $(HTTPD_CONF_DIR)/$${file}; done
-	@set -e; for dir in $(SUBDIRS); do $(MAKE) -C $${dir} $@; done
-
+	@for file in $(INSTALL_FILES); do rm -f $(INSTALL_DIR)/$${file}; done
 #install:
 #	install -m 0644 daq.conf /etc/httpd/conf.d/
 #	@$(MAKE) -C operatorPanel install

@@ -1,4 +1,5 @@
-prefix = /usr
+DESTDIR =
+prefix  = /usr
 
 SUBDIRS += SiTCP
 SUBDIRS += json_spirit_v2.06

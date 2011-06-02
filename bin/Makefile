@@ -1,6 +1,7 @@
-prefix = /usr
+DESTDIR = 
+prefix  = /usr
 
-DIR = $(prefix)/bin
+DIR = $(DESTDIR)$(prefix)/bin
 MODE = 0755
 
 FILES += condition_xml2json

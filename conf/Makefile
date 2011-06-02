@@ -1,6 +1,7 @@
-prefix = /usr
+DESTDIR =
+prefix  = /usr
 
-DIR = $(prefix)/share/daqmw/conf
+DIR = $(DESTDIR)$(prefix)/share/daqmw/conf
 MODE = 0644
 
 FILES += condition.xml

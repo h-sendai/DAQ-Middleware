@@ -1,6 +1,7 @@
-prefix = /usr
+DESTDIR =
+prefix  = /usr
 
-DIR = $(prefix)/include/daqmw/idl
+DIR = $(DESTDIR)$(prefix)/include/daqmw/idl
 MODE = 0644
 
 FILES += DAQService.idl

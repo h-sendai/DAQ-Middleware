@@ -1,6 +1,7 @@
-prefix = /usr
+DESTDIR =
+prefix  = /usr
 
-DIR = $(prefix)/share/daqmw/etc/remote-boot
+DIR = $(DESTDIR)$(prefix)/share/daqmw/etc/remote-boot
 MODE = 0644
 
 FILES += bootComps-xinetd.sample

@@ -2,9 +2,10 @@
 # NOT for DAQ-Components Developers, but for DAQ-Middleware Developers
 # or DAQ-Middleware Distributers
 
-prefix = /usr
-BINDIR = $(prefix)/libexec/daqmw
-SRCDIR = $(prefix)/share/daqmw/DaqOperator
+DESTDIR =
+prefix  = /usr
+BINDIR  = $(DESTDIR)$(prefix)/libexec/daqmw
+SRCDIR  = $(DESTDIR)$(prefix)/share/daqmw/DaqOperator
 
 cwd     = $(shell pwd)
 updir   = $(shell dirname $(cwd))

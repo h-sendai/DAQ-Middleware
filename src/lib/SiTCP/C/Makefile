@@ -1,4 +1,5 @@
-prefix = /usr
+DESTDIR =
+prefix  = /usr
 
 SUBDIRS += sitcpbcp
 SUBDIRS += sock

@@ -1,6 +1,7 @@
 # define prefix as a default value.
 # argument in the make command (make install prefix=/usr) override this value.
-prefix = /usr
+DESTDIR =
+prefix  = /usr
 
 LIBRARY                   = lib$(LIBNAME).a
 LIBRARY_SO                = lib$(LIBNAME).so
@@ -53,8 +54,8 @@ LIB_DIR=lib64
 endif
 endif
 DAQMW_SUFFIX    = daqmw
-INSTALL_LIB_DIR = $(prefix)/$(LIB_DIR)/$(DAQMW_SUFFIX)
-INSTALL_INC_DIR = $(prefix)/include/$(DAQMW_SUFFIX)
+INSTALL_LIB_DIR = $(DESTDIR)$(prefix)/$(LIB_DIR)/$(DAQMW_SUFFIX)
+INSTALL_INC_DIR = $(DESTDIR)$(prefix)/include/$(DAQMW_SUFFIX)
 
 install:
 	mkdir -p $(INSTALL_LIB_DIR)

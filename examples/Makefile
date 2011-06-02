@@ -1,6 +1,7 @@
-prefix = /usr
+DESTDIR =
+prefix  = /usr
 
-INSTALL_DIR = $(prefix)/share/daqmw/examples
+INSTALL_DIR = $(DESTDIR)$(prefix)/share/daqmw/examples
 #MODE = 0644
 
 SRC_DIRS += SampleLogger

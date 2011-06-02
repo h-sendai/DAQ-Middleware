@@ -1,6 +1,7 @@
-prefix = /usr
+DESTDIR =
+prefix  = /usr
 
-DIR = $(prefix)/share/daqmw/docs
+DIR = $(DESTDIR)$(prefix)/share/daqmw/docs
 MODE = 0644
 
 FILES += README

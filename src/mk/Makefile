@@ -1,6 +1,7 @@
-prefix = /usr
+DESTDIR =
+prefix  = /usr
 
-DIR = $(prefix)/share/daqmw/mk
+DIR = $(DESTDIR)$(prefix)/share/daqmw/mk
 MODE = 0644
 
 FILES += comp.mk

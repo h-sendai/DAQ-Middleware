@@ -1,5 +1,6 @@
-prefix = /usr
-DIR    = $(prefix)/bin
+DESTDIR =
+prefix  = /usr
+DIR     = $(DESTDIR)$(prefix)/bin
 
 # EXAMPLE_COMPS += SkeletonFilter
 
