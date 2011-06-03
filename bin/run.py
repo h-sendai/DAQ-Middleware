@@ -670,6 +670,9 @@ def send_file_content(ip_address, portno, file_path, content):
 
 def localCompsBooting():
     conf = genConfFileForCpudaq(cpudaqAddrs[0], operatorAddr, nsport, daqmw_dir)
+
+    exist_ok_mkdir(daqmw_dir)
+
     fname = str(daqmw_dir) + '/rtc.conf'
     fw = open(fname, 'w')
     fw.write(conf)
