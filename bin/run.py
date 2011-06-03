@@ -679,6 +679,7 @@ def localCompsBooting():
     fw.close()
 
     for compInfo in compInfo_list:
+        kill_proc_exact(os.path.basename(compInfo['execPath']))
         command_line = '%s -f %s' %(compInfo['execPath'], compInfo['confPath'])
         log_file = daqmw_dir +'/log.' + os.path.basename(compInfo['execPath'])
         start_comp(command_line, log = log_file)
