@@ -8,11 +8,15 @@ progname=$(basename $0)
 repo_rpm_url=http://daqmw.kek.jp/rpm/el5/noarch/kek-daqmiddleware-repo-2-0.noarch.rpm
 repo_name=kek-daqmiddleware
 repo_rpm_name=${repo_name}-repo
+repo_name_testing=kek-daqmiddleware-testing
+repo_rpm_name_testing=${repo_name_testing}-repo
+repo_rpm_url_testing=http://daqmw.kek.jp/testing/rpm/el5/noarch/kek-daqmiddleware-testing-repo-2-0.el5.noarch.rpm
+enable_testing=no
 
 usage()
 {
     cat <<EOF 1>&2
-Usage: $progname [install | uninstall | distclean]
+Usage: $progname [-T] [install | insatlldep | uninstall | distclean]
 
 $progname install:    Setup repository configuration (if not yet) and install
                       DAQ-Middleware and its dependencies.
@@ -23,6 +27,8 @@ $progname uninstall:  Uninstall DAQ-Middleware and its dependencies.
                       Repository configuration remains.
 $progname distclean:  Uninstall DAQ-Middleware, its dependencies and
                       repository configuration and its cache.
+Option:
+-T: enable testing DAQ-Middleware package
 EOF
 }
 
@@ -33,7 +39,12 @@ do_install()
 
     # second, install repository configuration file and rpms
     rpm -ihv $repo_rpm_url
-    yum -y --disablerepo='*' --enablerepo=$repo_name install DAQ-Middleware
+    if [ x"$enable_testing" = x"yes" ]; then
+    	rpm -ihv $repo_rpm_url_testing
+        yum -y --disablerepo='*' --enablerepo=$repo_name_testing --enablerepo=$repo_name install DAQ-Middleware
+    else
+        yum -y --disablerepo='*' --enablerepo=$repo_name install DAQ-Middleware
+    fi
 }
 
 do_installdep()
@@ -61,24 +72,21 @@ do_uninstall()
 
 do_distclean()
 {
-    local rpm_package
-    local cache_dir
-
-    rpm_package=$repo_rpm_name
-    cache_dir=/var/cache/yum/$repo_name
-
     # first, try to remove rpms except repository configuration file
     do_uninstall
 
     # second, try to remove repository configuration file
-    rpm --quiet -q $rpm_package && (echo -n "remove repo conf file ..."; rpm -e $rpm_package; echo " done")
+    rpm --quiet -q $repo_rpm_name && (echo -n "remove repo conf file ..."; rpm -e $repo_rpm_name; echo " done")
+
+    rpm --quiet -q $repo_rpm_name_testing && (echo -n "remove repo conf file for testing..."; rpm -e $repo_rpm_name_testing; echo " done")
 
     # third, remove cache directory completely
-    rm -fr $cache_dir
+    rm -fr /var/cache/yum/$repo_name
+    rm -fr /var/cache/yum/$repo_name_testing
     return 0
 }
 
-TEMP=`getopt -o h --long help -n "$progname" -- "$@"`
+TEMP=`getopt -o hT --long help -n "$progname" -- "$@"`
 
 #if [ $? != 0 ] ; then echo "Terminating..." >&2 ; exit 1 ; fi
 if [ $? != 0 ] ;then
@@ -91,6 +99,7 @@ while true ; do
     case "$1" in
         --help) usage; exit 0 ;;
         -h)     usage; exit 0 ;;
+        -T)     enable_testing=yes; shift 1 ;;
         --) shift ; break ;;
         *) echo "Internal error!" ; exit 1 ;;
     esac
@@ -102,6 +111,7 @@ if [ $# -eq 0 ]; then
 fi
 
 command=$1
+
 case $command in 
     install)    do_install;    ;;
     installdep) do_installdep; ;;
