@@ -741,6 +741,8 @@ def DaqOperatorBooting():
     command_line = '%s -f %s/rtc.conf -h %s -p %s -x %s'\
                    % (operator, conf_path_op, str(operatorAddr), str(nsport), confFile)
 
+    kill_proc_exact(os.path.basename(operator))
+
     if console:
         command_line = command_line + ' -c'
         start_comp(command_line, foreground = 'yes', no_stdin = 'no')
