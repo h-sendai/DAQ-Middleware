@@ -17,16 +17,21 @@
 #define SOCK_H
 
 #include <iostream>
-#include <sys/types.h>
-#include <sys/socket.h>
 #include <string>
-#include <arpa/inet.h>
-#include <signal.h>
+
 #include <sys/ioctl.h>
+#include <sys/socket.h>
+#include <sys/types.h>
+
+#include <arpa/inet.h>
+#include <netinet/tcp.h>
+
 #include <errno.h>
 #include <fcntl.h>
-#include <netinet/tcp.h>
 #include <netdb.h>
+#include <signal.h>
+#include <stdio.h>
+#include <string.h>
 
 /*!
  * @namespace DAQMW
