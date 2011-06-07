@@ -1,3 +1,9 @@
+SWIG = $(shell which swig)
+ifeq ($(strip $(SWIG)),)
+$(error Cannot find swig. Please install swig program.\
+Consult your distributions package.)
+endif
+
 DESTDIR           =
 WWW_DOCUMENT_ROOT = /var/www/html
 DAQ_HTML_DIR      = $(DESTDIR)$(WWW_DOCUMENT_ROOT)/daqmw
@@ -13,9 +19,8 @@ INSTALL_FILES += runNumber.txt
 SOCK_INC       = ../../src/lib/SiTCP/CPP/Sock
 SOCK_LIB       = -L../../src/lib/SiTCP/CPP/Sock -lSock
 
-SWIG           = /usr/bin/swig
 SWIG_FLAGS     = -c++ -python
-PYTHON_VERSION = 2.4
+PYTHON_VERSION = $(shell python -c 'import sys; v = "%d.%d" % (sys.version_info[0], sys.version_info[1]); print v')
 PYTHON_INC_DIR = /usr/include/python${PYTHON_VERSION}
 
 IFILE          = ParameterClient
