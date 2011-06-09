@@ -8,6 +8,7 @@ syntax: glob
 *.so.[0-9]*.[0-9]*
 *.a
 *.orig
+.confFilePath
 utils/newcomp/*.in
 utils/newcomp/newcomp
 src/DaqOperator/DAQService.hh
