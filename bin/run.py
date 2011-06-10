@@ -746,7 +746,14 @@ def DaqOperatorBooting():
 
     if console:
         command_line = command_line + ' -c'
-        start_comp(command_line, foreground = 'yes', no_stdin = 'no')
+        try:
+            start_comp(command_line, foreground = 'yes', no_stdin = 'no')
+        except IOError, e:
+            sys.exit(1)
+        except OSError, e:
+            sys.exit(1)
+        except:
+            sys.exit('error in run_daq_operator')
     else:
         try:
             start_comp(command_line, log = '/dev/null')
