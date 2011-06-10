@@ -532,6 +532,7 @@ def start_comp(command_line, log='', foreground='no', no_stdin = 'yes'):
             p.wait()
         except KeyboardInterrupt, strerror:
             pass
+        p.wait()
 
 __author__ = 'Hiroshi Sendai'
 __date__   = 'Sept. 2010'
@@ -807,12 +808,14 @@ def main():
     #
     # Boot DAQ-Operator
     #
-    print 'Now booting the DAQ-Operator...',
+    if console == False:
+        print 'Now booting the DAQ-Operator...',
     ret = DaqOperatorBooting()
     if ret != True:
         print 'DaqOperator booting failed'
         sys.exit(-1)
     else:
-        print 'done'
+        if console == False:
+            print 'done'
 if __name__ == "__main__":
     main()
