@@ -38,6 +38,19 @@ xinetdPort = 50000
 # omniNames port
 nsport = 9876
 
+def am_i_rhel_derived_and_running_on_vmware():
+    redhat_release = '/etc/redhat-release'
+    proc_ide_cdrom = '/proc/ide/ide1/hdc/model'
+
+    if os.path.isfile(redhat_release) == False:
+        return False
+    if os.path.isfile(proc_ide_cdrom) == True:
+        grep_command = '/bin/grep -q -i vmware %s' % (proc_ide_cdrom)
+        if os.system(grep_command) == 0:
+            return True
+    else:
+        return False
+
 def opt():
     global confFile
     global schemaFile
@@ -46,6 +59,7 @@ def opt():
     global localBoot
     global mydisp
     global verbose
+    global comps_invoke_interval
 
     usage = "run.py [OPTIONS] [CONFIG_FILE]"
     parser = OptionParser(usage)
@@ -54,6 +68,7 @@ def opt():
     parser.set_defaults(verbose=False)
     parser.set_defaults(schema='/usr/share/daqmw/conf/config.xsd')
     parser.set_defaults(operator='/usr/libexec/daqmw/DaqOperatorComp')
+    parser.set_defaults(comps_invoke_interval='0.0')
 
     parser.add_option("-c", "--console",
                       action="store_true", dest="console", help="console mode. default is HTTP mode")
@@ -67,6 +82,8 @@ def opt():
                       help="specify DaqOperatorComp with abs. path")
     parser.add_option("-d", "--display", dest="display",
                       help="specify DISPLAY env. val for X apps")
+    parser.add_option("-w", "--wait", dest="comps_invoke_interval",
+                      help="sleep specified interval seconds between each component invoking")
 
     (options, args) = parser.parse_args()
     if len(args) != 1:
@@ -79,6 +96,15 @@ def opt():
     localBoot  = options.local
     mydisp     = options.display
     verbose    = options.verbose
+    
+    # XXX
+    # We have to sleep some seconds not to cause core file
+    # when running on RHEL derived OS (SL, CentOS etc)
+    # AND running on VMware Player.
+    if options.comps_invoke_interval == '0.0':
+        if am_i_rhel_derived_and_running_on_vmware():
+            options.comps_invoke_interval = '1'
+    comps_invoke_interval = float(options.comps_invoke_interval)
 
     if os.path.exists(confFile):
         print 'Use config file ' + confFile
@@ -95,6 +121,8 @@ def opt():
     else:
         print 'ERROR: ' + options.operator + ' not exists. exit.'
         sys.exit(-1)
+    if comps_invoke_interval > 0:
+        print "Comps invoke interval: %4.1f sec" % (comps_invoke_interval)
 
 def getVal(confile, path):
     dom = Etree.parse(confile)
@@ -688,6 +716,9 @@ def localCompsBooting():
         command_line = '%s -f %s' %(compInfo['execPath'], compInfo['confPath'])
         log_file = daqmw_dir +'/log.' + os.path.basename(compInfo['execPath'])
         start_comp(command_line, log = log_file)
+        if comps_invoke_interval > 0:
+            print 'sleeping %4.1f sec' % (comps_invoke_interval)
+            time.sleep(comps_invoke_interval)
 
 def remoteCompsBooting():
     for compInfo in compInfo_list:
@@ -726,6 +757,8 @@ def remoteCompsBooting():
             print ' IP addr  : %s\n Port No  : %s\n Exe Path : %s\n Conf Path: %s\n Log File : %s\n Env Vals : %s\n' % \
                   (compAddr, xinetdPort,compInfo['execPath'], compInfo['confPath'], log_file, env)
             return False
+        if comps_invoke_interval > 0:
+            time.sleep(compos_invoke_interval)
     return True
 
 def DaqOperatorBooting():
