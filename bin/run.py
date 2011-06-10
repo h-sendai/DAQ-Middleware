@@ -572,7 +572,11 @@ def run_omniNames(omni_log_dir = '', omni_port=nsport):
 
     omni_command_line = "%s -start %s -logdir %s" % (command, omni_port, omni_log_dir)
     #print 'omni_command_line: ', omni_command_line
+    prev_handler = signal.signal(signal.SIGINT, signal.SIG_IGN)
     start_comp(omni_command_line, log = '/dev/null')
+    next_handler = signal.signal(signal.SIGINT, prev_handler)
+    #omni_command_line += '>/dev/null 2>&1 < /dev/null &'
+    #os.system(omni_command_line)
 
 def getCompInfoFromXml():
     global compInfo_list
