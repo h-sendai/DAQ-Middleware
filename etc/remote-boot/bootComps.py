@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+import errno
 import re
 import os
 import sys
