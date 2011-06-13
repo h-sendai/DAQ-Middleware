@@ -251,7 +251,6 @@ def kill_proc_exact(proc_name, sleep_sec = 1, max_retry = 60):
                 try:
                     os.kill(int(pid), signal.SIGTERM)
                 except OSError, (my_errno, strerror):
-                    print '########## exception occured at kill comp'
                     # 'No such process' may ignore safely (we got that pid
                     # but exit by previos kill already after we get_pids_exact())
                     # If other error like 'Operation not permitted', exit.
