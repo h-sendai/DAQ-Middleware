@@ -758,7 +758,7 @@ def remoteCompsBooting():
                   (compAddr, xinetdPort,compInfo['execPath'], compInfo['confPath'], log_file, env)
             return False
         if comps_invoke_interval > 0:
-            time.sleep(compos_invoke_interval)
+            time.sleep(comps_invoke_interval)
     return True
 
 def DaqOperatorBooting():
