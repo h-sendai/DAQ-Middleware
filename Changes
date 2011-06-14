@@ -6,10 +6,11 @@ Summary
 - API changes: set_footer() and check_footer() are now has one argument
   for footer buffer.  All users have to rewrite their source code if you
   use set_footer() and check_footer().  To use new API, remove second
-  argument of set_footer() and check_footer.
+  argument of set_footer() and check_footer and re-compile the components.
 - Backward compatibility to DAQ-Middleware for MLF (2010.10 etc) on
   reset_onError().  All users have to recompile their components to use
   backward compatibility feature.
+- Add Web User interface.
 
 Details
 
@@ -32,6 +33,7 @@ FEATURE: Don't remove source files.  Previous comp.mk would remove
          source files if source file name is *.cc.
 FEATURE: Stricter check on ROOT development environment on ROOTSYS variable
          of the SampleMonitor's Makefile.
+FEATURE: Add Web user interface.
 CLEANUP: Remove unused data_header_footer.h.
 
 1.0.2 2011-02-08 Hiroshi Sendai
