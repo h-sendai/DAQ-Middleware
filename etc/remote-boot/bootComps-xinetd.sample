@@ -8,7 +8,7 @@ service bootComps
 #  only_from       = 192.168.0.0/24
    user            = daq
    server          = /usr/share/daqmw/etc/remote-boot/bootComps.py
-   log_on_success  += USERID
-   log_on_failure  += USERID
+#  log_on_success  += USERID
+#  log_on_failure  += USERID
    disable         = no
 }
