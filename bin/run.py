@@ -550,7 +550,7 @@ def start_comp(command_line, log='', foreground='no', no_stdin = 'yes', myenv = 
 
     if myenv is not None:
         for key in overwrite_env.keys():
-            os.putenv(key, orig_env[key])
+            os.putenv(key, overwrite_env[key])
         for key in myenv.keys():
             if not overwrite_env.has_key(key):
                 os.unsetenv(key)
