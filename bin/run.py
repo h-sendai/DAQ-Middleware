@@ -185,36 +185,30 @@ def write_file(file_path, mytext):
 def genConfFileForCpudaq(addr, operatorAddr, nsport, mydir):
     rtc_conf_template = """\
 #rtc.conf
-corba.nameservers: %s:9876
-naming.formats: %s.host_cxt/%%n.rtc
+corba.nameservers: %(operator_addr)s:9876
+naming.formats: %(comp_addr)s.host_cxt/%%n.rtc
 logger.log_level: TRACE
 logger.enable: NO
 exec_cxt.periodic.rate: 1000000000
-corba.endpoint: %s:\
+corba.endpoint: %(comp_addr)s:
 """
     rtc_conf = rtc_conf_template % \
-            (
-                operatorAddr,
-                addr,
-                addr
-            )
+               { 'operator_addr': operatorAddr, 'comp_addr': addr }
+
     return rtc_conf
 
 # generate rtc.conf for DaqOperator
 def genConfFileForOperator(mydir, confOperatorPath, operatorAddr):
     op_rtc_conf_template = """\
 #rtc.conf
-corba.nameservers: %s:9876
-naming.formats: %s.host_cxt/%%n.rtc
+corba.nameservers: %(operator_addr)s:9876
+naming.formats: %(operator_addr)s.host_cxt/%%n.rtc
 logger.log_level: TRACE
 logger.enable: NO
 exec_cxt.periodic.rate: 1000000000
+corba.endpoint: %(operator_addr)s:
 """
-    op_rtc_conf = op_rtc_conf_template % \
-            (
-                operatorAddr,
-                operatorAddr
-            )
+    op_rtc_conf = op_rtc_conf_template % {'operator_addr': operatorAddr}
 
     file_path = '%s/rtc.conf' % (mydir)
     ret = write_file(file_path, op_rtc_conf)
@@ -440,7 +434,7 @@ def can_find_all_shared_libs(command_path):
     if n_not_found_libs > 0:
         raise IOError, 'Above shared libraries not found'
 
-def start_comp(command_line, log='', foreground='no', no_stdin = 'yes'):
+def start_comp(command_line, log='', foreground='no', no_stdin = 'yes', myenv = None):
     """
     Execute component binary.
 
@@ -461,6 +455,11 @@ def start_comp(command_line, log='', foreground='no', no_stdin = 'yes'):
     If execution fails (program file does not exist, excution bit is not
     set etc), start_comp() will sys.exit(sterror).  Execution success is
     verified by using get_pids_exact().
+
+    Environment variables will be inherited from running python script (run.py).
+    If we have to add or mofidy some variables, specify those variables
+    in myenv dictionary.  Modified and/or added variables will be
+    restored/removed after start_comp().
 
     Example:
         program = '/usr/local/bin/SomeComp'
@@ -483,6 +482,15 @@ def start_comp(command_line, log='', foreground='no', no_stdin = 'yes'):
         command_line = '%s -c' % ('/usr/libexec/daqmwp/DaqOperatorComp')
         start_comp(command_line, foreground = 'yes')
     """
+    # prepare environment variable for Popen process
+    overwrite_env = dict()
+    if myenv is not None:
+        for key in myenv.keys():
+            v = os.getenv(key)
+            if v is not None:
+                overwrite_env[key] = v
+            os.putenv(key, myenv[key])
+
     proc_title_argv = command_line.split()
 
     if proc_title_argv[0] == 'taskset':
@@ -521,17 +529,31 @@ def start_comp(command_line, log='', foreground='no', no_stdin = 'yes'):
             my_stdout = log_fd
             my_stderr = subprocess.STDOUT
 
+    # environment variables are inherited from current python scripts.
     try:
         p = subprocess.Popen(proc_title_argv, shell = False,
                             stdin  = my_stdin,
                             stdout = my_stdout,
                             stderr = my_stderr)
+
     except OSError, (errno, strerror):
         print 'cannot execute %s: %s' % (real_program, strerror)
         raise
     except ValueError, strerror:
         print 'subprocess.Popen value error: %s' % (strerror)
         raise
+
+    # Restore environment variable for next Popen process (if any)
+    # This process has to be done with:
+    # - restore old variable if we overwrite them
+    # - if we add new variable, remove them
+
+    if myenv is not None:
+        for key in overwrite_env.keys():
+            os.putenv(key, orig_env[key])
+        for key in myenv.keys():
+            if not overwrite_env.has_key(key):
+                os.unsetenv(key)
 
     if proc_title_argv[0] == 'taskset':
         try:
@@ -585,7 +607,7 @@ def remove_omni_logs(omni_log_dir = ''):
             sys.exit('%s: cannot remove %s: %s' % progname, omni_log_backup_path, strerror)
 
 
-def run_omniNames(omni_log_dir = '', omni_port=nsport):
+def run_omniNames(operatorAddr, omni_log_dir = '', omni_port=nsport):
     # /usr/sbin/../bin/omniNames -start 1234 -logdir /home/sendai/app/py/invoke-comps
 
     command = 'omniNames'
@@ -601,7 +623,9 @@ def run_omniNames(omni_log_dir = '', omni_port=nsport):
     omni_command_line = "%s -start %s -logdir %s" % (command, omni_port, omni_log_dir)
     #print 'omni_command_line: ', omni_command_line
     prev_handler = signal.signal(signal.SIGINT, signal.SIG_IGN)
-    start_comp(omni_command_line, log = '/dev/null')
+    start_comp(omni_command_line, 
+               log = '/dev/null',
+               myenv = {'OMNIORB_USEHOSTNAME': operatorAddr})
     next_handler = signal.signal(signal.SIGINT, prev_handler)
     #omni_command_line += '>/dev/null 2>&1 < /dev/null &'
     #os.system(omni_command_line)
@@ -819,16 +843,16 @@ def main():
         print err
         sys.exit(-1)
 
+    # parse config file
+    getCompInfoFromXml()
+
     #
     # Boot omni naming service
     #
     print 'start new naming service...',
     remove_omni_logs()
-    run_omniNames()
+    run_omniNames(operatorAddr)
     print 'done'
-
-    # parse config file
-    getCompInfoFromXml()
 
     #
     # Boot DAQ-Components
