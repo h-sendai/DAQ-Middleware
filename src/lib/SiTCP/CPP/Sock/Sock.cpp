@@ -27,6 +27,7 @@ namespace DAQMW {
   Sock::Sock()
     : m_connectTimeout(2.0), m_debug(false) {
     memset ( &m_addr, 0, sizeof ( m_addr ) ); // This is for recvfrom(UDP)
+    m_slen = sizeof(m_addr_other);            // This is for recvfrom(UDP)
     m_sock = -1;
     m_timeout = 2.0;
   }
