@@ -626,6 +626,9 @@ namespace DAQMW
             mystatus->comp_status = comp_status;
 
             m_daq_service0.setStatus(*mystatus);
+
+            delete mystatus;
+
             return 0;
         }
 
