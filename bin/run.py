@@ -55,6 +55,7 @@ def opt():
     global confFile
     global schemaFile
     global operator
+    global operator_log
     global console
     global localBoot
     global mydisp
@@ -68,6 +69,7 @@ def opt():
     parser.set_defaults(verbose=False)
     parser.set_defaults(schema='/usr/share/daqmw/conf/config.xsd')
     parser.set_defaults(operator='/usr/libexec/daqmw/DaqOperatorComp')
+    parser.set_defaults(operator_log='/dev/null')
     parser.set_defaults(comps_invoke_interval='0.0')
 
     parser.add_option("-c", "--console",
@@ -80,6 +82,8 @@ def opt():
                       help="specify XML schema file with abs. path")
     parser.add_option("-o", "--operator", dest="operator",
                       help="specify DaqOperatorComp with abs. path")
+    parser.add_option("-O", "--operator-log", dest="operator_log",
+                      help="specify DaqOperatorComp log with abs. path")
     parser.add_option("-d", "--display", dest="display",
                       help="specify DISPLAY env. val for X apps")
     parser.add_option("-w", "--wait", dest="comps_invoke_interval",
@@ -89,13 +93,14 @@ def opt():
     if len(args) != 1:
         parser.error("ERROR: not specified config file")
 
-    confFile   = args[0]
-    schemaFile = options.schema
-    operator   = options.operator
-    console    = options.console
-    localBoot  = options.local
-    mydisp     = options.display
-    verbose    = options.verbose
+    confFile     = args[0]
+    schemaFile   = options.schema
+    operator     = options.operator
+    operator_log = options.operator_log
+    console      = options.console
+    localBoot    = options.local
+    mydisp       = options.display
+    verbose      = options.verbose
     
     # XXX
     # We have to sleep some seconds not to cause core file
@@ -817,7 +822,7 @@ def DaqOperatorBooting():
             sys.exit('error in run_daq_operator')
     else:
         try:
-            start_comp(command_line, log = '/dev/null')
+            start_comp(command_line, log = operator_log)
         except IOError, e:
             sys.exit(1)
         except OSError, e:
@@ -877,6 +882,8 @@ def main():
     # Boot DAQ-Operator
     #
     if console == False:
+        if operator_log != '/dev/null':
+            print 'DAQ-Opearot Log: %s' % operator_log
         print 'Now booting the DAQ-Operator...',
     ret = DaqOperatorBooting()
     if ret != True:
