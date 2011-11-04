@@ -479,6 +479,7 @@ bool DaqOperator::parse_body(const char* buf, const std::string tagname)
 
     delete(memBufIS);
     parser->resetDocumentPool();
+    delete(parser);
 
     XMLPlatformUtils::Terminate();
     return true;
