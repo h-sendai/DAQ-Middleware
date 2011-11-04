@@ -475,6 +475,7 @@ bool DaqOperator::parse_body(const char* buf, const std::string tagname)
         }
     }
 
+    XMLString::release(&name);
     XMLString::release(&tag);
 
     delete(memBufIS);
