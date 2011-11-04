@@ -617,7 +617,7 @@ int DaqOperator::configure_procedure()
             RTC::ConnectorProfileList_var myprof 
                 = m_DaqServicePorts[i]->get_connector_profiles();
 
-            std::string id = CORBA::string_dup(myprof[0].name);
+            char * id = CORBA::string_dup(myprof[0].name);
 
             if (m_debug) {
                 std::cerr << "*** id:" << id << std::endl;
@@ -648,6 +648,7 @@ int DaqOperator::configure_procedure()
                     m_daqservices[i]->setCompParams( paramList[j].getList() );
                 }
             }
+            CORBA::string_free(id);
         }
 
         for (int i = 0; i< m_comp_num; i++) {
@@ -1023,6 +1024,12 @@ int DaqOperator::command_log()
         m_err_msg = "";
     } else {
         m_msg = createDom.getLog("Log", groupStatList);
+    }
+
+    for (unsigned int i = 0; i < groupStatList.size(); i++) {
+        CORBA::string_free(groupStatList[i].groupId);
+        // CORBA::string_member destructor will freed
+        // groupStatList[i].comp_status.comp_name);
     }
 
     return 0;

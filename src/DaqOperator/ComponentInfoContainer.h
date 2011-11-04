@@ -226,7 +226,7 @@ private:
 typedef std::vector<ComponentGroup> CompGroupList;
 
 struct groupStatus {
-  std::string groupId;
+  char * groupId;
   Status comp_status;
 };
 
