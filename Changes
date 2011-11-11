@@ -1,8 +1,17 @@
-1.1.1 2011-XX-XX Hiroshi Sendai
+1.1.1 2011-11-15 Hiroshi Sendai
 
 Summary
 
+- API has not changed from 1.1.0.
+- Update Developer's Manual.
+- Fix memory leaks on DaqOperatorComp.
 - Sock library UDP part bug fix.
+
+Details
+
+BUG FIX: UPD part of Socket library was not set properly.  This bug does not
+         affect on Socket TCP library.
+BUG FIX: There were several memory leaks on DaqOperatorComp.
 
 1.1.0 2011-06-17 Hiroshi Sendai
 
