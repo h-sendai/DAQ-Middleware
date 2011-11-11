@@ -127,7 +127,7 @@
         var status = res.getElementsByTagName('status');
         $("commandStatus").innerHTML = status[0].firstChild.nodeValue;
         var states = res.getElementsByTagName('state');
-        var currentstate = states[0].firstChild.nodeValue;
+        var currentstatus = states[0].firstChild.nodeValue;
         var compStatus = res.getElementsByTagName('compStatus');
         var eventnums = res.getElementsByTagName('eventNum');
         var length = states.length;
@@ -153,13 +153,13 @@
         $("DAQStatus").innerHTML = text;
 
         if(currentstate == "LOADED")
-          change2Loaded();
+          change2Loaded1();
         else if (currentstate == "CONFIGURED")
-          change2Configured();
-        else if (currentstate == "RUNNING")
-          change2Running();
-        else if (currentstate == "PAUSED")
-          change2Paused();
+          change2Configured1();
+        else if (currentstat == "RUNNING")
+          change2Running1();
+        else if (currentstat == "PAUSED")
+          change2Paused1();
       },
       onFailure:function(httpObj){
 //        alert("Bad: "+ httpObj.responseText);
