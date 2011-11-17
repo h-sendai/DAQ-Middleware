@@ -6,6 +6,7 @@ Summary
 - Update Developer's Manual.
 - Fix memory leaks on DaqOperatorComp.
 - Sock library UDP part bug fix.
+- Add -O option to run.py (specify log file when run in Web mode).
 
 Details
 
