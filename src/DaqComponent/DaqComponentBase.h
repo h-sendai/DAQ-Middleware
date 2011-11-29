@@ -633,10 +633,10 @@ namespace DAQMW
         }
 
     private:
-        static const int DAQ_CMD_SIZE      = 10;
-        static const int DAQ_STATE_SIZE    =  6;
-        static const int DAQ_IDLE_TIME_SEC =  1;
-        static const int STATUS_CYCLE_SEC  =  2;
+        static const int DAQ_CMD_SIZE       = 10;
+        static const int DAQ_STATE_SIZE     =  6;
+        static const int DAQ_IDLE_TIME_USEC =  10000; // 10 m sec
+        static const int STATUS_CYCLE_SEC   =  2;
 
         std::string m_comp_name;
         unsigned int m_runNumber;
@@ -678,7 +678,7 @@ namespace DAQMW
         {
             daq_dummy();
             set_status(COMP_WORKING);
-            sleep(DAQ_IDLE_TIME_SEC);
+            usleep(DAQ_IDLE_TIME_USEC);
             return 0;
         }
 
@@ -757,7 +757,7 @@ namespace DAQMW
             std::cerr << "### daq_onError(): ERROR Occured\n";
             std::cerr << m_err_message << std::endl;
             set_status(COMP_FATAL);
-            sleep(DAQ_IDLE_TIME_SEC);
+            usleep(DAQ_IDLE_TIME_USEC);
             return 0;
         }
 
