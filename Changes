@@ -1,4 +1,4 @@
-1.1.1 2011-11-15 Hiroshi Sendai
+1.1.1 2011-12-XX Hiroshi Sendai
 
 Summary
 
@@ -7,12 +7,17 @@ Summary
 - Fix memory leaks on DaqOperatorComp.
 - Sock library UDP part bug fix.
 - Add -O option to run.py (specify log file when run in Web mode).
+- sleep time in daq_base_dummy() (this method is called when the component
+  is in LOADED, CONFIGURED, and UNCONFIGURED) is reduced to 10 m sec.
+  To incorporate this fix, users have to recompile their components.
 
 Details
 
 BUG FIX: UPD part of Socket library was not set properly.  This bug does not
          affect on Socket TCP library.
 BUG FIX: There were several memory leaks on DaqOperatorComp.
+BUG FIX: sleep time in daq_base_dummy() (was 1 second) caused ParameterClient.h
+         timeout.  
 
 1.1.0 2011-06-17 Hiroshi Sendai
 
