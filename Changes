@@ -8,7 +8,8 @@ Summary
 
 Details
 
-BUG FIX: Sock.cpp writeAll() did not return when EPIPE error occured.
+BUG FIX: Sock.cpp writeAll() did not return ERROR_FATAL
+         when EPIPE error occured.
 
 1.1.1 2011-12-01 Hiroshi Sendai
 
