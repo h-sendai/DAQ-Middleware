@@ -565,6 +565,7 @@ namespace DAQMW {
 	  return ERROR_TIMEOUT;
 	} else if (errno == EPIPE) {
           perror("### ERROR: Sock::write(unsigned char*,int):send far end node link off");
+	  return ERROR_FATAL;
         } else {
 	  perror("### ERROR: Sock::writeAll(unsigned char*,int):send fatal error");
 	  return ERROR_FATAL;
