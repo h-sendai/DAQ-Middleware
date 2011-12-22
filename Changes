@@ -1,3 +1,15 @@
+1.1.2 2012-XX-XX Hiroshi Sendai
+
+Not yet released.
+
+Summary
+
+- Fix return value of writeAll() when EPIPE error occured.
+
+Details
+
+BUG FIX: Sock.cpp writeAll() did not return when EPIPE error occured.
+
 1.1.1 2011-12-01 Hiroshi Sendai
 
 Summary
