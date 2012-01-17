@@ -3,6 +3,7 @@
  * @file operatorPanel0.html
  * @brief operator Panel for DAQ
  * @date 26-May-2011
+ * @modified 11-January-2012
  * @author Yoshiji Yasu (yoshiji.yasu@kek.jp)
  *
  * Copyright (C) 2008-2011
@@ -18,46 +19,60 @@
 <title>operatorPanel</title>
 <script type="text/javascript" src="../js/prototype.js"></script>
 <script type="text/javascript" src="../js/daq.js"></script>
-<script>
+<script type="text/javascript">
+<!--
   function getNodeName() {
   $("nodename").innerHTML = "Operation Panel for DAQ operator on "+location.hostname;
   }
-</script>
-<script type="text/javascript"><!--
-  function getRunNumber() {
-    new Ajax.Request("runNumber.txt", {
-      method: "get",
-      parameters: "cache="+(new Date()).getTime(),
-      onCreate:function(httpObj) { },
-      onSuccess:function(httpObj) {
-        str = httpObj.responseText;
-        document.form1.RunNumber.value = str;
-	document.myform2.cmd.value = "<?xml version='1.0' encoding='UTF-8' ?><request><runNo>" + str + "</runNo></request>";
+
+  function onCreateFunc2(httpObj) {
+  }
+  function onSuccessFunc2(httpObj) {
+    var str = httpObj.responseText;
+    document.form1.RunNumber.value = str;
+    document.myform2.cmd.value = "<?xml version='1.0' encoding='UTF-8' ?><request><runNo>" + str + "</runNo></request>";
 //	alert(document.myform2.cmd.value);
-      }
+    str = null;
+  }
+  function getRunNumber() {
+    var date = new Date();
+    var params2 = "cache" + date.getTime();
+    var myAjax2 = new Ajax.Request("runNumber.txt", {
+      method: "get",
+      parameters: params2,
+      onCreate:onCreateFunc2,
+      onSuccess:onSuccessFunc2
     });
   }
-
-  function setRunNumber() {
-    new Ajax.Request("./writedata.py/SaveRunNumber", {
-      method: "post",
-      parameters: "cache="+(new Date()).getTime(),
-      postBody: Form.serialize("saveRunNumberId"), 
-      onCreate:function(httpObj) { },
-      onSuccess:function(httpObj) {
+  function onCreateFunc3(httpObj) {
+  }
+  function onSuccessFunc3(httpObj) {
 //      alert("OK: "+ httpObj.responseText);
-      document.myform2.cmd.value = "<?xml version='1.0' encoding='UTF-8' ?><request><runNo>" + eval(document.form1.RunNumber.value)  + "</runNo></request>";
+    var value = document.form1.RunNumber.value;
+    document.myform2.cmd.value = "<?xml version='1.0' encoding='UTF-8' ?><request><runNo>" + eval(value)  + "</runNo></request>";
 //	alert(document.myform2.cmd.value);
-      }
+  }
+  function setRunNumber() {
+    var date = new Date();
+    var params3 = "cache" + date.getTime();
+    var body3 = Form.serialize("saveRunNumberId");
+    var myAjax3 = new Ajax.Request("./writedata.py/SaveRunNumber", {
+      method: "post",
+      parameters: params3,
+      postBody: body3,
+      onCreate:onCreateFunc3,
+      onSuccess:onSuccessFunc3
     });
   }
 
   function incrementRunNumber() {
-    document.form1.RunNumber.value = eval(document.form1.RunNumber.value)+1;
+    var value = document.form1.RunNumber.value;
+    document.form1.RunNumber.value = eval(value)+1;
   }
 
   function setRunNumberToCmd() {
-    document.myform2.cmd.value = "<?xml version='1.0' encoding='UTF-8' ?><request><runNo>" + eval(document.form1.RunNumber.value)  + "</runNo></request>";
+    var value = document.form1.RunNumber.value;
+    document.myform2.cmd.value = "<?xml version='1.0' encoding='UTF-8' ?><request><runNo>" + eval(value)  + "</runNo></request>";
   }
 
   function setattribute1() {
@@ -69,7 +84,8 @@
     $("run2").disabled = false;
 
  }
-// --></script>
+// -->
+</script>
 
 <style>
 body { background-color: gold}
@@ -78,11 +94,10 @@ div#commandStatus {background-color; color: red;}
 .compState {text-align: center; color: red;}
 .compStatus {text-align: center; color: red;}
 .eventCount {color: blue; text-align: right;}
-<!-- div.result {font-size: larger} -->
 input#run1 {background-color: lightblue;}
 </style>
 </head>
-<body onLoad="getNodeName();getRunNumber();getstate('./daq.py/Log');">
+<body onLoad="getNodeName();getRunNumber();getstate('./daq.py/Log');setReflesh();" unload="clearReflesh();">
 <h1 id="nodename"></h1>
 <p>
 <div>Current Status : </div><div id="commandStatus">...</div>
@@ -91,7 +106,7 @@ input#run1 {background-color: lightblue;}
 <div>Run Number : <div>
 <form id="saveRunNumberId" name="form1" action="./writedata.py/SaveRunNumber" target="status"  method="post" onlsubmit="return false" >
 <input type="text" name="RunNumber" />
-<input id="run1" type="submit" value="save runNumber" onClick="setRunNumberToCmd()" /><br>
+<input id="run1" type="submit" value="save runNumber" onClick="setRunNumberToCmd();document.form1.submit();" /><br>
 </form>
 </p>
 <br />
@@ -101,47 +116,41 @@ input#run1 {background-color: lightblue;}
 
 <form name="myform1" action="./daq.py/Params" target="status"  method="post", onlsubmit="return false">
 <input type="hidden" name="cmd" value="<?xml version='1.0' encoding='UTF-8' standalone='no' ?><request><params>config.xml</params></request>" />
-<input id="configId" type="image" name="configuration" src="../parts/configurationbutton.jpg" alt="configure" onclick="change2Configured()" />
+<input id="configId" type="image" name="configuration" src="../parts/configurationbutton.jpg" alt="configure" onclick="change2Configured();document.myform1.submit();" />
 </form>
 
 <form name="myform2" action="./daq.py/Begin" target="status"  method="post", onlsubmit="return false">
 <input type="hidden" name="cmd" />
-<input id="beginId" type="image" name="begin" src="../parts/beginbuttonlight.jpg" alt="Begin" onclick="change2Running();getRunNumber()" />
+<input id="beginId" type="image" name="begin" src="../parts/beginbuttonlight.jpg" alt="Begin" onclick="change2Running();getRunNumber();document.myform2.submit();" />
 </form>
 
 <form name="myform3" action="./daq.py/End" target="status"  method="post", onlsubmit="return false">
 <input type="hidden" name="cmd" value="" />
-<input id="endId" type="image" name="End" src="../parts/endbuttonlight.jpg" onclick="incrementRunNumber();setRunNumber();change2Configured()" />
+<input id="endId" type="image" name="End" src="../parts/endbuttonlight.jpg" onclick="incrementRunNumber();setRunNumber();change2Configured();document.myform3.submit();" />
 </form>
 
 <form name="myform4" action="./daq.py/ResetParams" target="status"  method="post", onlsubmit="return false">
 <input type="hidden" name="cmd" value="" />
-<input id="unconfigId" type="image" name="ResetParams" src="../parts/unconfigurebuttonlight.jpg" onclick="change2Loaded()" />
+<input id="unconfigId" type="image" name="ResetParams" src="../parts/unconfigurebuttonlight.jpg" onclick="change2Loaded();document.myform4.submit();" />
 </form>
 
 <form name="myform5" action="./daq.py/Pause" target="status"  method="post", onlsubmit="return false">
 <input type="hidden" name="cmd" value="" />
-<input id="pauseId" type="image" name="Pause" src="../parts/pausebuttonlight.jpg" onclick="change2Paused()" />
+<input id="pauseId" type="image" name="Pause" src="../parts/pausebuttonlight.jpg" onclick="change2Paused();document.myform5.submit();" />
 </form>
 
 <form name="myform6" action="./daq.py/Restart" target="status"  method="post", onlsubmit="return false">
 <input type="hidden" name="cmd" value="" />
-<input id="restartId" type="image" name="Restart" src="../parts/restartbuttonlight.jpg"  onclick="change2Running()" />
+<input id="restartId" type="image" name="Restart" src="../parts/restartbuttonlight.jpg"  onclick="change2Running();document.myform6.submit();" />
 </form>
 
 </fieldset>
 <fieldset>
 <legend>DAQ status</legend>
-<!--
-<form action="./daq.py/Status" target="status"  method="get">
-<input style="background-color: greenyellow" type="submit" value="Get Status" />
-</form>
-<input style="background-color: greenyellow" type="submit" value="Get State" onClick="getstate('./daq.py/Log')" />
-<input style="background-color: greenyellow" type="submit" value="Set State" onClick="setstate()" />
--->
 <div id="DAQStatus"></div>
 </fieldset>
 <p>XML response from DaqOperator</p>
 <iframe name="status" width="100%" height="10%" />
 </body>
 </html>
+
