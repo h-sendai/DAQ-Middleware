@@ -1,6 +1,7 @@
 DESTDIR =
 prefix  = /usr
 
+SUBDIRS += daqcom
 SUBDIRS += newcomp
 
 .PHONY: $(SUBDIRS)
