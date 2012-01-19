@@ -221,7 +221,7 @@ namespace DAQMW
             return 0;
         }
 
-        int set_comp_name(char* name)
+        int set_comp_name(const char* name)
         {
             m_comp_name = name;
             return 0;
