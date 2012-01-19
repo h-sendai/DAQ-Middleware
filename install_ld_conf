@@ -15,7 +15,11 @@ if [ $os = "Linux" ]; then
             echo /usr/lib/daqmw > $conf_file
         fi
         if [ $arch = "x86_64" ]; then
-            echo /usr/lib64/daqmw > $conf_file
+            if [ -d /usr/lib64 ]; then
+                echo /usr/lib64/daqmw > $conf_file
+            else
+                echo /usr/lib/daqmw > $conf_file
+            fi
         fi
     fi
     if [ -z $destdir ]; then
