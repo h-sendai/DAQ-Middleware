@@ -12,15 +12,26 @@
 
 #include <boost/bind.hpp>
 #include <boost/function.hpp>
+#include <boost/version.hpp>
+
+// XXX: we have to verify the border version.
+#if BOOST_VERSION < 104100
 #include <boost/spirit/core.hpp>
 #include <boost/spirit/utility/confix.hpp>
 #include <boost/spirit/utility/escape_char.hpp>
 #include <boost/spirit/utility/lists.hpp>
+using namespace boost::spirit;
+#else
+#include <boost/spirit/include/classic_core.hpp>
+#include <boost/spirit/include/classic_confix.hpp>
+#include <boost/spirit/include/classic_escape_char.hpp>
+#include <boost/spirit/include/classic_lists.hpp>
+using namespace boost::spirit::classic;
+#endif
 
 using namespace json_spirit;
 using namespace std;
 using namespace boost;
-using namespace boost::spirit;
 
 namespace
 {
