@@ -14,7 +14,9 @@
 #include <boost/function.hpp>
 #include <boost/version.hpp>
 
-// XXX: we have to verify the border version.
+// Refs
+// http://www.boost.org/doc/libs/1_35_0/libs/spirit/change_log.html
+// http://www.boost.org/doc/libs/1_36_0/libs/spirit/classic/change_log.html
 #if BOOST_VERSION < 103600
 #include <boost/spirit/core.hpp>
 #include <boost/spirit/utility/confix.hpp>
