@@ -15,7 +15,7 @@
 #include <boost/version.hpp>
 
 // XXX: we have to verify the border version.
-#if BOOST_VERSION < 104100
+#if BOOST_VERSION < 103600
 #include <boost/spirit/core.hpp>
 #include <boost/spirit/utility/confix.hpp>
 #include <boost/spirit/utility/escape_char.hpp>
