@@ -25,6 +25,8 @@ else:
 # constants and parameters
 #
 
+progname = os.path.basename(sys.argv[0])
+
 # adjust the daq_lib_path to your own environment.
 daq_lib_path = '/usr/lib/daqmw:/kensdaq/root/lib'
 confFile = ''
