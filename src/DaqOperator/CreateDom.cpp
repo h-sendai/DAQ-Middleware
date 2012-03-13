@@ -378,10 +378,8 @@ void CreateDom::makeLog(groupStatus status)
 	make(m_logElem, "state", state);
 
 	// event_num
-	char num[12];
-	//sprintf(num, "%llu", status.event_num);
-	//sprintf(num, "%llu", status.comp_status.event_num);
-	//yasu	sprintf(num, "%llu", status.comp_status.event_size);
+    // max unsinged long long int is 18446_74407_37095_51616 (20 digit)
+	char num[21];
 	sprintf(num, "%llu", (long long unsigned int)status.comp_status.event_size);
 	make(m_logElem, "eventNum", num);
 

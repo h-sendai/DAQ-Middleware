@@ -5,6 +5,7 @@ Not yet released.
 Summary
 
 - API has not changed from 1.1.1.
+- Fix a buffer overflow bug in DaqOperatorComp event_byte_size.
 - Fix return value of writeAll() when EPIPE error occured.
 - Fix a bug that firefox sends SYN packet every time we click the buttons.
 - Fix a bug that progname was not defined in run.py.
@@ -12,6 +13,9 @@ Summary
 
 Details
 
+BUG FIX: Type of event_byte_size in DaqOperatorComp is unsigned long long
+         (max 20 digit).  The buffer to convert the value to string was too
+         small to fold 20 digit integer.
 BUG FIX: Sock.cpp writeAll() did not return ERROR_FATAL
          when EPIPE error occured.
 BUG FIX: Firefox had sent SYN  packets every time we click the buttons.
