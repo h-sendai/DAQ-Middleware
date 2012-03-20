@@ -5,6 +5,7 @@ Not yet released.
 Summary
 
 - API has not changed from 1.1.1.
+- Fix a run.py warning message when running on python 2.7.x.
 - Fix a buffer overflow bug in DaqOperatorComp event_byte_size.
 - Fix return value of writeAll() when EPIPE error occured.
 - Fix a bug that firefox sends SYN packet every time we click the buttons.
@@ -13,6 +14,9 @@ Summary
 
 Details
 
+BUG FIX: If we use python 2.7.x to run run.py, we received warning message
+         "FutureWarning: This search is broken in 1.3 and earlier,
+         and will be fixed in a future version."
 BUG FIX: Type of event_byte_size in DaqOperatorComp is unsigned long long
          (max 20 digit).  The buffer to convert the value to string was too
          small to fold 20 digit integer.

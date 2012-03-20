@@ -645,10 +645,10 @@ def getCompInfoFromXml():
     global confPaths
     global confOperatorPath
 
-    hostAddrPath = '//component/hostAddr'
-    compExecPath = '//component/execPath'
-    confPath     = '//component/confFile'
-    confOperatorPath = '//daqOperator/hostAddr'
+    hostAddrPath     = './/component/hostAddr'
+    compExecPath     = './/component/execPath'
+    confPath         = './/component/confFile'
+    confOperatorPath = './/daqOperator/hostAddr'
 
     operatorAddr = getVal(confFile, confOperatorPath)
     cpudaqAddrs  = getVals(confFile, hostAddrPath)
