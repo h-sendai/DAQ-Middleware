@@ -43,7 +43,7 @@ namespace DAQMW {
   public:
     ParameterServer(int port);
     ParameterServer(int port, std::string host);
-    ParameterServer(int port, std::string host, std::string delimitor);
+    ParameterServer(int port, std::string host, std::string delimiter);
     virtual ~ParameterServer();
 
     virtual void* Run();
@@ -60,14 +60,14 @@ namespace DAQMW {
     Parameter m_param;
     int m_port;
     std::string m_host;
-    std::string m_delimitor;
+    std::string m_delimiter;
     std::string m_msg;
 
     bool m_debug;
   };
 
   inline ParameterServer::ParameterServer(int port)
-    :m_port(port), m_delimitor(":"), m_debug(true) {
+    :m_port(port), m_delimiter(":"), m_debug(true) {
     try {
       m_server.create();
       m_server.bind(port);
@@ -79,7 +79,7 @@ namespace DAQMW {
   }
 
   inline ParameterServer::ParameterServer(int port, std::string host)
-    :m_port(port), m_host(host), m_delimitor(":"), m_debug(true) {
+    :m_port(port), m_host(host), m_delimiter(":"), m_debug(true) {
     try {
       m_server.create();
       m_server.bind(port, host.c_str());
@@ -90,8 +90,8 @@ namespace DAQMW {
     }
   }
 
-  inline ParameterServer::ParameterServer(int port, std::string host, std::string delimitor)
-    :m_port(port), m_delimitor(delimitor), m_debug(true) {
+  inline ParameterServer::ParameterServer(int port, std::string host, std::string delimiter)
+    :m_port(port), m_delimiter(delimiter), m_debug(true) {
     try {
       m_server.create();
       m_server.bind(port, host.c_str());
@@ -132,10 +132,10 @@ namespace DAQMW {
     *com = command.substr(0,3); // "get" or "put"
 
     std::string command1 = command.substr(4); // tag (and value)
-    std::string::size_type index = command1.find(m_delimitor);
+    std::string::size_type index = command1.find(m_delimiter);
     tag = command1.substr(0,index);
 
-    std::string id = *com + m_delimitor + tag; // id = get:tag or put:tag
+    std::string id = *com + m_delimiter + tag; // id = get:tag or put:tag
     if (m_debug)
       std::cout << "ParameterServer::extCmdVal(): id = " << id << std::endl;
     status = getParam(id, &m_param);

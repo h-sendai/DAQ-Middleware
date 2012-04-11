@@ -41,10 +41,10 @@ namespace DAQMW {
   class ParameterClient {
 
   public:
-    ParameterClient(std::string host, int port, string delimitor)
-      : m_host(host), m_port(port), m_delimitor(delimitor),
+    ParameterClient(std::string host, int port, string delimiter)
+      : m_host(host), m_port(port), m_delimiter(delimiter),
       m_clientSock( m_host, m_port ) {
-      cout << "ParameterClient(string,int,string)::constructor host = " << m_host <<  "   port = " << m_port << "   delimitor = " << m_delimitor << endl;
+      cout << "ParameterClient(string,int,string)::constructor host = " << m_host <<  "   port = " << m_port << "   delimiter = " << m_delimiter << endl;
       try {
 	m_clientSock.connect(m_host, m_port);
       } catch ( SockException& e ) {
@@ -56,8 +56,8 @@ namespace DAQMW {
     };
     ParameterClient(std::string host, int port)
       : m_host(host), m_port(port) {
-      m_delimitor = ":";
-      cout << "ParameterClient(string,int)::constructor host = " << m_host <<  "   port = " << m_port << "   delimitor = " << m_delimitor << endl;
+      m_delimiter = ":";
+      cout << "ParameterClient(string,int)::constructor host = " << m_host <<  "   port = " << m_port << "   delimiter = " << m_delimiter << endl;
       try {
 	m_clientSock.connect(m_host, m_port);
       } catch ( SockException& e ) {
@@ -68,7 +68,7 @@ namespace DAQMW {
       }
     };
     ParameterClient() {
-      cout << "ParameterClient()::constructor host = " << m_host <<  "   port = " << m_port << "   delimitor = " << m_delimitor << endl;
+      cout << "ParameterClient()::constructor host = " << m_host <<  "   port = " << m_port << "   delimiter = " << m_delimiter << endl;
     }
 
     ~ParameterClient() {
@@ -101,9 +101,9 @@ namespace DAQMW {
       std::string status;
       std::string msg;
       if (com == "put")
-	msg = com + m_delimitor + subId + m_delimitor + value;
+	msg = com + m_delimiter + subId + m_delimiter + value;
       else
-	msg = com + m_delimitor + subId;
+	msg = com + m_delimiter + subId;
       int size = msg.length();
       int length = sizeof(int)+size;
       int st;
@@ -162,7 +162,7 @@ namespace DAQMW {
     };
     std::string m_host;
     int m_port;
-    string m_delimitor;
+    string m_delimiter;
     DAQMW::Sock m_clientSock;
     string* m_string;
     vector<string* > m_stringP;
