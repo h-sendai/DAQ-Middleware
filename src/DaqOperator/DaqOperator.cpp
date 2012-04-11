@@ -64,6 +64,19 @@ DaqOperator::DaqOperator(RTC::Manager* manager)
     if (m_debug) {
         std::cerr << "Create DaqOperator\n";
     }
+
+    try {
+        XMLPlatformUtils::Initialize();  //Initialize Xerces
+    }
+    catch (XMLException& e)
+    {
+        char* message = XMLString::transcode( e.getMessage() );
+        std::cerr << "### ERROR: XML toolkit initialization error: "
+                  << message << std::endl;
+        XMLString::release( &message );
+        // throw exception here to return ERROR_XERCES_INIT
+    }
+
     ParamList paramList;
     ConfFileParser MyParser;
 
@@ -115,6 +128,7 @@ DaqOperator::DaqOperator(RTC::Manager* manager)
 
 DaqOperator::~DaqOperator()
 {
+    XMLPlatformUtils::Terminate();
 }
 
 RTC::ReturnCode_t DaqOperator::onInitialize()
@@ -433,8 +447,6 @@ RTC::ReturnCode_t DaqOperator::run_console_mode()
 
 bool DaqOperator::parse_body(const char* buf, const std::string tagname)
 {
-    XMLPlatformUtils::Initialize();
-
     XercesDOMParser* parser = new XercesDOMParser;
 
     MemBufInputSource* memBufIS 
@@ -482,7 +494,6 @@ bool DaqOperator::parse_body(const char* buf, const std::string tagname)
     parser->resetDocumentPool();
     delete(parser);
 
-    XMLPlatformUtils::Terminate();
     return true;
 }
 

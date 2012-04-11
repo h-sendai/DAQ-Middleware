@@ -20,18 +20,6 @@ ConfFileParser::ConfFileParser()
     : m_comp_num(0), m_sitcp_num(0), m_debug(false)
 {
 
-    try {
-        XMLPlatformUtils::Initialize();  //Initialize Xerces
-    }
-    catch( XMLException& e)
-    {
-        char* message = XMLString::transcode( e.getMessage() );
-        std::cerr << "### ERROR: XML toolkit initialization error: "
-                  << message << std::endl;
-        XMLString::release( &message );
-        // throw exception here to return ERROR_XERCES_INIT
-    }
-
      TAG_root         = XMLString::transcode("configInfo");
      TAG_group        = XMLString::transcode("daqGroup");
      TAG_groups       = XMLString::transcode("daqGroups");
@@ -57,19 +45,6 @@ ConfFileParser::ConfFileParser()
 
 ConfFileParser::~ConfFileParser()
 {
-    //std::cerr << "ConfFileParser delete\n";
-    try {
-        XMLPlatformUtils::Terminate();  // Terminate Xerces
-    }
-    catch( xercesc::XMLException& e ) {
-        char* message = xercesc::XMLString::transcode( e.getMessage() );
-        std::cerr << "### ERROR: XML ttolkit teardown error: "
-                  << message << std::endl;
-        XMLString::release( &message );
-    }
-
-    //std::cerr << "Terminate Xerces\n";
-
     try {
         XMLString::release( &TAG_root );
         XMLString::release( &TAG_groups );
@@ -279,9 +254,7 @@ int ConfFileParser::readConfFile(const char* xmlFile, bool isConfigure)
     delete m_xercesDomParser;
     delete m_errHandler;
 
-    XMLPlatformUtils::Terminate();
     if (m_debug) {
-        std::cerr << "XMLPlatformUtils::Terminate()\n";
         std::cerr << "readConfFile() exit\n";
     }
     return m_comp_num;

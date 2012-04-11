@@ -17,6 +17,7 @@ COMP_NAME = DaqOperator
 all: $(COMP_NAME)Comp
 
 CPPFLAGS += -I../lib/SiTCP/CPP/Sock
+CXXFLAGS += -g
 LDLIBS += -L../lib/SiTCP/CPP/Sock -lSock
 LDLIBS += -lxerces-c
 

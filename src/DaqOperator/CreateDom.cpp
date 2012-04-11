@@ -61,7 +61,6 @@ std::string CreateDom::getOK(std::string command)
 	makeResultOK();
 
 	std::string buf = getBuffer();
-	XMLPlatformUtils::Terminate();
 	return buf;
 }
 
@@ -84,7 +83,6 @@ std::string CreateDom::getNG(std::string command, int code,
 	makeResultNG(result);
 
 	std::string buf = getBuffer();
-	XMLPlatformUtils::Terminate();
 	return buf;
 }
 
@@ -104,7 +102,6 @@ std::string CreateDom::getParams(std::string command, NVList* list)
 	makeParams();
 
 	std::string buf = getBuffer();
-	XMLPlatformUtils::Terminate();
 	return buf;
 }
 
@@ -123,7 +120,6 @@ std::string CreateDom::getStatus(std::string command, DAQLifeCycleState state)
 
 	std::string buf = getBuffer();
 	//std::cerr << "CreateDom::getStatus():" << buf << std::endl;
-	XMLPlatformUtils::Terminate();
 	return buf;
 }
 
@@ -141,7 +137,6 @@ std::string CreateDom::getLog(std::string command, groupStatusList status_list)
 	}
 
 	std::string buf = getBuffer();
-	XMLPlatformUtils::Terminate();
 	return buf;
 }
 
@@ -166,7 +161,6 @@ std::string CreateDom::getLog(std::string command, groupStatusList status_list,
 	}
 
 	std::string buf = getBuffer();
-	XMLPlatformUtils::Terminate();
 	return buf;
 }
 
@@ -205,13 +199,6 @@ std::string CreateDom::getState(DAQLifeCycleState state, bool flag)
 
 void CreateDom::makeRoot()
 {
-	try {
-		XMLPlatformUtils::Initialize();
-	}
-	catch(...) {
-		return;
-	}
-
 	m_impl =  DOMImplementationRegistry::getDOMImplementation(X("Core"));
 
 	//response
@@ -497,15 +484,28 @@ std::string CreateDom::getBuffer()
 		return NULL;
 	}
 
-	DOMWriter* writer = ((DOMImplementationLS*)m_impl)->createDOMWriter();
-
-	// for debug
-//	LocalFileFormatTarget file("debug.xml");
-//	writer->writeNode(&file, *m_doc);
-
 	MemBufFormatTarget target;
-	writer->writeNode(&target, *m_rootElem);
-	delete writer;
+
+#if _XERCES_VERSION < 30000
+    DOMWriter* writer = ((DOMImplementationLS*)m_impl)->createDOMWriter();
+    writer->writeNode(&target, *m_rootElem);
+    // for debug
+    // LocalFileFormatTarget file("debug.xml");
+    // writer->writeNode(&file, *m_doc);
+#else
+	DOMLSSerializer* writer = ((DOMImplementationLS*)m_impl)->createLSSerializer();
+    DOMLSOutput *theOutputDesc = ((DOMImplementationLS*)m_impl)->createLSOutput();
+    // set user specified output encoding
+    XMLCh encodeStr[100];
+    XMLString::transcode("UTF-8", encodeStr, 99);
+    theOutputDesc->setEncoding(encodeStr);
+    theOutputDesc->setByteStream(&target);
+    writer->write(m_rootElem, theOutputDesc);
+
+    theOutputDesc->release();
+#endif
+    writer->release();
+	//delete writer;
 
 	m_doc->release();
 
