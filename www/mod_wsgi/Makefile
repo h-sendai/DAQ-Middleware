@@ -1,7 +1,7 @@
 include ../Distributions.mk
 
 DESTDIR =
-#HTTPD_CONF_DIR = $(DESTDIR)/etc/httpd/conf.d
+DAQ_CONF_DIR = $(DESTDIR)$(HTTPD_CONF_DIR)
 
 INSTALL_FILES += daq.conf
 
@@ -24,12 +24,12 @@ clean:
 	@set -e; for dir in $(SUBDIRS); do $(MAKE) -C $${dir} $@; done
 
 install:
-	install -d $(HTTPD_CONF_DIR)
-	install -m 0644 $(INSTALL_FILES) $(HTTPD_CONF_DIR)
+	install -d $(DAQ_CONF_DIR)
+	install -m 0644 $(INSTALL_FILES) $(DAQ_CONF_DIR)
 	@set -e; for dir in $(SUBDIRS); do $(MAKE) -C $${dir} $@; done
 
 uninstall:
-	@for file in $(INSTALL_FILES); do rm -f $(HTTPD_CONF_DIR)/$${file}; done
+	@for file in $(INSTALL_FILES); do rm -f $(DAQ_CONF_DIR)/$${file}; done
 	@set -e; for dir in $(SUBDIRS); do $(MAKE) -C $${dir} $@; done
 
 #install:
