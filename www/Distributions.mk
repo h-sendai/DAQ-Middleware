@@ -18,14 +18,14 @@ USE_MOD_WSGI   = 0
 # Scientific Linux newer than or equal to 5.8 returns Scientific
 
 ifeq ($(strip $(OS)),ScientificSL)
-WWW_DOCUMENT_ROOT = /var/www/html
-HTTPD_CONF_DIR    = /etc/httpd/conf.d
+WWW_DOCUMENT_ROOT = $(DESTDIR)/var/www/html
+HTTPD_CONF_DIR    = $(DESTDIR)/etc/httpd/conf.d
 USE_MOD_PYTHON    = 1
 endif
 
 ifeq ($(strip $(OS)),Scientific)
-WWW_DOCUMENT_ROOT = /var/www/html
-HTTPD_CONF_DIR    = /etc/httpd/conf.d
+WWW_DOCUMENT_ROOT = $(DESTDIR)/var/www/html
+HTTPD_CONF_DIR    = $(DESTDIR)/etc/httpd/conf.d
 ifeq ($(strip $(MAJOR_VERSION)),5)
 USE_MOD_PYTHON    = 1
 endif
@@ -36,8 +36,8 @@ endif
 
 ########## CentOS ##########
 ifeq ($(strip $(OS)),CentOS)
-WWW_DOCUMENT_ROOT = /var/www/html
-HTTPD_CONF_DIR    = /etc/httpd/conf.d
+WWW_DOCUMENT_ROOT = $(DESTDIR)/var/www/html
+HTTPD_CONF_DIR    = $(DESTDIR)/etc/httpd/conf.d
 ifeq ($(strip $(MAJOR_VERSION)),5)
 USE_MOD_PYTHON    = 1
 endif
@@ -50,15 +50,15 @@ endif
 ########## Ubuntu ##########
 ########## ArchLinux  ##########
 ifeq ($(strip $(OS)),archlinux)
-WWW_DOCUMENT_ROOT = /srv/http
-HTTPD_CONF_DIR    = /etc/httpd/conf/extra
+WWW_DOCUMENT_ROOT = $(DESTDIR)/srv/http
+HTTPD_CONF_DIR    = $(DESTDIR)/etc/httpd/conf/extra
 USE_MOD_WSGI      = 1
 endif
 
 ########## Unknown ##########
 ifeq ($(strip $(WWW_DOCUMENT_ROOT)),)
-WWW_DOCUMENT_ROOT = /
-HTTPD_CONF_DIR    = /
+WWW_DOCUMENT_ROOT = $(DESTDIR)/
+HTTPD_CONF_DIR    = $(DESTDIR)/
 USE_MOD_WSGI      = 1
 endif
 
