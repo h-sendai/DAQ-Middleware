@@ -5,6 +5,7 @@ Not yet released.
 Summary
 
 - API has not changed from 1.1.1.
+- Add -M option to run.py to specify giopMaxMsgSize.
 - Add mod_wsgi support.
 - Add Xerces 3.x support.
 - Fix a compile error on Sock library when using gcc 4.7.
@@ -17,6 +18,8 @@ Summary
 
 Details
 
+FEATURE: Add -M option to run.py to specify giopMaxMsgSize.  You may
+         add "k" for kilo, "m" for mega.
 FEATURE: Add mod_wsgi support.  On Scientific Linux 5.x, use mod_python.
          On Scientific Linux 6.x, use mod_wsgi.
 FEATURE: Xerces 3.x now supported.  Scientific Linux 6.x has xerces-3.0
