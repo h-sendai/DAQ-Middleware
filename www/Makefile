@@ -1,7 +1,5 @@
 include Distributions.mk
 
-DESTDIR =
-
 ifeq ($(strip $(USE_MOD_WSGI)),1)
 SUBDIRS = mod_wsgi
 endif
