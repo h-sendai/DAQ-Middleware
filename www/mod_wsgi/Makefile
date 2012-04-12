@@ -12,10 +12,14 @@ SUBDIRS += parts
 
 .PHONY: subdirs $(SUBDIRS)
 
-all: $(SUBDIRS)
+all: daq.conf $(SUBDIRS)
 	@set -e; for dir in $(SUBDIRS); do $(MAKE) -C $${dir} $@; done
 
+daq.conf: daq.conf.in
+	sed -e 's|@WWW_DOCUMENT_ROOT@|$(WWW_DOCUMENT_ROOT)|g' daq.conf.in > daq.conf
+
 clean:
+	rm -f daq.conf
 	@set -e; for dir in $(SUBDIRS); do $(MAKE) -C $${dir} $@; done
 
 install:

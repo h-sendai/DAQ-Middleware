@@ -8,6 +8,8 @@ syntax: glob
 *.so.[0-9]*.[0-9]*
 *.a
 *.orig
+*.pyc
+*.pyo
 .confFilePath
 utils/newcomp/*.in
 utils/newcomp/newcomp
@@ -22,5 +24,9 @@ src/DaqOperator/DAQServiceStub.h
 src/DaqOperator/DaqOperatorComp
 src/DaqOperator/symlink
 src/DaqOperator/autogen/*
-www/operatorPanel/ParameterClient.py
-www/operatorPanel/ParameterClient_wrap.cxx
+www/mod_python/operatorPanel/ParameterClient.py
+www/mod_python/operatorPanel/ParameterClient_wrap.cxx
+www/mod_python/daq.conf
+www/mod_wsgi/operatorPanel/ParameterClient.py
+www/mod_wsgi/operatorPanel/ParameterClient_wrap.cxx
+www/mod_wsgi/daq.conf

@@ -1,0 +1,7 @@
+#
+WSGIScriptAlias /daqmw/scripts "@WWW_DOCUMENT_ROOT@/daqmw/scripts"
+WSGIPythonPath  @WWW_DOCUMENT_ROOT@/daqmw/scripts
+<Location "/daqmw/scripts">
+    Order deny,allow
+    Allow from all
+</Location>
