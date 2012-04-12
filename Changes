@@ -1,10 +1,12 @@
-1.1.2 2012-XX-XX Hiroshi Sendai
+1.2.0 2012-XX-XX Hiroshi Sendai
 
 Not yet released.
 
 Summary
 
 - API has not changed from 1.1.1.
+- Add mod_wsgi support.
+- Add Xerces 3.x support.
 - Fix a compile error on Sock library when using gcc 4.7.
 - Fix a run.py warning message when running on python 2.7.x.
 - Fix a buffer overflow bug in DaqOperatorComp event_byte_size.
@@ -15,6 +17,10 @@ Summary
 
 Details
 
+FEATURE: Add mod_wsgi support.  On Scientific Linux 5.x, use mod_python.
+         On Scientific Linux 6.x, use mod_wsgi.
+FEATURE: Xerces 3.x now supported.  Scientific Linux 6.x has xerces-3.0
+         package.
 BUG FIX: We have to include <unistd.h> to use read(), alarm(), close()
          system call when using gcc 4.7.  Sock library did not include
          <unistd.h>.
