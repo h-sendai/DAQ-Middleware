@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<?xml-stylesheet href="style.xsl" type="text/xsl" ?>
+<response>
+  <methodName>Begin</methodName>
+  <returnValue>
+    <result>
+      <status>OK</status>
+      <code>0</code>
+      <className />
+      <name />
+      <methodName />
+      <messageEng />
+      <messageJpn />
+    </result>
+  </returnValue>
+</response>

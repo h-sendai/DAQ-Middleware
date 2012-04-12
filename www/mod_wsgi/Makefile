@@ -1,12 +1,13 @@
 include ../Distributions.mk
 
 DESTDIR =
-# HTTPD_CONF_DIR = $(DESTDIR)/etc/httpd/conf.d
+#HTTPD_CONF_DIR = $(DESTDIR)/etc/httpd/conf.d
 
 INSTALL_FILES += daq.conf
 
 SUBDIRS += js
 SUBDIRS += operatorPanel
+SUBDIRS += scripts
 SUBDIRS += parts
 
 .PHONY: subdirs $(SUBDIRS)

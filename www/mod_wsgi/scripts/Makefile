@@ -9,14 +9,12 @@ endif
 DESTDIR           =
 #WWW_DOCUMENT_ROOT = /var/www/html
 DAQ_HTML_DIR      = $(DESTDIR)$(WWW_DOCUMENT_ROOT)/daqmw
-INSTALL_DIR       = $(DAQ_HTML_DIR)/operatorPanel
+INSTALL_DIR       = $(DAQ_HTML_DIR)/scripts
 
 INSTALL_FILES += _ParameterClient.so
-INSTALL_FILES += operatorPanel0.html
 INSTALL_FILES += ParameterClient.py
 INSTALL_FILES += daq.py
 INSTALL_FILES += writedata.py
-INSTALL_FILES += runNumber.txt
 
 SOCK_INC       = ../../../src/lib/SiTCP/CPP/Sock
 SOCK_LIB       = -L../../../src/lib/SiTCP/CPP/Sock -lSock
@@ -43,10 +41,9 @@ ${SHAREDLIB}: ${SRCS}
 install:
 	install -d -m 0755 $(INSTALL_DIR)
 	install -m 0644 $(INSTALL_FILES) $(INSTALL_DIR)
-	chmod 0666 $(INSTALL_DIR)/runNumber.txt
 
 clean:
-	rm -f ${IFILE}.py ${WRAPFILE} ${WRAPFILE_O} ${SHAREDLIB}
+	rm -f ${IFILE}.py *.pyc ${WRAPFILE} ${WRAPFILE_O} ${SHAREDLIB}
 
 uninstall:
 	@for file in $(INSTALL_FILES); do rm -f $(INSTALL_DIR)/$${file}; done
