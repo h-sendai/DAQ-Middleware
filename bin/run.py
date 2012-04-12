@@ -63,6 +63,7 @@ def opt():
     global mydisp
     global verbose
     global comps_invoke_interval
+    global giop_max_msg_size
 
     usage = "run.py [OPTIONS] [CONFIG_FILE]"
     parser = OptionParser(usage)
@@ -73,6 +74,7 @@ def opt():
     parser.set_defaults(operator='/usr/libexec/daqmw/DaqOperatorComp')
     parser.set_defaults(operator_log='/dev/null')
     parser.set_defaults(comps_invoke_interval='0.0')
+    parser.set_defaults(giop_max_msg_size=False)
 
     parser.add_option("-c", "--console",
                       action="store_true", dest="console", help="console mode. default is HTTP mode")
@@ -90,6 +92,8 @@ def opt():
                       help="specify DISPLAY env. val for X apps")
     parser.add_option("-w", "--wait", dest="comps_invoke_interval",
                       help="sleep specified interval seconds between each component invoking")
+    parser.add_option("-M", "--giopmaxmsgsize", dest="giop_max_msg_size",
+                      help="specify GIOP max message size (k for kilo, m for mega allowed)")
 
     (options, args) = parser.parse_args()
     if len(args) != 1:
@@ -103,6 +107,7 @@ def opt():
     localBoot    = options.local
     mydisp       = options.display
     verbose      = options.verbose
+    giop_max_msg_size = options.giop_max_msg_size
     
     # XXX
     # We have to sleep some seconds not to cause core file
@@ -201,6 +206,14 @@ corba.endpoint: %(comp_addr)s:
 """
     rtc_conf = rtc_conf_template % \
                { 'operator_addr': operatorAddr, 'comp_addr': addr }
+    if giop_max_msg_size != False:
+        if giop_max_msg_size[-1] == 'k':
+            size = int(giop_max_msg_size[0:-1]) * 1024
+        elif giop_max_msg_size[-1] == 'm':
+            size = int(giop_max_msg_size[0:-1]) * 1024 * 1024
+        else:
+            size = int(giop_max_msg_size)
+        rtc_conf += "corba.args: -ORBgiopMaxMsgSize %d\n" % (size)
 
     return rtc_conf
 
@@ -216,6 +229,15 @@ exec_cxt.periodic.rate: 1000000000
 corba.endpoint: %(operator_addr)s:
 """
     op_rtc_conf = op_rtc_conf_template % {'operator_addr': operatorAddr}
+    op_rtc_conf = op_rtc_conf_template % {'operator_addr': operatorAddr}
+    if giop_max_msg_size != False:
+        if giop_max_msg_size[-1] == 'k':
+            size = int(giop_max_msg_size[0:-1]) * 1024
+        elif giop_max_msg_size[-1] == 'm':
+            size = int(giop_max_msg_size[0:-1]) * 1024 * 1024
+        else:
+            size = int(giop_max_msg_size)
+        op_rtc_conf += "corba.args: -ORBgiopMaxMsgSize %d\n" % (size)
 
     file_path = '%s/rtc.conf' % (mydir)
     ret = write_file(file_path, op_rtc_conf)
