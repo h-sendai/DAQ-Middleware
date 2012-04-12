@@ -7,7 +7,6 @@ Consult your distributions package.)
 endif
 
 DESTDIR           =
-#WWW_DOCUMENT_ROOT = /var/www/html
 DAQ_HTML_DIR      = $(DESTDIR)$(WWW_DOCUMENT_ROOT)/daqmw
 INSTALL_DIR       = $(DAQ_HTML_DIR)/operatorPanel
 

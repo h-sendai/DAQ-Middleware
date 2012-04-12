@@ -1,7 +1,6 @@
 include ../../Distributions.mk
 
 DESTDIR =
-#WWW_DOCUMENT_ROOT = /var/www/html
 DAQ_HTML_DIR = $(DESTDIR)$(WWW_DOCUMENT_ROOT)/daqmw
 INSTALL_DIR  = $(DAQ_HTML_DIR)/parts
 
@@ -35,11 +34,3 @@ install:
 
 uninstall:
 	@for file in $(INSTALL_FILES); do rm -f $(INSTALL_DIR)/$${file}; done
-
-#install:
-#	install -m 0644 daq.conf /etc/httpd/conf.d/
-#	@$(MAKE) -C operatorPanel install
-#	cp -r js /var/www/html/daqmw/
-#	cp -r parts /var/www/html/daqmw/
-#clean:
-#	@$(MAKE) -C operatorPanel clean
