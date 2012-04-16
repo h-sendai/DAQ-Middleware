@@ -3,6 +3,7 @@ prefix  = /usr
 
 SUBDIRS += daqcom
 SUBDIRS += newcomp
+SUBDIRS += daqmw-emulator
 
 .PHONY: $(SUBDIRS)
 

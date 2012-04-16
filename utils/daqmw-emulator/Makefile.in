@@ -1,0 +1,26 @@
+DESTDIR     = 
+prefix      = /usr
+EXEC_MODE   = 0755
+INSTALL_DIR = $(DESTDIR)$(prefix)/bin
+
+PROG   = daqmw-emulator
+CFLAGS = -g -O2 -Wall
+LDLIBS = -lm
+
+all: $(PROG)
+
+OBJS += $(PROG).o
+OBJS += get_num.o
+OBJS += my_signal.o
+OBJS += send_data.o
+OBJS += prepare_send_data.o
+OBJS += gaussian_rand.o
+
+$(PROG): $(OBJS)
+
+install:
+	install -d $(INSTALL_DIR)
+	install $(PROG) $(INSTALL_DIR)
+
+clean:
+	rm -f *.o $(PROG)
