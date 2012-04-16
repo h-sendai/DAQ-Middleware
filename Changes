@@ -5,6 +5,7 @@ Not yet released.
 Summary
 
 - API has not changed from 1.1.1.
+- Add simple emlulator (formally distributed as emulator-GEN_GAUSS).
 - Add -M option to run.py to specify giopMaxMsgSize.
 - Add mod_wsgi support.
 - Add Xerces 3.x support.
@@ -18,6 +19,8 @@ Summary
 
 Details
 
+FEATURE: Add simple emlulator (formally distributed as emulator-GEN_GAUSS).
+         Source files are at /usr/share/daqmw/daqmw-emluator.
 FEATURE: Add -M option to run.py to specify giopMaxMsgSize.  You may
          add "k" for kilo, "m" for mega.
 FEATURE: Add mod_wsgi support.  On Scientific Linux 5.x, use mod_python.
