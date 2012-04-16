@@ -47,7 +47,19 @@ endif
 endif
 
 ########## Debian ##########
+ifeq ($(strip $(OS)),Debian)
+WWW_DOCUMENT_ROOT = /var/www
+HTTPD_CONF_DIR    = /etc/apache2/conf.d
+USE_MOD_WSGI      = 1
+endif
+
 ########## Ubuntu ##########
+ifeq ($(strip $(OS)),Ubuntu)
+WWW_DOCUMENT_ROOT = /var/www
+HTTPD_CONF_DIR    = /etc/apache2/conf.d
+USE_MOD_WSGI      = 1
+endif
+
 ########## ArchLinux  ##########
 ifeq ($(strip $(OS)),archlinux)
 WWW_DOCUMENT_ROOT = /srv/http
