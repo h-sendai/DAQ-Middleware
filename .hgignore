@@ -13,6 +13,7 @@ syntax: glob
 .confFilePath
 utils/newcomp/*.in
 utils/newcomp/newcomp
+utils/daqmw-emulator/daqmw-emulator
 src/DaqOperator/DAQService.hh
 src/DaqOperator/DAQService.idl
 src/DaqOperator/DAQServiceDynSK.cc
