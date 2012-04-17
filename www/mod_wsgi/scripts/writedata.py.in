@@ -8,7 +8,7 @@ __date__     = '11-April-2012'
 
 import sys
 import cgi
-file = "/var/www/html/daqmw/operatorPanel/runNumber.txt"
+file = "@WWW_DOCUMENT_ROOT@/daqmw/operatorPanel/runNumber.txt"
 xml_ver = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>"
 xml_style = "<?xml-stylesheet href=\"../../operatorPanel/style.xsl\" type=\"text/xsl\" ?>"
 xml_body = "<response><methodName>WriteRunNumber</methodName><returnValue><result><status>OK</status></result></returnValue></response>"

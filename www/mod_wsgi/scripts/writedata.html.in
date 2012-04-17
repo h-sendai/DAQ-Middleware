@@ -38,7 +38,7 @@ C "-//W3C//DTD HTML 4.0 Transitional//EN">
 <td width="100%"><strong>__author__</strong> = 'Yoshiji Yasu'<br>
 <strong>__date__</strong> = '3-April-2012'<br>
 <strong>__version__</strong> = '0.9'<br>
-<strong>file</strong> = '/var/www/html/daqmw/operatorPanel/runNumber.txt'</td></tr></table><p>
+<strong>file</strong> = '@WWW_DOCUMENT_ROOT@/daqmw/operatorPanel/runNumber.txt'</td></tr></table><p>
 <table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
 <tr bgcolor="#7799ee">
 <td colspan=3 valign=bottom>&nbsp;<br>

@@ -32,7 +32,10 @@ WRAPFILE_O     = $(IFILE)_wrap.o
 SHAREDLIB      = _${IFILE}.so
 CXX_FLAGS      = -c -fpic
 
-all: ${SHAREDLIB}
+all: ${SHAREDLIB} writedata.py
+
+writedata.py: writedata.py.in
+	sed -e 's|@WWW_DOCUMENT_ROOT@|$(WWW_DOCUMENT_ROOT)|' writedata.py.in > writedata.py
 
 ${SHAREDLIB}: ${SRCS}
 	${SWIG} ${SWIG_FLAGS} ${INTERFACE}

@@ -7,7 +7,7 @@ __version__  = '1.0'
 __date__     = '1-January-2008'
 
 from mod_python import apache
-file = "/var/www/html/daqmw/operatorPanel/runNumber.txt"
+file = "@WWW_DOCUMENT_ROOT@/daqmw/operatorPanel/runNumber.txt"
 
 def SaveRunNumber(req, RunNumber):
        """Save run number into the file."""

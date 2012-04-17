@@ -27,7 +27,10 @@ src/DaqOperator/symlink
 src/DaqOperator/autogen/*
 www/mod_python/operatorPanel/ParameterClient.py
 www/mod_python/operatorPanel/ParameterClient_wrap.cxx
+www/mod_python/operatorPanel/writedata.py
 www/mod_python/daq.conf
 www/mod_wsgi/scripts/ParameterClient.py
 www/mod_wsgi/scripts/ParameterClient_wrap.cxx
 www/mod_wsgi/daq.conf
+www/mod_wsgi/operatorPanel/writedata.py
+www/mod_wsgi/operatorPanel/writedata.html
