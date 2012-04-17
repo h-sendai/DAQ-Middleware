@@ -39,5 +39,9 @@ install:
 	install -m $(SRC_FILE_MODE) $(FILES) $(SRCDIR)
 	install -m $(SRC_FILE_MODE) Makefile.in $(SRCDIR)/Makefile
 
+uninstall:
+	rm -f $(BINDIR)/$(PROG)
+	rm -f $(SRCDIR)/*
+
 clean:
 	rm -f *.o $(PROG)
