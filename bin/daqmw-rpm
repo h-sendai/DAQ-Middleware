@@ -5,12 +5,21 @@ set -e
 progpath=$0
 progname=$(basename $0)
 
-repo_rpm_url=http://daqmw.kek.jp/rpm/el5/noarch/kek-daqmiddleware-repo-2-0.noarch.rpm
+os_major_version=$(lsb_release -rs | sed -e 's/\..*$//')
+el_name="el$os_major_version"
+
+if [ $os_major_version -eq 5 ]; then
+    repo_rpm_url=http://daqmw.kek.jp/rpm/${el_name}/noarch/kek-daqmiddleware-repo-2-0.noarch.rpm
+    repo_rpm_url_testing=http://daqmw.kek.jp/testing/rpm/${el_name}/noarch/kek-daqmiddleware-testing-repo-2-0.${el_name}.noarch.rpm
+else
+    repo_rpm_url=http://daqmw.kek.jp/rpm/${el_name}/noarch/kek-daqmiddleware-repo-6-0.${el_name}.noarch.rpm
+    repo_rpm_url_testing=http://daqmw.kek.jp/testing/rpm/${el_name}/noarch/kek-daqmiddleware-testing-repo-6-0.${el_name}.noarch.rpm
+fi
+
 repo_name=kek-daqmiddleware
 repo_rpm_name=${repo_name}-repo
 repo_name_testing=kek-daqmiddleware-testing
 repo_rpm_name_testing=${repo_name_testing}-repo
-repo_rpm_url_testing=http://daqmw.kek.jp/testing/rpm/el5/noarch/kek-daqmiddleware-testing-repo-2-0.el5.noarch.rpm
 enable_testing=no
 
 usage()
@@ -72,6 +81,9 @@ do_uninstall()
 
 do_distclean()
 {
+    local arch
+    local os_version
+
     # first, try to remove rpms except repository configuration file
     do_uninstall
 
@@ -81,8 +93,18 @@ do_distclean()
     rpm --quiet -q $repo_rpm_name_testing && (echo -n "remove repo conf file for testing..."; rpm -e $repo_rpm_name_testing; echo " done")
 
     # third, remove cache directory completely
-    rm -fr /var/cache/yum/$repo_name
-    rm -fr /var/cache/yum/$repo_name_testing
+
+    if [ $os_major_version -eq 5 ]; then
+        rm -fr /var/cache/yum/$repo_name
+        rm -fr /var/cache/yum/$repo_name_testing
+    elif [ $os_major_version -eq 6 ]; then
+        for i in $(find /var/cache/yum -name 'kek-daqmiddleware*' -type d); do
+            rm -fr $i
+        done
+    else
+        echo "unknown RHEL (derived) version: $os_major_version"
+        exit 1
+    fi
     return 0
 }
 
