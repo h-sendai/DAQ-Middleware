@@ -125,7 +125,7 @@ class daqmwcom:
         urlbase = sys.argv[1]
         com = daqmwcom(urlbase)
         opts, args = getopt.getopt(sys.argv[2:],'cb:euprg:s', ['configure', 'start=', 'stop', 'unconfigure', 'pause', 'resume', 'getLog', 'getLogSecure'] )
-        print opts, args
+        # print opts, args
         for o, a in opts:
             if o == "--configure" or o == "-c":
                 print com.configure()
