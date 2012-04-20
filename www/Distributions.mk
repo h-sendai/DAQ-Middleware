@@ -13,7 +13,7 @@ MAJOR_VERSION = $(shell echo $(VERSION) | sed -e 's/\..*//')
 USE_MOD_PYTHON = 0
 USE_MOD_WSGI   = 0
 
-########## Scientific Linux 5.x ##########
+########## Scientific Linux 5.0 - 5.7 ##########
 # Scientific Linux older than or equal to 5.7 returns ScientificSL 
 # Scientific Linux newer than or equal to 5.8 returns Scientific
 
@@ -23,7 +23,20 @@ HTTPD_CONF_DIR    = /etc/httpd/conf.d
 USE_MOD_PYTHON    = 1
 endif
 
+########## Scientific Linux 5.8 - , 6.x ##########
 ifeq ($(strip $(OS)),Scientific)
+WWW_DOCUMENT_ROOT = /var/www/html
+HTTPD_CONF_DIR    = /etc/httpd/conf.d
+ifeq ($(strip $(MAJOR_VERSION)),5)
+USE_MOD_PYTHON    = 1
+endif
+ifeq ($(strip $(MAJOR_VERSION)),6)
+USE_MOD_WSGI      = 1
+endif
+endif
+
+########## Scientific Linux CERN ##########
+ifeq ($(strip $(OS)),ScientificCERNSLC)
 WWW_DOCUMENT_ROOT = /var/www/html
 HTTPD_CONF_DIR    = /etc/httpd/conf.d
 ifeq ($(strip $(MAJOR_VERSION)),5)
