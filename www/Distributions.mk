@@ -1,4 +1,4 @@
-can_run_lsb_release = $(shell lsb_release)
+can_run_lsb_release = $(shell lsb_release -a 2>/dev/null)
 
 ifeq ($(strip $(can_run_lsb_release)),)
 $(error Cannot execute lsb_release command.  Please install lsb_release.)
