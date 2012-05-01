@@ -276,10 +276,12 @@ def validateConfigFile(confFile, schemaFile):
 
     try:
         p = subprocess.Popen(command, shell = False, stdout = subprocess.PIPE, stderr = subprocess.PIPE, close_fds=True)
-    except OSError, e:
-        sys.exit(e)
-    except IOError, e:
-        sys.exit(e)
+    except OSError, (my_errno, strerror):
+        sys.stderr.write('%s: %s\n' % (strerror, 'xmllint'))
+        sys.exit(1)
+    except IOError, (my_errno, strerror):
+        sys.stderr.write('%s: %s\n' % (strerror, 'xmllint'))
+        sys.exit(1)
     except:
         sys.exit('xmllint command error')
 
@@ -396,11 +398,11 @@ def get_pids_exact(proc_name):
                              stdout = subprocess.PIPE,
                              stderr = subprocess.PIPE)
     except OSError, (my_errno, strerror):
-        sys.stderr.write('%s: %s' % ('pgrep', strerror))
+        sys.stderr.write('%s: %s\n' % ('pgrep', strerror))
         raise
         #sys.exit(strerror)
     except:
-        sys.stderr.write('get_pid_exact(): unknown error')
+        sys.stderr.write('get_pid_exact(): unknown error\n')
         raise
 
     p.wait()
@@ -445,10 +447,12 @@ def can_find_all_shared_libs(command_path):
 
     try:
         p = subprocess.Popen(command, shell = False, stdout = subprocess.PIPE, stderr = subprocess.PIPE)
-    except OSError, e:
-        sys.exit(e)
-    except IOError, e:
-        sys.exit(e)
+    except OSError, (my_errno, strerror):
+        sys.stderr.write('%s: %s\n' % (strerror, 'ldd'))
+        sys.exit(1)
+    except IOError, (my_errno, strerror):
+        sys.stderr.write('%s: %s\n' % (strerror, 'ldd'))
+        sys.exit(1)
     except:
         sys.exit('ldd command error')
 
