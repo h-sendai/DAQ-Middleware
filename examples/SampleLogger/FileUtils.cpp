@@ -145,7 +145,7 @@ int FileUtils::write_data(char* data, unsigned long size)
     }
     m_file_info.size += size;
 
-    if ((m_max_size > 0) && (m_max_size < m_file_info.size)) {
+    if ((m_max_size > 0) && (m_max_size <= m_file_info.size)) {
         close_file();
         open_file_incr_branch(m_dir_name);
     }

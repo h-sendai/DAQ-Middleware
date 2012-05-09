@@ -5,6 +5,7 @@ Not yet released.
 Summary
 
 - API has not changed from 1.1.1.
+- Fix one more write_data() in SampleLogger/FileUtils.
 - Add simple emlulator (formally distributed as emulator-GEN_GAUSS).
 - Add -M option to run.py to specify giopMaxMsgSize.
 - Add mod_wsgi support.
@@ -19,6 +20,8 @@ Summary
 
 Details
 
+BUG FIX: SampleLogger/FileUtils write_data() wrote one more data chunk
+         if filesize equal to the specified max file size by write_data().
 FEATURE: Add simple emlulator (formally distributed as emulator-GEN_GAUSS).
          Source files are at /usr/share/daqmw/daqmw-emluator.
 FEATURE: Add -M option to run.py to specify giopMaxMsgSize.  You may
