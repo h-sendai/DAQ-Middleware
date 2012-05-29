@@ -66,6 +66,7 @@ namespace DAQMW {
       } catch (...) {
 	std::cerr << "ParameterClient(string,int)::constructor Exception was caught at connection" << endl;
       }
+      m_clientSock.setOptRecvTimeOut(20.0);
     };
     ParameterClient() {
       cout << "ParameterClient()::constructor host = " << m_host <<  "   port = " << m_port << "   delimiter = " << m_delimiter << endl;
