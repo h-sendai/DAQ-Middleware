@@ -16,7 +16,7 @@ ConditionSampleMonitor::getParam(std::string prefix, monitorParam* monitorParam)
         monitorParam->hist_bin = hist_bin;
     }
     else {
-        std::cerr << prefix + " hist_bin not fould" << std::endl;
+        std::cerr << prefix + " hist_bin not found" << std::endl;
         return false;
     }
 
@@ -24,7 +24,7 @@ ConditionSampleMonitor::getParam(std::string prefix, monitorParam* monitorParam)
         monitorParam->hist_min = hist_min;
     }
     else {
-        std::cerr << prefix + " hist_min not fould" << std::endl;
+        std::cerr << prefix + " hist_min not found" << std::endl;
         return false;
     }
 
@@ -32,7 +32,7 @@ ConditionSampleMonitor::getParam(std::string prefix, monitorParam* monitorParam)
         monitorParam->hist_max = hist_max;
     }
     else {
-        std::cerr << prefix + " hist_max not fould" << std::endl;
+        std::cerr << prefix + " hist_max not found" << std::endl;
         return false;
     }
 
@@ -40,7 +40,7 @@ ConditionSampleMonitor::getParam(std::string prefix, monitorParam* monitorParam)
         monitorParam->monitor_update_rate = monitor_update_rate;
     }
     else {
-        std::cerr << prefix + " monitor_update_rate not fould" << std::endl;
+        std::cerr << prefix + " monitor_update_rate not found" << std::endl;
         return false;
     }
 
