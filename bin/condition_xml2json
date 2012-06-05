@@ -34,6 +34,7 @@ $Xalan_path -o $output $input $Xalan_attribute_path
 xalan_exit_status=$?
 if [ $xalan_exit_status -ne 0 ]; then
     echo "$progname: xalan command fail: exit status: $xalan_exit_status" 1>&2
+    exit 1
 fi
 
 sed -i.bak -e 's/^amz_loadComplete(//' -e 's/);$/\n/' -e 's/"0"/0/g' $output
