@@ -3,11 +3,12 @@
 # Contributed by Nakatani san.
 
 import datetime, urllib, os, sys
+from optparse import OptionParser
 
 try:
     import wx
 except ImportError, e:
-    sys.stderr.write('This program requires wx module.')
+    sys.stderr.write('This program requires wx module.\n')
     sys.exit(e)
 
 try:
@@ -19,10 +20,9 @@ except ImportError, e:
         std.stderr.write('cannot import elemenetree.ElementTree or xml.etree.ElementTree')
         sys.exit(e)
 
-MY_CONDITION='/home/daq/MyDaq/condition.xml'
-
 class DaqmwSmpl(wx.Frame):
-    def __init__(self):
+    def __init__(self, condition_xml_path):
+        self.condition_xml_path = condition_xml_path
         wx.Frame.__init__(self,None,title="DAQ-MW Sample GUI", size=(300,300))
         self.CreateStatusBar()
 
@@ -34,8 +34,8 @@ class DaqmwSmpl(wx.Frame):
         putEnd = wx.Button(panel, -1, 'End', (100,40),(80,30))
         self.Bind(wx.EVT_BUTTON, self.OnEnd, id=putEnd.GetId())
 
-        # read MY_CONDITION
-        self.tree=Etree.parse(MY_CONDITION)
+        # read condition.xml
+        self.tree=Etree.parse(self.condition_xml_path)
         self.elem=self.tree.getroot()
 
         # entry input value items
@@ -67,9 +67,8 @@ class DaqmwSmpl(wx.Frame):
         self.timer.Start(1000)
 
         self.Show(True)
-        # XXX: Todo: Re-write URL when install
-        self.url="http://localhost/daqmw/operatorPanel/daq.py/"
-        #self.url="http://localhost/daqmw/scripts/daq.py/"
+        #self.url="http://localhost/daqmw/operatorPanel/daq.py/"
+        self.url="http://localhost/daqmw/scripts/daq.py/"
 
         # configure
         params=urllib.urlencode({"cmd":"<?xml version='1.0' encoding='UTF-8' standalone='no' ?><request><params>sample.xml</params></request>"})
@@ -87,12 +86,11 @@ class DaqmwSmpl(wx.Frame):
         self.elem.find(".//hist_min").text=self.setMin.GetValue()
         self.elem.find(".//hist_max").text=self.setMax.GetValue()
         self.elem.find(".//monitor_update_rate").text=self.setRate.GetValue()
-        self.tree.write(MY_CONDITION)
+        self.tree.write(self.condition_xml_path)
 
         # create condition.json
-        convert_command = 'condition_xml2json ' + MY_CONDITION
+        convert_command = 'condition_xml2json ' + self.condition_xml_path
         os.system(convert_command)
-        #os.system("condition_xml2json /home/daq/MyDaq/condition.xml")
         # begin
         params=urllib.urlencode({"cmd":"<?xml version='1.0' encoding='UTF-8' standalone='no' ?><request><runNo>0</runNo></request>"})
         urllib.urlopen(self.url+"Begin",params)
@@ -132,6 +130,18 @@ class DaqmwSmpl(wx.Frame):
             self.compStatus[i].SetLabel(s.text)
             i+=1
 
-app = wx.App()
-DaqmwSmpl()
-app.MainLoop()
+def main():
+    parser = OptionParser()
+    parser.add_option('-c', '--condition',
+                      action = 'store',
+                      type   = 'string',
+                      dest   = 'condition_xml_path')
+    parser.set_defaults(condition_xml_path='/home/daq/condition.xml')
+    (options, args) = parser.parse_args()
+
+    app = wx.App()
+    DaqmwSmpl(options.condition_xml_path)
+    app.MainLoop()
+
+if __name__ == '__main__':
+    main()
