@@ -121,6 +121,7 @@ int SampleMonitor::daq_unconfigure()
 
     if (m_hist) {
         delete m_hist;
+        m_hist = 0;
     }
     return 0;
 }
