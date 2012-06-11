@@ -4,6 +4,7 @@ prefix  = /usr
 SUBDIRS += daqcom
 SUBDIRS += newcomp
 SUBDIRS += daqmw-emulator
+SUBDIRS += conditionPanel
 
 .PHONY: $(SUBDIRS)
 
