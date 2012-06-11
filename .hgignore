@@ -14,6 +14,7 @@ syntax: glob
 utils/newcomp/*.in
 utils/newcomp/newcomp
 utils/daqmw-emulator/daqmw-emulator
+utils/conditionPanel/conditionPanel.py
 src/DaqOperator/DAQService.hh
 src/DaqOperator/DAQService.idl
 src/DaqOperator/DAQServiceDynSK.cc

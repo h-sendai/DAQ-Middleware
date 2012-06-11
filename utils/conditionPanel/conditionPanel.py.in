@@ -68,7 +68,8 @@ class DaqmwSmpl(wx.Frame):
 
         self.Show(True)
         #self.url="http://localhost/daqmw/operatorPanel/daq.py/"
-        self.url="http://localhost/daqmw/scripts/daq.py/"
+        #self.url="http://localhost/daqmw/scripts/daq.py/"
+        self.url=@URL@
 
         # configure
         params=urllib.urlencode({"cmd":"<?xml version='1.0' encoding='UTF-8' standalone='no' ?><request><params>sample.xml</params></request>"})
