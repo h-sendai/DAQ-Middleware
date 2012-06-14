@@ -78,6 +78,9 @@ int SampleMonitor::daq_dummy()
 {
     if (m_canvas) {
         m_canvas->Update();
+        // daq_dummy() will be invoked again after 10 msec.
+        // This sleep reduces X servers' load.
+        sleep(1);
     }
 
     return 0;
