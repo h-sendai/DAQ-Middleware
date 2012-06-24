@@ -158,6 +158,11 @@ class Json2ConList {
 	  std::stringstream ss;
 	  ss << dv;
 	  cValue = ss.str();
+	  // cValue may look like integer (for example "100").
+	  // We have to express it as floating number. 
+	  if (cValue.find('.') == std::string::npos) { // if '.' not found
+	    cValue += ".0";
+	  }
 	}
 	else
 	  cout << "value = null type or illegal" << endl;
