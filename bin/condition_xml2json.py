@@ -24,7 +24,9 @@ def usage():
     sys.stderr.write(message)
 
 def main():
-    if ((len(sys.argv) != 2) and (len(sys.argv) != 3)):
+    if ((len(sys.argv) == 2) or (len(sys.argv) == 3)):
+        pass
+    else:
         usage()
         sys.exit(1)
     
