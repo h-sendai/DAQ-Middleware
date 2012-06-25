@@ -68,7 +68,6 @@ def main():
         f.close()
     except IOError, e:
         sys.exit(e)
-    f.close()
 
 def get_xslt():
     xslt = """\
