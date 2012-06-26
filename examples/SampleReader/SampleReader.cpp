@@ -34,6 +34,7 @@ static const char* samplereader_spec[] =
 SampleReader::SampleReader(RTC::Manager* manager)
     : DAQMW::DaqComponentBase(manager),
       m_OutPort("samplereader_out", m_out_data),
+      m_sock(0),
       m_recv_byte_size(0),
       m_out_status(BUF_SUCCESS),
 
@@ -168,9 +169,11 @@ int SampleReader::daq_stop()
 {
     std::cerr << "*** SampleReader::stop" << std::endl;
 
-    m_sock->disconnect();
-    delete m_sock;
-    m_sock = 0;
+    if (m_sock) {
+        m_sock->disconnect();
+        delete m_sock;
+        m_sock = 0;
+    }
 
     return 0;
 }
