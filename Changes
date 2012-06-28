@@ -52,7 +52,7 @@ BUG FIX: If we use python 2.7.x to run run.py, we received warning message
          and will be fixed in a future version."
 BUG FIX: Type of event_byte_size in DaqOperatorComp is unsigned long long
          (max 20 digit).  The buffer to convert the value to string was too
-         small to fold 20 digit integer.
+         small to hold 20 digit integer.
 BUG FIX: Sock.cpp writeAll() did not return ERROR_FATAL
          when EPIPE error occured.
 BUG FIX: Firefox had sent SYN  packets every time we click the buttons.
