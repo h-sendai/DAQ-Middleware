@@ -7,9 +7,11 @@ Summary
 - API has not changed from 1.1.1.
 - Support Scientific Linux 6.x.
   - Use mod_wsgi instead of mod_python.  URL to daq.py has been changed to
-    http://localhost/daqmw/scripts/daq.py.  If you access daq.py directly,
-    you have to update the URL.  WebUI operatorPanel's URL has not been
-    changed (http://localhost/daqmw/operatorPanel/operatorPanel0.html).
+    http://localhost/daqmw/scripts/daq.py on Scientific Linux 6.x.
+    If you access daq.py directly, you have to update the URL.
+    The URL to daq.py on Scientific Linux 5.x has not been changed.
+    WebUI operatorPanel's URL has not been changed
+    (http://localhost/daqmw/operatorPanel/operatorPanel0.html).
   - Xerces 3.x support.
 - Add daqcom utility to communicate with httpd server in command line.
 - Add simple emulator (formally distributed as emulator-GEN_GAUSS).
