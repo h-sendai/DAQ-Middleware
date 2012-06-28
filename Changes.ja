@@ -1,0 +1,178 @@
+1.2.0 2012-06-29 Hiroshi Sendai
+
+サマリー
+
+- APIは1.1.1から変更ありません。
+- Scientific Linux 6.x.のサポート
+  - mod_wsgiをサポートしました。Scientific Linux 6.xではmod_pythonのかわりに
+    mod_wsgiを使います。mod_wsgiを使う場合はdaq.pyへのURLは
+    http://localhost/daqmw/scripts/daq.py
+    に変更になりました。daq.pyへ直接アクセスするユーザーはURLを変更する
+    必要があります。Scientific Linux 5.xではdaq.pyへのURLの変更は
+    ありません。WebUIのオペレータパネルのURLは変更ありません。
+    (http://localhost/daqmw/operatorPanel/operatorPanel0.html).
+  - Xerces 3.xのサポートを追加しました。
+- daqcomユーティリティを追加しました。これを使うとコマンドラインからhttpd
+  サーバーに指令を送ることができます。
+- 単純なエミュレータ(以前はemulator-GEN_GAUSSとして別に配布していたもの)を
+  追加しました。実行形式ファイルは/usr/bin/daqamw-emulatorです。
+  ソースコードは/usr/share/daqmw/daqmw-emulator/にあります。
+- コンディションファイルの数値を変更するサンプルGUIとしてconditionPanel
+  を追加しました(中谷さんからいただきました)。
+  実行形式ファイルは/usr/bin/conditionPanel.pyです。実行にはwxPython
+  が必要です。
+- いろいろなバグフィックス
+  - condition.xmlで指定した実数が整数として認識されることがあるのを直しました。
+  - SampleLogger/FileUtilsのwrite_data()で指定したより一回多く書くことが
+    あるのを直しました。
+  - gcc 4.7でコンパイルしたときにSockライブラリでエラーでコンパイルが
+    できないのを直しました。
+  - python 2.7.xでrun.pyを走らせると警告がでるのを直しました。
+  - DaqOperaatorCompのevent_byte_sizeでバッファオーバーフローするのを
+    直しました。
+  - writeAll()でEPIPEエラーがおきたときの戻り値を修正しました。
+  - Firefoxがボタンを押すごとにSYNパケットを送るのを修正しました。
+  - run.pyでprogname変数が定義されていないのを直しました。
+
+詳細
+
+BUG FIX: condition.xmlでは小数値を指定できる。".0"で終わる値が整数として
+         認識されていた。
+BUG FIX: SampleLogger/FileUtilsのwrite_data()で現在のファイルサイズと
+         最大ファイルサイズとして指定した値が同じだった場合、一回余分に
+         ライトするのを直した。
+FEATURE: 単純なエミュレータを追加(以前はemulator-GEN_GAUSSとして配布して
+         いたもの).
+         ソースコードは/usr/share/daqmw/daqmw-emluatorに入る。
+FEATURE: run.pyでgiopMaxMsgSizeを指定するオプション -M を追加した。引数として
+         k、mを数字のあとに指定するとキロ、メガとして認識される。
+FEATURE: mod_wsgiのサポートを入れた。Scientific Linux 5.xではmod_pythonを
+         使う。Scientific Linux 6.xではmod_wsgiを使う。
+FEATURE: Xerces 3.xをサポートした。Scientific Linux 6.xにはxerces-3.0パッケージ
+         がある。
+BUG FIX: read(), alarm(), close()を使うのにgcc 4.7ではunistd.hを
+         インクルードする必要があった。Sockライブラリではインクルードして
+         いなかったのを修正した。
+BUG FIX: run.pyをpython 2.7.xで走らせると
+         "FutureWarning: This search is broken in 1.3 and earlier,
+         and will be fixed in a future version."
+         と警告がでていたので出ないように修正した。
+BUG FIX: DaqOperatorCompで使っているevent_byte_size変数の型はunsigned long long
+         であり、unsigned long longの最大値は20桁である。数値からストリング
+         への変換で使用しているバッファが20桁整数を保持するには小さすぎた
+         ので修正した。
+BUG FIX: Sock.cppのwriteAll()でEPIPEエラーが起きたときにERROR_FATALを返して
+         いなかったのを直した。
+BUG FIX: Firefoxがボタンを押すごとにSYNパケットを送り続けるのを修正した。
+         修正前はメモリをたくさん消費しボタンを押しても反応がなくなる
+         ことになっていた。
+BUG FIX: run.pyのエラーメッセージ中でprogname変数を使っていたが、未定義
+         だったのを修正した。
+FEATURE: daqcomユーティリティを追加した。これを使ってhttpdサーバーと通信
+         することができる。daqcom --helpでヘルプがでる。
+
+1.1.1 2011-12-01 Hiroshi Sendai
+
+Summary
+
+- API has not changed from 1.1.0.
+- Update Developer's Manual.
+- Fix memory leaks on DaqOperatorComp.
+- Sock library UDP part bug fix.
+- Add -O option to run.py (specify log file when run in Web mode).
+- sleep time in daq_base_dummy() (this method is called when the component
+  is in LOADED, CONFIGURED, and UNCONFIGURED) is reduced to 10 m sec.
+  To incorporate this fix, users have to recompile their components.
+
+Details
+
+BUG FIX: UPD part of Socket library was not set properly.  This bug does not
+         affect on Socket TCP library.
+BUG FIX: There were several memory leaks on DaqOperatorComp.
+BUG FIX: sleep time in daq_base_dummy() (was 1 second) caused ParameterClient.h
+         timeout.  
+
+1.1.0 2011-06-17 Hiroshi Sendai
+
+Summary
+
+- Add x86_64 architecture support.
+- API changes: set_footer() and check_footer() are now has one argument
+  for footer buffer.  All users have to rewrite their source code if you
+  use set_footer() and check_footer().  To use new API, remove second
+  argument of set_footer() and check_footer and re-compile the components.
+- Backward compatibility to DAQ-Middleware for MLF (2010.10 etc) on
+  reset_onError().  All users have to recompile their components to use
+  backward compatibility feature.
+- Add Web User interface.
+
+Details
+
+API:     set_footer() and check_footer() has only one argument for footer
+         buffer.
+BUG FIX: Backward compatibility on reset_onError().
+FEATURE: Support x86_64 architecture on Scientific Linux 5.x, CentOS 5 and
+         RedHat Enterprise Linux.  Changes are:
+         - Fix idl for x86_64. Compile verified on x86_64 with omniORB 4.1.4,
+           i686 with omniORB 4.0.7 and i686 with omniORB 4.1.4
+         - Install library files to /usr/lib64 if uname -m returns x86_64 AND
+           /usr/lib64 exists.  Otherwise library files will be installed in
+           /usr/lib.
+         - New variable DAQMW_LIB_DIR in comp.mk. If uname -m returns x86_64
+           AND /usr/lib64 exists, DAQMW_LIB_DIR=/usr/lib64.
+           Otherwise DAQMW_LIB_DIR=/usr/lib.
+           Makefile of the Sample components in examples directory uses
+           this variable now. 
+FEATURE: Don't remove source files.  Previous comp.mk would remove
+         source files if source file name is *.cc.
+FEATURE: Stricter check on ROOT development environment on ROOTSYS variable
+         of the SampleMonitor's Makefile.
+FEATURE: Add Web user interface.
+CLEANUP: Remove unused data_header_footer.h.
+
+1.0.2 2011-02-08 Hiroshi Sendai
+
+Summary
+
+- Add sample implementation of the logger component in examples directory
+  (/usr/share/daqmw/examples/Logger).  Sample configuration file is at
+  /usr/share/daqmw/conf/4comps.xml .
+- All users have to recompile their components to have display valid strings
+  when fatal error occured.
+
+Details
+
+BUG FIX: Correction of the order of strings at toString() in FatalType.h
+FEATURE: Add SampleLogger in examples directory.
+CLEANUP: Remove unneccessary include files from example source.
+
+1.0.1 2011-01-21 Hiroshi Sendai
+
+Summary
+
+- All users have to recompile their components to have get_run_number() work
+  properly.
+- Libraries (Sock, Json) have not been changed.
+- We have dispatcher in the example directory.
+- We have documentation in the documentation directory (/usr/share/daqmw/docs).
+
+Details
+
+BUG FIX: get_run_number() did not return the run number but always returned 0.
+BUF FIX: DaqOperator coredumped if the component is SkeletonComp only.
+FEATURE: Add dispatcher component in the example directory
+         (/usr/share/daqmw/examples).
+FEATURE: Add documentation (DAQ-Middleware Technical Manual and Developer's
+         Manual).
+CLEANUP: Remove ConfFileParser::setList(std::vector & list, char*, char*)
+         from ConfFileParser.cpp because no one does not use this method.
+CLEANUP: Remove src/DaqOperator/ServerSocket.{h,cpp}.  No one does not use
+         this.
+CLEANUP: add #include <stdio.h> in src/lib/SiTCP/CPP/Sock/Sock.h and
+         src/DaqOperator/CreateDom.h to be able to compile with gcc44.
+CLEANUP: Move set_status() from private to protected in
+         src/DaqComponent/DaqComponentBase.h (pointed out by Hosoya san).
+
+1.0.0 2010-08-01 Hiroshi Sendai
+
+DAQ-Middleware 1.0.0 Initial Release.
