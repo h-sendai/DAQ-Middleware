@@ -5,19 +5,28 @@ Not yet released.
 Summary
 
 - API has not changed from 1.1.1.
-- Fix a bug a floating number in condition.xml was recognized as an inteter.
-- Fix one more write_data() in SampleLogger/FileUtils.
-- Add simple emlulator (formally distributed as emulator-GEN_GAUSS).
-- Add -M option to run.py to specify giopMaxMsgSize.
-- Add mod_wsgi support.
-- Add Xerces 3.x support.
-- Fix a compile error on Sock library when using gcc 4.7.
-- Fix a run.py warning message when running on python 2.7.x.
-- Fix a buffer overflow bug in DaqOperatorComp event_byte_size.
-- Fix return value of writeAll() when EPIPE error occured.
-- Fix a bug that firefox sends SYN packet every time we click the buttons.
-- Fix a bug that progname was not defined in run.py.
+- Support Scientific Linux 6.x.
+  - Use mod_wsgi instead of mod_python.  URL to daq.py has been changed to
+    http://localhost/daqmw/scripts/daq.py.  If you access daq.py directly,
+    you have to update the URL.  WebUI operatorPanel's URL has not been
+    changed (http://localhost/daqmw/operatorPanel/operatorPanel0.html).
+  - Xerces 3.x support.
 - Add daqcom utility to communicate with httpd server in command line.
+- Add simple emulator (formally distributed as emulator-GEN_GAUSS).
+  The executable binary is /usr/bin/daqmw-emulator.  Source code of
+  this emulator is /usr/share/daqmw/daqmw-emulator.
+- Add conditionPanel as sample GUI for updating condition variables
+  (contributed from Nakatani san).  The executable binary is
+  /usr/bin/conditionPanel.py.  This program requires wxPython.
+- Various bug fixes.
+  - Fix a bug a floating number in condition.xml was recognized as an inteter.
+  - Fix one more write_data() in SampleLogger/FileUtils.
+  - Fix a compile error on Sock library when using gcc 4.7.
+  - Fix a run.py warning message when running on python 2.7.x.
+  - Fix a buffer overflow bug in DaqOperatorComp event_byte_size.
+  - Fix return value of writeAll() when EPIPE error occured.
+  - Fix a bug that firefox sends SYN packet every time we click the buttons.
+  - Fix a bug that progname was not defined in run.py.
 
 Details
 
