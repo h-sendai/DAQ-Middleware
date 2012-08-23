@@ -1,0 +1,58 @@
+<?xml version="1.0"?>
+<configInfo>
+   <daqOperator>
+      <hostAddr>127.0.0.1</hostAddr>
+   </daqOperator>
+   <daqGroups>
+      <daqGroup gid="group0">
+         <components>
+            <component cid="SampleReader0">
+               <hostAddr>127.0.0.1</hostAddr>
+               <hostPort>50000</hostPort>
+               <instName>SampleReader0.rtc</instName>
+               <execPath>/home/daq/MyDaq/SampleReader/SampleReaderComp</execPath>
+               <confFile>/tmp/daqmw/rtc.conf</confFile>
+               <startOrd>3</startOrd>
+               <inPorts/>
+               <outPorts>
+                  <outPort>samplereader_out</outPort>
+               </outPorts>
+               <params>
+                  <param pid="srcAddr">127.0.0.1</param>
+                  <param pid="srcPort">2222</param>
+               </params>
+            </component>
+
+            <component cid="SampleFilter0">
+               <hostAddr>127.0.0.1</hostAddr>
+               <hostPort>50000</hostPort>
+               <instName>SampleFilter0.rtc</instName>
+               <execPath>/home/daq/MyDaq/SampleFilter/SampleFilterComp</execPath>
+               <confFile>/tmp/daqmw/rtc.conf</confFile>
+               <startOrd>2</startOrd>
+               <inPorts>
+                  <inPort from="SampleReader0:samplereader_out">samplefilter_in</inPort>
+               </inPorts>
+               <outPorts>
+                  <outPort>samplefilter_out</outPort>
+               </outPorts>
+               <params/>
+            </component>
+
+            <component cid="SampleMonitor0">
+               <hostAddr>127.0.0.1</hostAddr>
+               <hostPort>50000</hostPort>
+               <instName>SampleMonitor0.rtc</instName>
+               <execPath>/home/daq/MyDaq/SampleMonitor/SampleMonitorComp</execPath>
+               <confFile>/tmp/daqmw/rtc.conf</confFile>
+               <startOrd>1</startOrd>
+               <inPorts>
+                  <inPort from="SampleFilter0:samplefilter_out">samplemonitor_in</inPort>
+               </inPorts>
+               <outPorts/>
+               <params/>
+            </component>
+         </components>
+      </daqGroup>
+   </daqGroups>
+</configInfo>
