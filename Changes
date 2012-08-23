@@ -1,3 +1,8 @@
+1.2.1 201X-XX-XX Hiroshi Sendai
+
+Summary
+- Add SampleFilter component.  Configuration file is conf/filter.xml.
+
 1.2.0 2012-06-29 Hiroshi Sendai
 
 Summary
