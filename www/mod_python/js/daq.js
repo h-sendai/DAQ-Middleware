@@ -27,7 +27,7 @@
   }
   function setReflesh() {
     clearInterval(timeID);
-    timeID = setInterval(timerFunc, 2000); // 2 sec.
+    timeID = setTimeout(timerFunc, 2000); // 2 sec.
   }
 
   /**
@@ -119,11 +119,17 @@
 //        alert("OK: "+ httpObj.responseXML);
     var compNames = res.getElementsByTagName('compName');
     var status = res.getElementsByTagName('status');
-    var value = status[0].firstChild.nodeValue;
+    var value;
+    if ( status.length != 0 ) {
+    	value = status[0].firstChild.nodeValue;
+    }
     $("commandStatus").innerHTML = value;
     value = null;
     var states = res.getElementsByTagName('state');
-    var currentstate = states[0].firstChild.nodeValue;
+    var currentstate;
+    if ( states.length != 0 ) {
+        currentstate = states[0].firstChild.nodeValue;
+    }
     var compStatus = res.getElementsByTagName('compStatus');
     var eventnums = res.getElementsByTagName('eventNum');
     var length = states.length;
@@ -164,6 +170,8 @@
     else if (currentstate == "PAUSED")
       change2Paused();
     currentstate = null;
+
+    setReflesh();
   }
 
   function onCreateFunc(httpObj) {
