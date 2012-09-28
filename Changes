@@ -1,4 +1,4 @@
-1.2.1 201X-XX-XX Hiroshi Sendai
+1.2.1 2012-09-28 Hiroshi Sendai
 
 Summary
 - Add SampleFilter component.  Configuration file is conf/filter.xml.
@@ -7,6 +7,8 @@ Summary
 Details:
 
 FEATURE: Add SampleFilter component (experimental).
+         Send data to SampleMonitor if the module number is less or
+         equal to 4.
 BUG FIX: daq.js send requests to DAQ-Opearator to get status,
          event byte size etc.  The request was sent even if
          the reply has not received.
