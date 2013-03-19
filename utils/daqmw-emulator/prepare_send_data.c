@@ -5,6 +5,11 @@
 /* write event data logic and fill the data to buf.
    RETURN VALUE: -1 on error
 				 data length (in bytes) if succeed.
+   
+   Maximum transfer rate is 60MB/s due to random data generation
+   on Intel Xeon 2.5GHz.
+   If no_random_data is 1, don't use following data format,
+   but fill with 0's to achieve over 60MB/s transfer rate.
 */
 
 /*
@@ -59,18 +64,26 @@ int prepare_send_data(char *buf, int buflen)
 	char *send_data_buf;
 	int generated_event_bytes = 0;
 
-	num_events = buflen / ONE_EVENT_BYTE_SIZE;
 	send_data_buf = buf;
-	for (i = 0; i < num_events; i ++) {
-		event_data.signature      = 0x5a;
-		event_data.format_version = 0x01;
-		event_data.module_num     = (i % 8);
-		event_data.reserved       = 0x00;
-		event_data.data           = generate_data(event_data.module_num);
+    /* To test over 60MB/s transfer rate */
+    /* don't create random data if -N option is specified */
+    if (no_random_data) {
+        memset(send_data_buf, 0, buflen);
+        generated_event_bytes += buflen;
+    }
+    else {
+	    num_events = buflen / ONE_EVENT_BYTE_SIZE;
+        for (i = 0; i < num_events; i ++) {
+            event_data.signature      = 0x5a;
+            event_data.format_version = 0x01;
+            event_data.module_num     = (i % 8);
+            event_data.reserved       = 0x00;
+            event_data.data           = generate_data(event_data.module_num);
 
-		pack_data(send_data_buf, &event_data);
-		send_data_buf         += ONE_EVENT_BYTE_SIZE;
-		generated_event_bytes += ONE_EVENT_BYTE_SIZE;
-	}
+            pack_data(send_data_buf, &event_data);
+            send_data_buf         += ONE_EVENT_BYTE_SIZE;
+            generated_event_bytes += ONE_EVENT_BYTE_SIZE;
+        }
+    }
 	return generated_event_bytes;
 }

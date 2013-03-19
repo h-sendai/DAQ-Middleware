@@ -4,6 +4,7 @@
 int debug   = 0;
 int rate    = DEFAULT_BYTES_RATE;
 int bufsize = DEFAULT_BUFSIZE;
+int no_random_data = 0;
 
 struct timeval start_time;
 
@@ -53,7 +54,7 @@ int main(int argc, char *argv[])
 
 	port    = DEFAULT_PORT;
 	bufsize = DEFAULT_BUFSIZE;
-	while( (ch = getopt(argc, argv, "b:dh:p:t:")) != -1) {
+	while( (ch = getopt(argc, argv, "b:dh:p:t:N")) != -1) {
 		switch(ch) {
 			case 'b':
 				bufsize = get_num(optarg);
@@ -71,6 +72,9 @@ int main(int argc, char *argv[])
 			case 't':
 				rate = get_num(optarg);
 				break;
+            case 'N':
+                no_random_data = 1;
+                break;
 			case '?':
 			default:
 				break;
