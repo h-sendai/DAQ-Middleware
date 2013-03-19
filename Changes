@@ -1,3 +1,17 @@
+1.2.2 2013-06-XX Hiroshi Sendai
+
+Summary
+- Add -N option for daqmw-emulator not to create gaussian data (to test 1Gbps).
+- Fix SampleLogger build error due to boost version.
+
+Details:
+
+FEATURE: Add -N option for daqmw-emulator.  If this option does not specified,
+         send gaussian data.  Gaussian data generation function is a bottleneck
+         if we need 1Gbps data transfer.
+BUG FIX: Due to boost filesystem version up, we could not build SampleLogger
+         component.
+
 1.2.1 2012-09-28 Hiroshi Sendai
 
 Summary
