@@ -83,7 +83,7 @@ FileUtils::~FileUtils()
 
 bool FileUtils::check_dir(std::string dir_name)
 {
-    boost::filesystem::path mydir(dir_name, boost::filesystem::native);
+    boost::filesystem::path mydir(dir_name);
     if (boost::filesystem::exists(mydir)) {
         if (boost::filesystem::is_directory(mydir)) {
             if (access(dir_name.c_str(), W_OK) == 0) {
