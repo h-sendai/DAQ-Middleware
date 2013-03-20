@@ -80,6 +80,13 @@ HTTPD_CONF_DIR    = /etc/httpd/conf/extra
 USE_MOD_WSGI      = 1
 endif
 
+########## ArchLinux (lsb_release -si output changed) ##########
+ifeq ($(strip $(OS)),arch)
+WWW_DOCUMENT_ROOT = /srv/http
+HTTPD_CONF_DIR    = /etc/httpd/conf/extra
+USE_MOD_WSGI      = 1
+endif
+
 ########## Unknown ##########
 ifeq ($(strip $(WWW_DOCUMENT_ROOT)),)
 WWW_DOCUMENT_ROOT = /
