@@ -13,6 +13,7 @@ import signal
 import socket
 import re
 from optparse import OptionParser
+import datetime
 
 # Python interpreter is at least version 2.5.0
 if sys.hexversion >= 0x020500F0:
@@ -30,9 +31,6 @@ progname = os.path.basename(sys.argv[0])
 # adjust the daq_lib_path to your own environment.
 daq_lib_path = '/usr/lib/daqmw:/kensdaq/root/lib'
 confFile = ''
-
-# directory of Components log files
-daqmw_dir = '/tmp/daqmw'
 
 # xinetd port for remote booting
 xinetdPort = 50000
@@ -64,6 +62,8 @@ def opt():
     global verbose
     global comps_invoke_interval
     global giop_max_msg_size
+    global daqmw_log_dir
+    global append_datetime_to_log
 
     usage = "run.py [OPTIONS] [CONFIG_FILE]"
     parser = OptionParser(usage)
@@ -75,6 +75,8 @@ def opt():
     parser.set_defaults(operator_log='/dev/null')
     parser.set_defaults(comps_invoke_interval='0.0')
     parser.set_defaults(giop_max_msg_size=False)
+    parser.set_defaults(daqmw_log_dir='/tmp/daqmw')
+    parser.set_defaults(append_datetime_to_log=False)
 
     parser.add_option("-c", "--console",
                       action="store_true", dest="console", help="console mode. default is HTTP mode")
@@ -94,20 +96,27 @@ def opt():
                       help="sleep specified interval seconds between each component invoking")
     parser.add_option("-M", "--giopmaxmsgsize", dest="giop_max_msg_size",
                       help="specify GIOP max message size (k for kilo, m for mega allowed)")
+    parser.add_option("-D", "--logdir", dest="daqmw_log_dir",
+                      help="specify components log directory")
+    parser.add_option("-T", "--append-datetime-to-log",
+                      action="store_true", dest="append_datetime_to_log",
+                      help="append date time(2013-04-01T01:02:03) to log filename")
 
     (options, args) = parser.parse_args()
     if len(args) != 1:
         parser.error("ERROR: not specified config file")
 
-    confFile     = args[0]
-    schemaFile   = options.schema
-    operator     = options.operator
-    operator_log = options.operator_log
-    console      = options.console
-    localBoot    = options.local
-    mydisp       = options.display
-    verbose      = options.verbose
-    giop_max_msg_size = options.giop_max_msg_size
+    confFile               = args[0]
+    schemaFile             = options.schema
+    operator               = options.operator
+    operator_log           = options.operator_log
+    console                = options.console
+    localBoot              = options.local
+    mydisp                 = options.display
+    verbose                = options.verbose
+    giop_max_msg_size      = options.giop_max_msg_size
+    daqmw_log_dir          = options.daqmw_log_dir
+    append_datetime_to_log = options.append_datetime_to_log
     
     # XXX
     # We have to sleep some seconds not to cause core file
@@ -759,33 +768,46 @@ def send_file_content(ip_address, portno, file_path, content):
     return True
 
 def localCompsBooting():
-    conf = genConfFileForCpudaq(cpudaqAddrs[0], operatorAddr, nsport, daqmw_dir)
+    conf = genConfFileForCpudaq(cpudaqAddrs[0], operatorAddr, nsport, daqmw_log_dir)
 
-    exist_ok_mkdir(daqmw_dir)
+    exist_ok_makedirs(daqmw_log_dir)
 
-    fname = str(daqmw_dir) + '/rtc.conf'
+    fname = str(daqmw_log_dir) + '/rtc.conf'
     fw = open(fname, 'w')
     fw.write(conf)
     fw.close()
 
+    # for -T options (timestamp should be same for all components logs)
+    now = datetime.datetime.today()
+    timestamp = now.strftime("%Y-%m-%dT%H:%M:%S")
     for compInfo in compInfo_list:
         kill_proc_exact(os.path.basename(compInfo['execPath']))
         command_line = '%s -f %s' %(compInfo['execPath'], compInfo['confPath'])
-        log_file = daqmw_dir +'/log.' + os.path.basename(compInfo['execPath'])
+        log_file = daqmw_log_dir +'/log.' + os.path.basename(compInfo['execPath'])
+        if append_datetime_to_log:
+            log_file += '.'
+            log_file += timestamp
         start_comp(command_line, log = log_file)
         if comps_invoke_interval > 0:
             print 'sleeping %4.1f sec' % (comps_invoke_interval)
             time.sleep(comps_invoke_interval)
 
 def remoteCompsBooting():
+    # for -T options (timestamp should be same for all components logs)
+    now = datetime.datetime.today()
+    timestamp = now.strftime("%Y-%m-%dT%H:%M:%S")
+
     for compInfo in compInfo_list:
         compAddr = compInfo['compAddr']
-        log_file  = '%s/log.%s' % (daqmw_dir, compInfo['compName'])
+        log_file  = '%s/log.%s' % (daqmw_log_dir, compInfo['compName'])
+        if append_datetime_to_log:
+            log_file += '.'
+            log_file += timestamp
         execPath  = compInfo['execPath']
         compPath  = '%s -f %s > %s 2>&1 &' % \
                     (execPath,compInfo['confPath'],log_file)
 
-        conf = genConfFileForCpudaq(compAddr, operatorAddr, nsport, daqmw_dir)
+        conf = genConfFileForCpudaq(compAddr, operatorAddr, nsport, daqmw_log_dir)
         ret = send_file_content(compAddr, xinetdPort, compInfo['confPath'], conf)
 
         if ret != True:
@@ -823,7 +845,7 @@ def DaqOperatorBooting():
         print 'ERROR: not specified IP address of DaqOperator in config file'
         return False
 
-    exist_ok_mkdir(daqmw_dir)  # create /tmp/daqmw for DAQ-Operator
+    exist_ok_makedirs(daqmw_log_dir)  # create log directory for DaqOperator
 
     # generate a rtc.conf for DaqOperator
     conf_path_op = '.'
