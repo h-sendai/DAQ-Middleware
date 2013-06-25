@@ -7,10 +7,10 @@ bool
 ConditionSampleMonitor::getParam(std::string prefix, monitorParam* monitorParam)
 {
     setPrefix(prefix);
-    unsigned int hist_bin;
-    unsigned int hist_min;
-    unsigned int hist_max;
-    unsigned int monitor_update_rate;
+    unsigned int hist_bin            = 0;
+    unsigned int hist_min            = 0;
+    unsigned int hist_max            = 0;
+    unsigned int monitor_update_rate = 0;
 
     if (find("hist_bin", &hist_bin)) {
         monitorParam->hist_bin = hist_bin;

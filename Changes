@@ -3,12 +3,17 @@
 Summary
 - Add -N option for daqmw-emulator not to create gaussian data (to test 1Gbps).
 - Fix SampleLogger build error due to boost version.
+- Update condition database code.
 
 Details:
 
 FEATURE: Add -N option for daqmw-emulator.  If this option does not specified,
          send gaussian data.  Gaussian data generation function is a bottleneck
          if we need 1Gbps data transfer.
+FEATURE: Update condition database code.
+         - Support long long type.
+         - Compilation will be failed if unspported type is specified.
+         - Display warning if a variable is not initialized.
 BUG FIX: Due to boost filesystem version up, we could not build SampleLogger
          component.
 
