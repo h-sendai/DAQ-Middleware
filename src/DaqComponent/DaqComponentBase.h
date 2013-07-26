@@ -64,6 +64,7 @@ namespace DAQMW
               m_state_prev(LOADED),
               m_isOnError(false),
               m_isTimerAlarm(false),
+              m_has_printed_error_log(false),
               m_debug(false)
         {
             mytimer = new Timer(STATUS_CYCLE_SEC);
@@ -659,6 +660,7 @@ namespace DAQMW
 
         bool m_isOnError;
         bool m_isTimerAlarm;
+        bool m_has_printed_error_log;
         bool m_debug;
 
         typedef int (DAQMW::DaqComponentBase::*DAQFunc)();
@@ -707,6 +709,7 @@ namespace DAQMW
             set_run_number();
             set_status(COMP_WORKING);
             daq_start();
+            m_has_printed_error_log = false;
             return 0;
         }
 
@@ -749,14 +752,17 @@ namespace DAQMW
             return 0;
         }
 
-        int daq_onError(){
-            m_isOnError = true;
+        virtual int daq_onError(){
+            // m_isOnError = true; // will be set on fatal_error_report()
             if (check_trans_lock()) {
                 set_trans_unlock();
             }
-            std::cerr << "### daq_onError(): ERROR Occured\n";
-            std::cerr << m_err_message << std::endl;
-            set_status(COMP_FATAL);
+            if (! m_has_printed_error_log) {
+                std::cerr << "### daq_onError(): ERROR Occured\n";
+                // std::cerr << m_err_message << std::endl;
+                set_status(COMP_FATAL);
+                m_has_printed_error_log = true;
+            }
             usleep(DAQ_IDLE_TIME_USEC);
             return 0;
         }

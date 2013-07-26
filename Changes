@@ -4,6 +4,7 @@ Summary
 - Add -N option for daqmw-emulator not to create gaussian data (to test 1Gbps).
 - Fix SampleLogger build error due to boost version.
 - Update condition database code.
+- Fix forever error log message.
 
 Details:
 
@@ -14,6 +15,9 @@ FEATURE: Update condition database code.
          - Support long long type.
          - Compilation will be failed if unspported type is specified.
          - Display warning if a variable is not initialized.
+FEATURE: Log error message will be output only once now.
+         To incorporate this feature, you have to re-compile your
+         DAQ component.
 BUG FIX: Due to boost filesystem version up, we could not build SampleLogger
          component.
 
