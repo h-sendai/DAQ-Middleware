@@ -708,8 +708,8 @@ namespace DAQMW
             m_loop = 0;
             set_run_number();
             set_status(COMP_WORKING);
-            daq_start();
             m_has_printed_error_log = false;
+            daq_start();
             return 0;
         }
 
