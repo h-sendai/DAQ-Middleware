@@ -35,3 +35,7 @@ www/mod_wsgi/scripts/ParameterClient_wrap.cxx
 www/mod_wsgi/scripts/writedata.html
 www/mod_wsgi/scripts/writedata.py
 www/mod_wsgi/daq.conf
+utils/configGUI/confPanel.py
+utils/configGUI/images/four.gif.base64
+utils/configGUI/images/one.gif.base64
+utils/configGUI/images/two.gif.base64
