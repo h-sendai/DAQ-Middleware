@@ -1,3 +1,15 @@
+1.2.3 2013-10-XX Hiroshi Sendai
+
+Summary
+- Add GUI program to create config.xml.
+
+Details:
+
+FEATURE: Add GUI program to create config.xml (/usr/bin/confPanel.py).
+         We can create config.xml for 1 component system (Skeleton),
+         2 components system (Source - Sink), and 4 components system
+         (Source - Dispatch - (Sink0, Sink1)).
+
 1.2.2 2013-07-31 Hiroshi Sendai
 
 Summary

@@ -1,3 +1,17 @@
+1.2.3 2013-10-XX Hiroshi Sendai
+
+サマリー
+- config.xmlを作成するためのGUIプログラムを追加しました。
+
+詳細
+
+FEATURE: config.xmlを作成するためのGUIプログラム (/usr/bin/confPanel.py)
+         を追加しました。これを使って
+         1コンポーネントのシステム (Skeleton)
+         2コンポーネントのシステム (Source - Sink)
+         4コンポーネントのシステム (Source - Dispatch - (Sink0, Sink1))
+         用のconfig.xmlを作成することができます。
+
 1.2.2 2013-07-31 Hiroshi Sendai
 
 サマリー
