@@ -1,0 +1,421 @@
+#!/usr/bin/env python
+
+from Tkinter import *
+from daqmw.configGUI.notebook import *
+from daqmw.configGUI.image_nb import *
+from tkFileDialog import *
+from tkMessageBox import *
+from daqmw.configGUI.writer import *
+
+myobjs = []
+nb = 0
+
+one_comp_data = """@one_comp@
+"""
+
+two_comp_data = """@two_comp@
+"""
+
+four_comp_data = """@four_comp@
+"""
+
+def label_entry(frame, label_name, myentry, entry_w, default_val):
+    mylabel = Label(frame, text=label_name,  bg='white')
+    myentry.insert(END, default_val)
+    mylabel.pack(side=LEFT)
+    myentry.pack(side=LEFT)
+
+def key_val_entry(frame, key_name, kentry, val_name, ventry):
+    label_entry(frame, key_name, kentry, 5, '')
+    label_entry(frame, val_name, ventry, 5, '')
+
+class OperatorPanel(LabelFrame):
+    def __init__(self, master):
+        LabelFrame.__init__(self, master, text='DAQ-Operator', labelanchor=N, padx=4, pady=5, relief=RIDGE, fg='blue',bg='white')
+        self.op_addr_e = Entry(self, width=32)
+        label_entry(self,' DAQOperator Address  ', self.op_addr_e, 30, '127.0.0.1')
+
+    def getItems(self):
+        return self.op_addr_e.get()
+
+class CompPanel(LabelFrame):
+    def __init__(self, master, name=''):
+        LabelFrame.__init__(self, master, text=name, labelanchor=N, padx=4, pady=5, relief=RIDGE, fg='blue',bg='white')
+
+        name_addr_f = Frame(self, bg='white')
+
+        name_f = Frame(name_addr_f, bg='white')
+        self.name_e = Entry(name_f, width=20)
+        label_entry(name_f,' Name', self.name_e, 30, '')
+        name_f.pack(side=LEFT)
+
+        addr_f = Frame(name_addr_f, bg='white')
+        self.addr_e = Entry(addr_f, width=20)
+
+        label_entry(addr_f,' Addr. ', self.addr_e, 30, '127.0.0.1')
+        addr_f.pack(side=LEFT)
+
+        name_addr_f.pack()
+
+        exe_f = Frame(self, bg='white')
+        self.exe_e = Entry(exe_f, width=30)
+        label_entry(exe_f,' Exec. file', self.exe_e, 30, '')
+
+        button1 = Button(exe_f, text='Browse', command=self.filedialog)
+        button1.pack(side=LEFT)
+        exe_f.pack(pady=2,fill=X)
+
+    def filedialog(self):
+        exe = askopenfilename(filetypes=[('All Files', ('*'))])
+        if exe:
+            self.exe_e.delete(0, END)
+            self.exe_e.insert(END, exe)
+
+    def showItems(self):
+        print self.name_e.get()
+        print self.addr_e.get()
+
+    def getItems(self):
+        return self.name_e.get(), self.addr_e.get(), self.exe_e.get()
+
+class Param(Frame):
+    def __init__(self, master):
+        Frame.__init__(self, master, bg='white')
+
+
+class ParamPanel(Frame):
+    def __init__(self, master):
+        Frame.__init__(self, master, bg='white')
+
+        nb = notebook(self, TOP)
+
+        param_f = Frame(nb())
+
+        param1_f = Frame(param_f)
+        self.key1_e = Entry(param1_f, width=10)
+        self.val1_e = Entry(param1_f, width=10)
+
+        param2_f = Frame(param_f)
+        self.key2_e = Entry(param2_f, width=10)
+        self.val2_e = Entry(param2_f, width=10)
+
+        dummy_f = Frame(nb())
+        key_val_entry(param1_f, 'Key', self.key1_e, 'Val', self.val1_e)
+        key_val_entry(param2_f, 'Key', self.key2_e, 'Val', self.val2_e)
+        param1_f.pack()
+        param2_f.pack()
+        param_f.pack()
+
+        nb.add_screen(param_f, "Set Params")
+        nb.add_screen(dummy_f, "x")
+        nb.display(dummy_f)
+
+    def getItems(self):
+        return self.key1_e.get(), self.val1_e.get(),self.key2_e.get(),self.val2_e.get()
+
+class OutPortPanel(Frame):
+    def __init__(self, master):
+        Frame.__init__(self, master, bg='white')
+        out_f = Frame(self)
+        out_l = Label(out_f, text=" Out Port name",  bg='white')
+        self.out_e = Entry(out_f, width=34)
+        out_l.pack(side=LEFT)
+        self.out_e.pack(pady=2)
+        out_f.pack(pady=2)
+    def getItems(self):
+        return self.out_e.get()
+
+class InPortPanel(Frame):
+    def __init__(self, master):
+        Frame.__init__(self, master, bg='white')
+        in_f = Frame(self)
+        in_l = Label(in_f, text=" In Port name",  bg='white')
+        self.in_e = Entry(in_f, width=34)
+        in_l.pack(side=LEFT)
+        self.in_e.pack(pady=2)
+        in_f.pack(pady=2)
+    def getItems(self):
+        return self.in_e.get()
+
+class SourcePanel(CompPanel):
+    def __init__(self, master, name='SampleReader', outp='samplereader_out'):
+        CompPanel.__init__(self, master, "Source Type Component")
+        self.name_e.insert(END, name)
+        self.out = OutPortPanel(self)
+        self.out.out_e.insert(END, outp)
+        self.param = ParamPanel(self)
+
+        self.out.pack(pady=2)
+        self.param.pack(pady=2)
+    def getItems(self):
+        return CompPanel.getItems(self), self.out.getItems(), self.param.getItems()
+
+class SinkPanel(CompPanel):
+    def __init__(self, master, name='SampleMonitor', inp='samplemonitor_in'):
+        CompPanel.__init__(self, master, "Sink Type Component")
+        self.name_e.insert(END, name)
+        self.inp = InPortPanel(self)
+        self.inp.in_e.insert(END, inp)
+        self.param = ParamPanel(self)
+
+        self.inp.pack(pady=2)
+        self.param.pack(pady=2)
+    def getItems(self):
+        return CompPanel.getItems(self),self.inp.getItems(), self.param.getItems()
+
+class DispPanel(CompPanel):
+    def __init__(self, master, name='Dispatcher', inp='dispatcher_in',outp1='dispatcher_out1', outp2='dispatcher_out2'):
+        CompPanel.__init__(self, master, "Dispatcher Type Component")
+        self.name_e.insert(END, name)
+        self.inp = InPortPanel(self)
+        self.inp.in_e.insert(END, inp)
+        self.param = ParamPanel(self)
+
+        self.out1 = OutPortPanel(self)
+        self.out1.out_e.insert(END, outp1)
+        self.out2 = OutPortPanel(self)
+        self.out2.out_e.insert(END, outp2)
+
+        self.inp.pack()
+        self.out1.pack()
+        self.out2.pack()
+        self.param.pack()
+    def getItems(self):
+        return CompPanel.getItems(self),self.inp.getItems(), self.out1.getItems(), self.out2.getItems(), self.param.getItems()
+
+class SkelPanel(CompPanel):
+    def __init__(self, master, name='Skeleton'):
+        CompPanel.__init__(self, master, "Component")
+        self.name_e.insert(END, name)
+        self.param = ParamPanel(self)
+        self.param.pack(pady=2)
+    def getItems(self):
+        return CompPanel.getItems(self),self.param.getItems()
+
+class AlonePanel(Frame):
+    def __init__(self, master):
+        Frame.__init__(self, master, bg='white')
+
+        self.op_p = OperatorPanel(self)
+        self.skel_p = SkelPanel(self, 'Skeleton')
+
+        self.op_p.pack(padx=3,pady=5)
+        self.skel_p.pack(padx=3,pady=5)
+
+    def getItems(self):
+        return self.op_p.getItems(),self.skel_p.getItems()
+
+class TwoComps(Frame):
+    def __init__(self, master):
+        Frame.__init__(self, master, bg='white')
+
+        self.op_p = OperatorPanel(self)
+
+        self.src_p = SourcePanel(self, 'SampleReader')
+        self.snk_p = SinkPanel(self,'SampleMonitor')
+
+        self.op_p.pack(padx=3,pady=5)
+        self.src_p.pack(padx=3,pady=5)
+        self.snk_p.pack(padx=3,pady=5)
+
+    def getItems(self):
+        return self.op_p.getItems(),self.src_p.getItems(), self.snk_p.getItems()
+
+class FourComps(Frame):
+    def __init__(self, master):
+        Frame.__init__(self, master, bg='white')
+
+        self.op_p = OperatorPanel(self)
+        self.src_p  = SourcePanel(self)
+        self.dis_p  = DispPanel(self)
+        self.snk1_p = SinkPanel(self, 'SampleLogger')
+        self.snk2_p = SinkPanel(self, 'SampleMonitor')
+
+        self.op_p.pack(padx=3,pady=5)
+        self.src_p.pack(padx=3,pady=5)
+        self.dis_p.pack(padx=3,pady=5)
+        self.snk1_p.pack(padx=3,pady=5)
+        self.snk2_p.pack(padx=3,pady=5)
+
+    def getItems(self):
+        return self.op_p.getItems(),self.src_p.getItems(), self.dis_p.getItems(), self.snk1_p.getItems(), self.snk2_p.getItems()
+
+def write_conf():
+    active_fr = -1
+    active_fr = nb.show_active_fr()
+
+    outf = asksaveasfilename(filetypes=[('All Files', ('*'))])
+
+    if active_fr == 0:
+        gen_solo(active_fr, outf)
+
+    if active_fr == 1:
+        gen_duo(active_fr, outf)
+
+    if active_fr == 2:
+        gen_quartet(active_fr, outf)
+
+def show_conf():
+    active_fr = -1
+    active_fr = nb.show_active_fr()
+
+    myconf = ''
+    if active_fr == 0:
+        myconf = gen_solo(active_fr, '')
+
+    if active_fr == 1:
+        myconf = gen_duo(active_fr, '')
+
+    if active_fr == 2:
+        myconf = gen_quartet(active_fr, '')
+    #print myconf
+    showinfo('Configuration XML file', myconf)
+
+def gen_solo(active_fr, outf):
+    cw = ConfigWriter()
+    (op_addr,((name, addr, exe),( p1k, p1v, p2k, p2v))) = myobjs[active_fr].getItems()
+
+    mycmp = Source(name)
+    if p1k != '' and p1v != '':
+        mycmp.set_param(p1k, p1v)
+    if p2k != '' and p2v != '':
+        mycmp.set_param(p2k, p2v)
+
+    cw.add_op_elem(op_addr)
+    cw.add_comp_elem(mycmp, addr, exe, "1")
+    return cw.write_to_file(outf)
+
+def gen_duo(active_fr, outf):
+    cw = ConfigWriter()
+    (op_addr, ((na1, ad1, ex1),outp,( p1k1, p1v1, p2k1, p2v1)), ((na2, ad2, ex2),inp,( p1k2, p1v2, p2k2, p2v2))) = myobjs[active_fr].getItems()
+
+    mysrc = Source(na1)
+    mysrc.set_outPort(outp)
+    if p1k1 != '' and p1v1 != '':
+        mysrc.set_param(p1k1, p1v1)
+    if p2k1 != '' and p2v1 != '':
+        mysrc.set_param(p2k1, p2v1)
+
+    mysnk = Sink(na2)
+    mysnk.set_inPort(inp,na1,outp)
+    if p1k2 != '' and p1v2 != '':
+        mysnk.set_param(p1k2, p1v2)
+    if p2k2 != '' and p2v2 != '':
+        mysnk.set_param(p2k2, p2v2)
+
+    cw.add_op_elem(op_addr)
+    cw.add_comp_elem(mysrc, ad1, ex1, "2")
+    cw.add_comp_elem(mysnk, ad2, ex2, "1")
+    return cw.write_to_file(outf)
+
+def gen_quartet(active_fr, outf):
+    cw = ConfigWriter()
+    (op_addr,((src_na, src_ad, src_ex),src_outp,( src_p1k, src_p1v, src_p2k, src_p2v)),((dis_na, dis_ad, dis_ex),dis_inp,dis_outp1,dis_outp2,( dis_p1k, dis_p1v, dis_p2k, dis_p2v)),((snk1_na, snk1_ad, snk1_ex),snk1_inp,( snk1_p1k, snk1_p1v, snk1_p2k, snk1_p2v)),((snk2_na, snk2_ad, snk2_ex),snk2_inp,( snk2_p1k, snk2_p1v, snk2_p2k, snk2_p2v))) = myobjs[active_fr].getItems()
+
+    mysrc = Source(src_na)
+    mysrc.set_outPort(src_outp)
+    if src_p1k != '' and src_p1v != '':
+        mysrc.set_param(src_p1k, src_p1v)
+    if src_p2k != '' and src_p2v != '':
+        mysrc.set_param(src_p2k, src_p2v)
+
+    mydis = Dispatcher(dis_na)
+    mydis.set_inPort(dis_inp, src_na, src_outp)
+    mydis.set_outPort(dis_outp1)
+    mydis.set_outPort(dis_outp2)
+    if dis_p1k != '' and dis_p1v != '':
+        mydis.set_param(dis_p1k, dis_p1v)
+    if dis_p2k != '' and dis_p2v != '':
+        mydis.set_param(dis_p2k, dis_p2v)
+
+    mysnk1 = Sink(snk1_na)
+    mysnk1.set_inPort(snk1_inp, dis_na, dis_outp1)
+    if snk1_p1k != '' and snk1_p1v != '':
+        mysnk1.set_param(snk1_p1k, snk1_p1v)
+    if snk1_p2k != '' and snk1_p2v != '':
+        mysnk1.set_param(snk1_p2k, snk1_p2v)
+
+    mysnk2 = Sink(snk2_na)
+    mysnk2.set_inPort(snk2_inp, dis_na, dis_outp2)
+    if snk2_p1k != '' and snk2_p1v != '':
+        mysnk2.set_param(snk2_p1k, snk2_p1v)
+    if snk2_p2k != '' and snk2_p2v != '':
+        mysnk2.set_param(snk2_p2k, snk2_p2v)
+
+    cw.add_op_elem(op_addr)
+    cw.add_comp_elem(mysrc, src_ad,  src_ex,  "4")
+    cw.add_comp_elem(mydis, dis_ad,  dis_ex,  "3")
+    cw.add_comp_elem(mysnk1,snk1_ad, snk1_ex, "1")
+    cw.add_comp_elem(mysnk2,snk2_ad, snk2_ex, "2")
+
+    return cw.write_to_file(outf)
+
+def act():
+    active_fr = -1
+    active_fr = nb.show_active_fr()
+
+    outf = asksaveasfilename(filetypes=[('All Files', ('*'))])
+
+    if active_fr == 0:
+        gen_solo(active_fr, outf)
+
+    if active_fr == 1:
+        gen_duo(active_fr, outf)
+
+    if active_fr == 2:
+        gen_quartet(active_fr, outf)
+
+def show_info():
+    showinfo('Usage',
+             'Configuration file generator GUI\n'
+             '\n1. Select one of three configurations\n'
+             '   - Alone type (e.g. SkeletonComponent)\n'
+             '   - Source and Sink type\n'
+             '   - Source,Dispatcher,Sink1,Sink2 type\n'
+             '\n2. Enter DAQ-Operator IP Addr.\n'
+             '\n3. Enter Name, IP Addr, Exec file of each Component\n'
+             '\n4. Push Set Params button, if use parameters. Enter Key and Value\n'
+             '\n5. Push Create config file button and enter output file name\n'
+             )
+
+if __name__ == '__main__':
+    top_f = Frame(bg='white')
+    tab_f = Frame(top_f, bg='white')
+
+    nb = image_nb(tab_f, TOP)
+
+    alone = AlonePanel(nb())
+    two_p = TwoComps(nb())
+    four_p = FourComps(nb())
+
+    #one  = PhotoImage(file='images/one.gif')
+    #two  = PhotoImage(file='images/two.gif')
+    #four = PhotoImage(file='images/four.gif')
+
+    one  = PhotoImage(data=one_comp_data)
+    two  = PhotoImage(data=two_comp_data)
+    four = PhotoImage(data=four_comp_data)
+
+    nb.add_screen(alone, "Alone", one)
+    nb.add_screen(two_p, "Two Comps", two)
+    nb.add_screen(four_p,"Four Comps", four)
+    nb.display(alone)
+
+    myobjs.append(alone)
+    myobjs.append(two_p)
+    myobjs.append(four_p)
+
+    but_f  = Frame(top_f, bg='white')
+    b_outf = Button(but_f, text="Create config file", command=write_conf)
+    b_show = Button(but_f, text="Show config", command=show_conf)
+    b_info = Button(but_f, bitmap='info', width=25, command=show_info)
+    b_outf.pack(side=LEFT,padx=10,pady=2)
+    b_show.pack(side=LEFT,padx=10,pady=2)
+    b_info.place(relx=0.9,rely=0.1)
+
+    tab_f.pack(pady=2)
+    top_f.pack(pady=2)
+    but_f.pack(pady=2,fill=X)
+
+    top_f.mainloop()
+
