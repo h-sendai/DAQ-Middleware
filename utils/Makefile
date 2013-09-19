@@ -1,6 +1,7 @@
 DESTDIR =
 prefix  = /usr
 
+SUBDIRS += pythonLibSetup
 SUBDIRS += daqcom
 SUBDIRS += newcomp
 SUBDIRS += daqmw-emulator

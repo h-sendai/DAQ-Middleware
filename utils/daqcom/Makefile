@@ -12,7 +12,6 @@ EXEC_MODE = 0755
 
 DAQCOM_EXEC_FILE = daqcom
 DAQCOM_LIB_FILE  = daqmwcom.py
-DAQCOM_PTH_FILE  = daqmw.pth
 DAQCOM_EXEC_PATH = $(DAQCOM_EXEC_DIR)/daqcom
 
 HTTPLIB2_FILES += httplib2/__init__.py
@@ -29,7 +28,6 @@ install:
 	@install -m $(LIB_MODE) $(DAQCOM_LIB_FILE) $(DAQCOM_DIR)
 	@install -m $(LIB_MODE) $(HTTPLIB2_FILES) $(HTTPLIB2_DIR)
 	@mkdir -p $(DESTDIR)$(PYTHON_SITELIB)
-	@install -m $(LIB_MODE) $(DAQCOM_PTH_FILE) $(DESTDIR)$(PYTHON_SITELIB)
 
 uninstall:
 	@rm -f  $(DAQCOM_EXEC_PATH)
