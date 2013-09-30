@@ -110,6 +110,15 @@ int SampleMonitor::parse_params(::NVList* list)
 
         std::cerr << "sname: " << sname << "  ";
         std::cerr << "value: " << svalue << std::endl;
+        
+        if (sname == "monitorUpdateRate") {
+            if (m_debug) {
+                std::cerr << "monitor update rate: " << svalue << std::endl;
+            }
+            char *offset;
+            m_monitor_update_rate = (int)strtol(svalue.c_str(), &offset, 10);
+        }
+        // If you have more param in config.xml, write here
     }
 
     return 0;

@@ -43,6 +43,7 @@
                     <outPorts>
                     </outPorts>
                     <params>
+                        <param pid="monitorUpdateRate">2</param>
                     </params>
                 </component>
             </components>
