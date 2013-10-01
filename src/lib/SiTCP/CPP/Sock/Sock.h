@@ -187,7 +187,7 @@ namespace DAQMW {
      * The method will receive all of data with the specified size in bytes. 
      * When fatal error occurred ERROR_FATAL will return. 
      * If timeout occurred, ERROR_TIMEOUT will return.
-     * Otherwise, the method returns size of the received data in bytes.  
+     * If SUCCESS returns, success.
      */
     int readAll(unsigned char* buffer, int nbytes) const;
 
@@ -244,7 +244,7 @@ namespace DAQMW {
      * The method will send all of characters in the specified string. 
      * When fatal error occurred, an exception will be thrown.
      * If timeout occurred, ERROR_TIMEOUT will return.
-     * Otherwise, the method returns size of the sent data in bytes.
+     * If SUCCESS returns, success.
      */
     int sendAll ( const std::string ) const;
     
@@ -255,7 +255,7 @@ namespace DAQMW {
      * The method will send all of data with the specified size in bytes.
      * When fatal error occurred, an exception will be thrown.
      * If timeout occurred, ERROR_TIMEOUT will return. 
-     * Otherwise, the method returns size of the sent data in bytes.  
+     * If SUCCESS returns, success.
      */
     int sendAll ( const unsigned int* , int ) const;
     

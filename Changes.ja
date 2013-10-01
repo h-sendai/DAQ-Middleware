@@ -2,6 +2,9 @@
 
 サマリー
 - config.xmlを作成するためのGUIプログラムを追加しました。
+- SampleMonitorのコードにコンフィギュレーションパラメータを取得する
+  コードを追加しました。
+- Sock.h中のドキュメンテーションバグを修正しました。
 
 詳細
 
@@ -11,6 +14,12 @@ FEATURE: config.xmlを作成するためのGUIプログラム (/usr/bin/confPane
          2コンポーネントのシステム (Source - Sink)
          4コンポーネントのシステム (Source - Dispatch - (Sink0, Sink1))
          用のconfig.xmlを作成することができます。
+FEATURE: SampleMonitorのコードにコンフィギュレーションパラメータを取得する
+         コードを追加しました。
+DOC BUG FIX:
+         Sock.h中のドキュメンテーションバグを修正しました。
+         readAll()およびsendAll()は成功するとSUCCESSを返します
+        (読み取り/書き込みバイト数ではありません)。
 
 1.2.2 2013-07-31 Hiroshi Sendai
 

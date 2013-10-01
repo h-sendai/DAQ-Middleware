@@ -2,6 +2,8 @@
 
 Summary
 - Add GUI program to create config.xml.
+- Add configuration parameter sample in SampleMonitor.
+- Fix a documentation bug in Sock.h
 
 Details:
 
@@ -9,6 +11,11 @@ FEATURE: Add GUI program to create config.xml (/usr/bin/confPanel.py).
          We can create config.xml for 1 component system (Skeleton),
          2 components system (Source - Sink), and 4 components system
          (Source - Dispatch - (Sink0, Sink1)).
+FEATURE: Add configuration parameter sample code in SampleMonitor.
+DOC BUG FIX:
+         Fix a documentation bug for return value of readAll.
+         (readAll() and sendAll() return SUCCESS if success
+         (not read/write bytes)).
 
 1.2.2 2013-07-31 Hiroshi Sendai
 
