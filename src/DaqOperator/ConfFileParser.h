@@ -120,6 +120,11 @@ private:
     XMLCh* TAG_compOutPort;
     XMLCh* TAG_compInPort;
     XMLCh* TAG_compFromOut;
+    XMLCh* TAG_compBufferLength;
+    XMLCh* TAG_compBufferReadTimeout;
+    XMLCh* TAG_compBufferWriteTimeout;
+    XMLCh* TAG_compBufferReadEmptyPolicy;
+    XMLCh* TAG_compBufferWriteFullPolicy;
     XMLCh* TAG_paramId;
     XMLCh* TAG_params;
     XMLCh* TAG_param;

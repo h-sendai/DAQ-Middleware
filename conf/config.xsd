@@ -34,7 +34,12 @@
 	<xsd:complexType name="InPortType">
 		<xsd:simpleContent>
 		<xsd:extension base="xsd:string">
-		<xsd:attribute name="from" type="xsd:string"/>
+		<xsd:attribute name="from"                     type="xsd:string"/>
+		<xsd:attribute name="buffer_length"            type="xsd:string"/>
+		<xsd:attribute name="buffer_read_timeout"      type="xsd:string"/>
+		<xsd:attribute name="buffer_write_timeout"     type="xsd:string"/>
+		<xsd:attribute name="buffer_read_empty_policy" type="xsd:string"/>
+		<xsd:attribute name="buffer_write_full_policy" type="xsd:string"/>
 		</xsd:extension>
 		</xsd:simpleContent>
 	</xsd:complexType>

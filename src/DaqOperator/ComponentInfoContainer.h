@@ -169,6 +169,46 @@ class ComponentInfoContainer
     {
       return m_from;
     }
+    void setBufferLength(std::string buffer_length)
+    {
+      m_buffer_length.push_back(buffer_length);
+    }
+    std::vector<std::string> getBufferLength()
+    {
+      return m_buffer_length;
+    }
+    void setBufferReadTimeout(std::string buffer_read_timeout)
+    {
+      m_buffer_read_timeout.push_back(buffer_read_timeout);
+    }
+    std::vector<std::string> getBufferReadTimeout()
+    {
+      return m_buffer_read_timeout;
+    }
+    void setBufferWriteTimeout(std::string buffer_write_timeout)
+    {
+      m_buffer_write_timeout.push_back(buffer_write_timeout);
+    }
+    std::vector<std::string> getBufferWriteTimeout()
+    {
+      return m_buffer_write_timeout;
+    }
+    void setBufferReadEmptyPolicy(std::string buffer_read_empty_policy)
+    {
+      m_buffer_read_empty_policy.push_back(buffer_read_empty_policy);
+    }
+    std::vector<std::string> getBufferReadEmptyPolicy()
+    {
+      return m_buffer_read_empty_policy;
+    }
+    void setBufferWriteFullPolicy(std::string buffer_write_full_policy)
+    {
+      m_buffer_write_full_policy.push_back(buffer_write_full_policy);
+    }
+    std::vector<std::string> getBufferWriteFullPolicy()
+    {
+      return m_buffer_write_full_policy;
+    }
 
     void setOutport(std::string outport) 	
     {
@@ -190,6 +230,11 @@ class ComponentInfoContainer
     std::vector<std::string> m_service;
     std::vector<std::string> m_inport;
     std::vector<std::string> m_from;
+    std::vector<std::string> m_buffer_length;
+    std::vector<std::string> m_buffer_read_timeout;
+    std::vector<std::string> m_buffer_write_timeout;
+    std::vector<std::string> m_buffer_read_empty_policy;
+    std::vector<std::string> m_buffer_write_full_policy;
     std::vector<std::string> m_outport;
 };
 typedef std::vector<ComponentInfoContainer> CompInfoList;

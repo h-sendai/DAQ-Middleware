@@ -33,6 +33,11 @@ using namespace RTC;
 struct inport_info {
     std::string inport_name;
     std::string from_name;
+    std::string buffer_read_empty_policy; // block
+    std::string buffer_write_full_policy; // block
+    std::string buffer_read_timeout;      // 0.005 5m sec
+    std::string buffer_write_timeout;     // 0.005 5m sec
+    std::string buffer_length;            // 1024
     PortService_ptr inport_ptr;
     ConnectorProfile prof;
 };
@@ -236,18 +241,34 @@ int find_comps(CorbaNaming* naming, CompGroupList* daq_group_list)
                 if (port_type == "DataInPort") {
                     std::vector<std::string> myInport = p.getInport();
                     std::vector<std::string> myFrom   = p.getFromOutPort();
+                    std::vector<std::string> myBufferLength = p.getBufferLength();
+                    std::vector<std::string> myBufferReadTimeout  = p.getBufferReadTimeout();
+                    std::vector<std::string> myBufferWriteTimeout = p.getBufferWriteTimeout();
+                    std::vector<std::string> myBufferReadEmptyPolicy = p.getBufferReadEmptyPolicy();
+                    std::vector<std::string> myBufferWriteFullPolicy = p.getBufferWriteFullPolicy();
                     if (debug) {
                         std::cerr << "*** DataInPort\n";
                         std::cerr << "    myInport:" << myInport[0] << std::endl;
                         std::cerr << "    myFrom:"   << myFrom[0]   << std::endl;
+                        std::cerr << "    myBufferLength:" << myBufferLength[0] << std::endl;
                     }
 
                     if (myInport.size() > 0) {
                         inport_info.inport_name = gid + p.getId() + ":" + myInport[0];
                         inport_info.from_name   = gid + myFrom[inport_count];
+                        inport_info.buffer_length = myBufferLength[inport_count];
+                        inport_info.buffer_read_timeout  = myBufferReadTimeout[inport_count];
+                        inport_info.buffer_write_timeout = myBufferWriteTimeout[inport_count];
+                        inport_info.buffer_read_empty_policy = myBufferReadEmptyPolicy[inport_count];
+                        inport_info.buffer_write_full_policy = myBufferWriteFullPolicy[inport_count];
                         if (debug) {
                             std::cerr << "  inport_info.inport_name:" << inport_info.inport_name << std::endl;
                             std::cerr << "  inport_info.from_name:"   << inport_info.from_name   << std::endl;
+                            std::cerr << "  inport_info.buffer_length:"  << inport_info.buffer_length << std::endl;
+                            std::cerr << "  inport_info.buffer_read_timeout:"   << inport_info.buffer_read_timeout  << std::endl;
+                            std::cerr << "  inport_info.buffer_write_timeout:"  << inport_info.buffer_write_timeout << std::endl;
+                            std::cerr << "  inport_info.buffer_read_emtpy_policy:"  << inport_info.buffer_read_empty_policy << std::endl;
+                            std::cerr << "  inport_info.buffer_write_full_policy:"  << inport_info.buffer_write_full_policy << std::endl;
                         }
 
                         inport_info.inport_ptr  = port;
@@ -341,19 +362,29 @@ int connect_data_ports()
                  */
                 CORBA_SeqUtil::push_back(prof.properties,
                                          NVUtil::newNV("dataport.inport.buffer.read.empty_policy",
-                                                       "block"));
+                                                       inport_list[index].buffer_read_empty_policy.c_str()));
                 CORBA_SeqUtil::push_back(prof.properties,
                                          NVUtil::newNV("dataport.inport.buffer.write.full_policy",
-                                                       "block"));
+                                                       inport_list[index].buffer_write_full_policy.c_str()));
                 CORBA_SeqUtil::push_back(prof.properties,
                                          NVUtil::newNV("dataport.inport.buffer.read.timeout",
-                                                       "0.1"));
+                                                       inport_list[index].buffer_read_timeout.c_str()));
                 CORBA_SeqUtil::push_back(prof.properties,
                                          NVUtil::newNV("dataport.inport.buffer.write.timeout",
-                                                       "0.1"));
+                                                       inport_list[index].buffer_write_timeout.c_str()));
                 CORBA_SeqUtil::push_back(prof.properties,
                                          NVUtil::newNV("dataport.inport.buffer.length",
-                                                       "128"));
+                                                       inport_list[index].buffer_length.c_str()));
+                // debug = true;
+                if (debug) {
+                    std::cerr << "buffer_read_empty_policy: " << inport_list[index].buffer_read_empty_policy << std::endl;
+                    std::cerr << "buffer_write_full_policy: " << inport_list[index].buffer_write_full_policy << std::endl;
+                    std::cerr << "buffer_read_timeout:      " << inport_list[index].buffer_read_timeout      << std::endl;
+                    std::cerr << "buffer_write_timeout:     " << inport_list[index].buffer_write_timeout     << std::endl;
+                    std::cerr << "buffer_length:            " << inport_list[index].buffer_length            << std::endl;
+                }
+                // debug = false;
+
                 ReturnCode_t ret;
                 ret = prof.ports[0]->connect(prof);
                 assert(ret == RTC::RTC_OK);

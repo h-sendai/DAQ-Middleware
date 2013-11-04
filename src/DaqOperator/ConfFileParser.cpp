@@ -36,6 +36,11 @@ ConfFileParser::ConfFileParser()
      TAG_compOutPort  = XMLString::transcode("outPort");
      TAG_compInPort   = XMLString::transcode("inPort");
      TAG_compFromOut  = XMLString::transcode("from");
+     TAG_compBufferLength = XMLString::transcode("buffer_length");
+     TAG_compBufferReadTimeout  = XMLString::transcode("buffer_read_timeout");
+     TAG_compBufferWriteTimeout = XMLString::transcode("buffer_write_timeout");
+     TAG_compBufferReadEmptyPolicy = XMLString::transcode("buffer_read_empty_policy");
+     TAG_compBufferWriteFullPolicy = XMLString::transcode("buffer_write_full_policy");
      TAG_paramId      = XMLString::transcode("pid");
      TAG_params       = XMLString::transcode("params");
      TAG_param        = XMLString::transcode("param");
@@ -62,6 +67,11 @@ ConfFileParser::~ConfFileParser()
         XMLString::release( &TAG_compOutPort );
         XMLString::release( &TAG_compInPort );
         XMLString::release( &TAG_compFromOut );
+        XMLString::release( &TAG_compBufferLength );
+        XMLString::release( &TAG_compBufferReadTimeout );
+        XMLString::release( &TAG_compBufferWriteTimeout );
+        XMLString::release( &TAG_compBufferReadEmptyPolicy );
+        XMLString::release( &TAG_compBufferWriteFullPolicy );
         XMLString::release( &TAG_paramId );
         if (TAG_params) {
             XMLString::release( &TAG_params );
@@ -298,17 +308,84 @@ int ConfFileParser::getElementsFromParent(
             std::string name = makeXPath(xpath, chName, index);
 
             if (strcmp(tagName, "inPort") == 0) {
+                // from attribute
                 char* from 
                     = XMLString::transcode(nodeEle->getAttributeNode(TAG_compFromOut)->getValue() );
                 ///std::cerr << "#### from: " << XMLString::transcode(
                 ///    nodeEle->getAttributeNode(TAG_compFromOut)->getValue() ) << std::endl;
                 ///std::string inport  = gid + ":" + myport;
                 ///std::string outfrom = gid + ":" + from;
+
+                //// buffer_length attribute ////
+                std::string buffer_length;
+                if (nodeEle->getAttributeNode(TAG_compBufferLength)) {
+                    char *buf_len
+                        = XMLString::transcode(nodeEle->getAttributeNode(TAG_compBufferLength)->getValue() );
+                    buffer_length = buf_len;
+                    XMLString::release(&buf_len);
+                }
+                else {
+                    buffer_length = "1024";
+                }
+
+                //// buffer_read_timeout attribute ////
+                std::string buffer_read_timeout;
+                if (nodeEle->getAttributeNode(TAG_compBufferReadTimeout)) {
+                    char *r_timeout
+                        = XMLString::transcode(nodeEle->getAttributeNode(TAG_compBufferReadTimeout)->getValue() );
+                    buffer_read_timeout = r_timeout;
+                    XMLString::release(&r_timeout);
+                }
+                else {
+                    buffer_read_timeout = "0.005"; // 5 milli seconds
+                }
+
+                //// buffer_write_timeout attribute ////
+                std::string buffer_write_timeout;
+                if (nodeEle->getAttributeNode(TAG_compBufferWriteTimeout)) {
+                    char *w_timeout
+                        = XMLString::transcode(nodeEle->getAttributeNode(TAG_compBufferWriteTimeout)->getValue() );
+                    buffer_write_timeout = w_timeout;
+                    XMLString::release(&w_timeout);
+                }
+                else {
+                    buffer_write_timeout = "0.005"; // 5 milli seconds
+                }
+
+                //// buffer_read_empty_policy attribute ////
+                std::string buffer_read_empty_policy;
+                if (nodeEle->getAttributeNode(TAG_compBufferReadEmptyPolicy)) {
+                    char *r_empty
+                        = XMLString::transcode(nodeEle->getAttributeNode(TAG_compBufferReadEmptyPolicy)->getValue() );
+                    buffer_read_empty_policy = r_empty;
+                    XMLString::release(&r_empty);
+                }
+                else {
+                    buffer_read_empty_policy = "block"; // block 
+                }
+
+                //// buffer_write_full_policy attribute ////
+                std::string buffer_write_full_policy;
+                if (nodeEle->getAttributeNode(TAG_compBufferWriteFullPolicy)) {
+                    char *w_full
+                        = XMLString::transcode(nodeEle->getAttributeNode(TAG_compBufferWriteFullPolicy)->getValue() );
+                    buffer_write_full_policy = w_full;
+                    XMLString::release(&w_full);
+                }
+                else {
+                    buffer_write_full_policy = "block"; // block 
+                }
+
                 std::string inport  = myport;
                 std::string outfrom = from;
                 ///std::cerr << "$$$$$ outport: " << inport << std::endl;
                 compCont->setInport(inport);
                 compCont->setFromOutPort(outfrom);
+                compCont->setBufferLength(buffer_length);
+                compCont->setBufferReadTimeout(buffer_read_timeout);
+                compCont->setBufferWriteTimeout(buffer_write_timeout);
+                compCont->setBufferReadEmptyPolicy(buffer_read_empty_policy);
+                compCont->setBufferWriteFullPolicy(buffer_write_full_policy);
                 XMLString::release(&from);
             }
             else if (strcmp(tagName, "outPort") == 0) {

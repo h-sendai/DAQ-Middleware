@@ -1,10 +1,15 @@
-1.2.3 2013-10-XX Hiroshi Sendai
+1.3.0 2013-11-XX Hiroshi Sendai
 
 サマリー
 - config.xmlを作成するためのGUIプログラムを追加しました。
 - SampleMonitorのコードにコンフィギュレーションパラメータを取得する
   コードを追加しました。
 - Sock.h中のドキュメンテーションバグを修正しました。
+- インポートのリングバッファ長、リングバッファのタイムアウトをconfig.xmlで
+  設定可能にしました。
+- DAQ-MiddlewareがベースとしているOpenRTM-aistについて
+  RPMバイナリで配布しているバイナリはtimeoutが正しく動作するパッチをあてた
+  ものを配布するようにしました。
 
 詳細
 
@@ -16,10 +21,26 @@ FEATURE: config.xmlを作成するためのGUIプログラム (/usr/bin/confPane
          用のconfig.xmlを作成することができます。
 FEATURE: SampleMonitorのコードにコンフィギュレーションパラメータを取得する
          コードを追加しました。
+FEATURE: インポートのリングバッファ長、インポートのリングバッファに関する
+         タイムアウトを設定可能にしました。設定しない場合のデフォルト値は1024、
+         タイムアウトは0.005秒(5ミリ秒)です(従来はそれぞれ128、100ミリ秒でした)。
+         設定は下記のようにconfig.xmlを書きます(リングバッファ長4096、タイムアウト
+         10ミリ秒)。timeoutの単位は秒です。
+	 <inPorts>
+             <inPort from="SampleReader0:samplereader_out"
+	         buffer_length="4096"
+                 buffer_read_timeout="0.010"
+                 buffer_write_timeout="0.010">
+                 samplemonitor_in
+             </inPort>
+         </inPorts>
 DOC BUG FIX:
          Sock.h中のドキュメンテーションバグを修正しました。
          readAll()およびsendAll()は成功するとSUCCESSを返します
-        (読み取り/書き込みバイト数ではありません)。
+         (読み取り/書き込みバイト数ではありません)。
+DEPENDENCY FIX:
+         DAQ-MiddlewareはOpenRTM-aistをベースとして使っています。インポートの
+         タイムアウトが正しく動作していなかったのを修正しました。
 
 1.2.2 2013-07-31 Hiroshi Sendai
 
