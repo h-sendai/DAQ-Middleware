@@ -27,7 +27,7 @@ FEATURE: インポートのリングバッファ長、インポートのリン�
          (従来はそれぞれ128、100ミリ秒でした)。
          設定は下記のようにconfig.xmlを書きます(リングバッファ長4096、タイムアウト
          10ミリ秒)。timeoutの単位は秒です。
-	 <inPorts>
+         <inPorts>
              <inPort from="SampleReader0:samplereader_out"
 	         buffer_length="4096"
                  buffer_read_timeout="0.010"
