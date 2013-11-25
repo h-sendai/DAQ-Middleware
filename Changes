@@ -1,9 +1,13 @@
-1.2.3 2013-10-XX Hiroshi Sendai
+1.3.0 2013-11-XX Hiroshi Sendai
 
 Summary
 - Add GUI program to create config.xml.
-- Add configuration parameter sample in SampleMonitor.
+- Add code to get configuration parameters in SampleMonitor.
 - Fix a documentation bug in Sock.h
+- We can now set ring buffer length, ring buffer timeout
+  of the InPort in config.xml.
+- Add a patch to fix timeout routine in OpenRTM-aist binary package
+  (RPM).
 
 Details:
 
@@ -12,10 +16,26 @@ FEATURE: Add GUI program to create config.xml (/usr/bin/confPanel.py).
          2 components system (Source - Sink), and 4 components system
          (Source - Dispatch - (Sink0, Sink1)).
 FEATURE: Add configuration parameter sample code in SampleMonitor.
+FEATURE: We can now set ring buffer length, ring buffer timeout
+         of the InPort in config.xml.  Default values are
+         256 for ring buffer length, 0.005 seconds (5 milli seconds)
+         for timeout.
+         Following is a sample to set 4096 ring buffer length, timeout 10
+         milli seconds:
+         <inPorts>
+             <inPort from="SampleReader0:samplereader_out"
+             buffer_length="4096"
+                 buffer_read_timeout="0.010"
+                 buffer_write_timeout="0.010">
+                 samplemonitor_in
+             </inPort>
+         </inPorts>
 DOC BUG FIX:
          Fix a documentation bug for return value of readAll.
          (readAll() and sendAll() return SUCCESS if success
          (not read/write bytes)).
+DEPENDENCY FIX:
+         Fix timeout of InPort ring buffer. 
 
 1.2.2 2013-07-31 Hiroshi Sendai
 
