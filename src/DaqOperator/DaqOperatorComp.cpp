@@ -37,7 +37,7 @@ struct inport_info {
     std::string buffer_write_full_policy; // block
     std::string buffer_read_timeout;      // 0.005 5m sec
     std::string buffer_write_timeout;     // 0.005 5m sec
-    std::string buffer_length;            // 1024
+    std::string buffer_length;            // 256
     PortService_ptr inport_ptr;
     ConnectorProfile prof;
 };

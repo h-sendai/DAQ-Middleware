@@ -325,7 +325,7 @@ int ConfFileParser::getElementsFromParent(
                     XMLString::release(&buf_len);
                 }
                 else {
-                    buffer_length = "1024";
+                    buffer_length = "256";
                 }
 
                 //// buffer_read_timeout attribute ////
