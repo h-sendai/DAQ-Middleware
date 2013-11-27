@@ -10,6 +10,7 @@
 - DAQ-MiddlewareがベースとしているOpenRTM-aistについて
   RPMバイナリで配布しているバイナリはtimeoutが正しく動作するパッチをあてた
   ものを配布するようにしました。
+- UbuntuおよびDebianで配布されているxalanコマンドに対応しました。
 
 詳細
 
@@ -35,6 +36,10 @@ FEATURE: インポートのリングバッファ長、インポートのリン�
                  samplemonitor_in
              </inPort>
          </inPorts>
+FEATURE: UbuntuおよびDebianで配布されているxalanコマンドに対応しました。
+         上記ふたつのディストリビューションのxalanコマンドは、コマンド名、
+         引数指定が違っていてcondition_xml2jsonスクリプトが正常に動作
+         しなかったのを修正しました。
 DOC BUG FIX:
          Sock.h中のドキュメンテーションバグを修正しました。
          readAll()およびsendAll()は成功するとSUCCESSを返します

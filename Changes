@@ -8,6 +8,7 @@ Summary
   of the InPort in config.xml.
 - Add a patch to fix timeout routine in OpenRTM-aist binary package
   (RPM).
+- Support Ubuntu and Debian xalan command.
 
 Details:
 
@@ -30,6 +31,7 @@ FEATURE: We can now set ring buffer length, ring buffer timeout
                  samplemonitor_in
              </inPort>
          </inPorts>
+FEATURE: Support xalan command distributed in Ubuntu and Debian.
 DOC BUG FIX:
          Fix a documentation bug for return value of readAll.
          (readAll() and sendAll() return SUCCESS if success
