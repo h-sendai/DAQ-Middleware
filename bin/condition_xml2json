@@ -1,7 +1,9 @@
 #!/bin/sh
 
 progname=$(echo $0 | sed -e 's|^.*/||')
+Distribution=`lsb_release -si`
 Xalan_path=/usr/bin/Xalan
+Xalan_path_Ubuntu=/usr/bin/xalan
 #Xalan_attribute_path=/home/daq/DaqComponents/xml2json-with-attribute.xslt
 
 #mydir=`pwd`
@@ -29,7 +31,12 @@ else
     output=$2
 fi
 
-$Xalan_path -o $output $input $Xalan_attribute_path
+if [ "$Distribution" = "Ubuntu" ] || [ "$Distribution" = "Debian" ] ; then
+#if [ "$Distribution" = "Debian" ]; then
+    $Xalan_path_Ubuntu -xsl $Xalan_attribute_path < $input > $output
+else
+    $Xalan_path -o $output $input $Xalan_attribute_path
+fi
 
 xalan_exit_status=$?
 if [ $xalan_exit_status -ne 0 ]; then
