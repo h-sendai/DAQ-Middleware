@@ -36,6 +36,12 @@ FEATURE: インポートのリングバッファ長、インポートのリン�
                  samplemonitor_in
              </inPort>
          </inPorts>
+         よりくわしくは付属の「開発マニュアル」をご覧ください。
+         「開発マニュアル」は
+         /usr/share/daqmw/docs/DAQ-Middleware-1.3.0-DevManual.pdf
+         あるいは
+         http://daqmw.kek.jp/docs/DAQ-Middleware-1.3.0-DevManual.pdf
+         にあります。
 FEATURE: UbuntuおよびDebianで配布されているxalanコマンドに対応しました。
          上記ふたつのディストリビューションのxalanコマンドは、コマンド名、
          引数指定が違っていてcondition_xml2jsonスクリプトが正常に動作
