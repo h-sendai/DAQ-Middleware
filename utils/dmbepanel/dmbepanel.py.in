@@ -1,0 +1,116 @@
+#!/usr/bin/python
+
+# Contributed by Nakatani san.
+
+# ssPanel.py: Start and Stop panel
+# simple example for DAQ-Middleware GUI panel
+
+import datetime, urllib, os, sys
+from optparse import OptionParser
+
+try:
+    import wx
+except ImportError, e:
+    sys.stderr.write('This program requires wx module.\n')
+    sys.exit(e)
+
+try:
+    import elementtree.ElementTree as Etree
+except ImportError, e:
+    try:
+        import xml.etree.ElementTree as Etree
+    except ImportError, e:
+        std.stderr.write('cannot import elemenetree.ElementTree or xml.etree.ElementTree')
+        sys.exit(e)
+
+class DaqmwSmpl(wx.Frame):
+    def __init__(self):
+        wx.Frame.__init__(self,None,title="DAQ-MW ssPanel", size=(400,300))
+        self.CreateStatusBar()
+
+        panel = wx.Panel(self, -1)
+        exit = wx.Button(panel, wx.ID_EXIT,'',(10,5))
+        self.Bind(wx.EVT_BUTTON, self.OnExit, id=wx.ID_EXIT)
+        putBegin = wx.Button(panel, -1, 'Begin', (10,40),(80,30))
+        self.Bind(wx.EVT_BUTTON, self.OnBegin, id=putBegin.GetId())
+        putEnd = wx.Button(panel, -1, 'End', (100,40),(80,30))
+        self.Bind(wx.EVT_BUTTON, self.OnEnd, id=putEnd.GetId())
+
+        # entry component status items
+        self.compName=[]
+        self.compState=[]
+        self.eventNum=[]
+        self.compStatus=[]
+        for i in range(2):  # number of componets = 2
+            y=90+i*40
+            self.compName.append(wx.StaticText(panel,-1,"",(10,y)))
+            self.compState.append(wx.StaticText(panel,-1,"",(200,y)))
+            self.eventNum.append(wx.StaticText(panel,-1,"",(10,y+20)))
+            self.compStatus.append(wx.StaticText(panel,-1,"",(200,y+20)))
+
+        # set timer
+        self.timer=wx.Timer(self)
+        self.Bind(wx.EVT_TIMER,self.OnTimer)
+        # update time 1[sec]
+        self.timer.Start(1000)
+
+        self.Show(True)
+        self.url=@URL@
+
+        # configure
+        params=urllib.urlencode({"cmd":"<?xml version='1.0' encoding='UTF-8' standalone='no' ?><request><params>sample.xml</params></request>"})
+        urllib.urlopen(self.url+"Params",params)
+
+    def OnExit(self, event):
+        # unconfigure
+        params=urllib.urlencode({"cmd":""})
+        urllib.urlopen(self.url+"ResetParams",params)
+        self.Close()
+
+    def OnBegin(self, event):
+        # begin
+        params=urllib.urlencode({"cmd":"<?xml version='1.0' encoding='UTF-8' standalone='no' ?><request><runNo>0</runNo></request>"})
+        urllib.urlopen(self.url+"Begin",params)
+
+    def OnEnd(self, event):
+        # end
+        params=urllib.urlencode({"cmd":""})
+        urllib.urlopen(self.url+"End",params)
+
+    def OnTimer(self,event):
+        # update clock
+        d=datetime.datetime.today()
+        now="%04d/%02d/%02d %02d:%02d:%02d" % (d.year,d.month,d.day,d.hour,d.minute,d.second)
+
+        #update DAQ-MW status
+        f=urllib.urlopen(self.url+"Status")
+        elem=Etree.fromstring(f.read())
+        self.SetStatusText(now+"-"+elem.find(".//devStatus").find(".//status").text)
+
+        # update comp status
+        f=urllib.urlopen(self.url+"Log")
+        elem=Etree.fromstring(f.read())
+        i=0
+        for s in elem.findall(".//compName"):
+            self.compName[i].SetLabel(s.text)
+            i+=1
+        i=0
+        for s in elem.findall(".//state"):
+            self.compState[i].SetLabel(s.text)
+            i+=1
+        i=0
+        for s in elem.findall(".//eventNum"):
+            self.eventNum[i].SetLabel(s.text)
+            i+=1
+        i=0
+        for s in elem.findall(".//compStatus"):
+            self.compStatus[i].SetLabel(s.text)
+            i+=1
+
+def main():
+    app = wx.App()
+    DaqmwSmpl()
+    app.MainLoop()
+
+if __name__ == '__main__':
+    main()

@@ -6,6 +6,7 @@ SUBDIRS += daqcom
 SUBDIRS += newcomp
 SUBDIRS += daqmw-emulator
 SUBDIRS += conditionPanel
+SUBDIRS += dmbepanel
 SUBDIRS += configGUI
 
 .PHONY: $(SUBDIRS)
