@@ -1,9 +1,8 @@
 #!/usr/bin/python
 
-# Contributed by Nakatani san.
-
-# ssPanel.py: Start and Stop panel
+# dmbepanel.py: BEGIN and END panel
 # simple example for DAQ-Middleware GUI panel
+# based on conditionPanel contributed by Nakatani san.
 
 import datetime, urllib, os, sys
 from optparse import OptionParser
