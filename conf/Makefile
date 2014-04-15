@@ -10,6 +10,7 @@ FILES += sample.xml
 FILES += skel.xml
 FILES += tiny.xml
 FILES += 4comps.xml
+FILES += reader-logger.xml
 
 all:
 
