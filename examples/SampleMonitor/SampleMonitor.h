@@ -70,7 +70,8 @@ private:
     double   m_min;
     double   m_max;
     int      m_monitor_update_rate;
-    unsigned char m_recv_data[4096];
+    const static unsigned int DATA_BUF_SIZE = 1024*1024;
+    unsigned char m_recv_data[DATA_BUF_SIZE];
     unsigned int  m_event_byte_size;
     struct sampleData m_sampleData;
 

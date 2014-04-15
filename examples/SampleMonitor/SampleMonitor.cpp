@@ -286,6 +286,9 @@ int SampleMonitor::daq_run()
 
     check_header_footer(m_in_data, recv_byte_size); // check header and footer
     m_event_byte_size = get_event_size(recv_byte_size);
+    if (m_event_byte_size > DATA_BUF_SIZE) {
+        fatal_error_report(USER_DEFINED_ERROR1, "DATA BUF TOO SHORT");
+    }
 
     /////////////  Write component main logic here. /////////////
     memcpy(&m_recv_data[0], &m_in_data.data[HEADER_BYTE_SIZE], m_event_byte_size);
