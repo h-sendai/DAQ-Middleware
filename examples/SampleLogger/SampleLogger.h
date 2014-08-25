@@ -13,8 +13,8 @@
  *
  */
 
-#ifndef SAMPLE_LOGGER
-#define SAMPLE_LOGGER
+#ifndef SAMPLELOGGER_H
+#define SAMPLELOGGER_H
 
 #include "DaqComponentBase.h"
 #include "FileUtils.h"
@@ -68,4 +68,4 @@ extern "C"
     void SampleLoggerInit(RTC::Manager* manager);
 };
 
-#endif // LOGGER_H
+#endif // SAMPLELOGGER_H

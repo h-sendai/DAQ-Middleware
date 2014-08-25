@@ -7,6 +7,7 @@
 - SampleReader、SampleLogger、SampleMonitorの名前を変更する
   シェルスクリプトをexamples/change-SampleComp-name/ディレクトリ
   以下にいれました。
+- SampleLoggerのタイポの修正
 
 詳細
 
@@ -16,13 +17,18 @@ FEATURE: SampleMonitorでのデータバッファについてバッファオー�
          しました。これを大きくするにはSampleMonitor.h中のDATA_BUF_SIZEの
          値を変更してください。
          memcpy()の前にデータ長を確認するようにしました。
-FEATURE: センサーテスト実験などでSampleReader、SampleMonitorなどをコピーし
+FEATURE: センサーテスト実験などで SampleReader、SampleMonitorなどをコピーし
          名前を変更して開発するときに、機械的に行える名前の変更をシェル
          スクリプト化しました。examples/change-SampleComp-name/ディレクトリ
          以下にいれてあります。new_comp_camel_caseの行を新しいコンポーネント名
          に置き換えて実行してください。new_comp_camel_caseで指定する
          コンポーネント名はSampleReaderのように単語の切れ目を大文字化
          したものを推奨します。
+FEATURE: SampleLogger.h中のタイポの修正
+         SampleLogger::daq_configure()中の
+         SampleLoggqer::configure -> SampleLogger::configure
+         SampleLogger.h中のインクルードガードをSampleMonitorにあわせる
+         SAMPLE_LOGGER -> SAMPLELOGGER_H
 
 1.3.0 2013-11-29 Hiroshi Sendai
 

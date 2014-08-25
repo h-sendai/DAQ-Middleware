@@ -79,7 +79,7 @@ int SampleLogger::daq_dummy()
 
 int SampleLogger::daq_configure()
 {
-    std::cerr << "*** SampleLoggqer::configure" << std::endl;
+    std::cerr << "*** SampleLogger::configure" << std::endl;
     int ret = 0;
     m_isDataLogging = false;
 
