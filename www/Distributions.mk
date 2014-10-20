@@ -23,7 +23,7 @@ HTTPD_CONF_DIR    = /etc/httpd/conf.d
 USE_MOD_PYTHON    = 1
 endif
 
-########## Scientific Linux 5.8 - , 6.x ##########
+########## Scientific Linux 5.8 - , 7.x ##########
 ifeq ($(strip $(OS)),Scientific)
 WWW_DOCUMENT_ROOT = /var/www/html
 HTTPD_CONF_DIR    = /etc/httpd/conf.d
@@ -31,6 +31,9 @@ ifeq ($(strip $(MAJOR_VERSION)),5)
 USE_MOD_PYTHON    = 1
 endif
 ifeq ($(strip $(MAJOR_VERSION)),6)
+USE_MOD_WSGI      = 1
+endif
+ifeq ($(strip $(MAJOR_VERSION)),7)
 USE_MOD_WSGI      = 1
 endif
 endif
