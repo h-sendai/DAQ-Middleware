@@ -1,4 +1,4 @@
-1.3.1 2014-XX-XX Hiroshi Sendai
+1.3.1 2014-12-24 Hiroshi Sendai
 
 Summary
 
@@ -6,6 +6,20 @@ Summary
 - Add shell scripts which changes SampleReader, SampleLogger and
   SampleMonitor to appropriate one (examples/change-SampleComp-name)
 - Fix typos in SampleLogger
+
+Details:
+
+FEATURE: In SampleMonitor, add data length verification code
+         not to occure buffer overflow.  (Change the buffer length to
+         1MB.  If you need larger buffer, change the DATA_BUF_SIZE value).
+FEATURE: Add shell scripts which change Sample components' name in
+         examples/changes-SampleComp-name/ directory.  Change the
+         new_comp_camel_case line to your components name.  We recommend
+         to use CamelCaseConvension as components name.
+FEATURE: Fix typos in SampleLogger::daq_configure():
+         SampleLoggqer::configure -> SampleLogger::configure
+         Change the include guard in SampleLogger.h as in SampleMonitor:
+         SAMPLE_LOGGER -> SAMPLELOGGER_H
 
 1.3.0 2013-11-29 Hiroshi Sendai
 
