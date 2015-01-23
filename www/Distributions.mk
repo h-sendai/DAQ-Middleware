@@ -62,6 +62,13 @@ USE_MOD_WSGI      = 1
 endif
 endif
 
+########## Fedora ##########
+ifeq ($(strip $(OS)),Fedora)
+WWW_DOCUMENT_ROOT = /var/www/html
+HTTPD_CONF_DIR    = /etc/httpd/conf.d
+USE_MOD_WSGI      = 1
+endif
+
 ########## Debian ##########
 ifeq ($(strip $(OS)),Debian)
 WWW_DOCUMENT_ROOT = /var/www
