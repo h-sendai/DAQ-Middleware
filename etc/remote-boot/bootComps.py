@@ -54,7 +54,11 @@ class MyProcUtil:
             if (len(cmdline) > 0):
                 basename = os.path.basename(cmdline[0])
                 if basename in self.script_langs:
-                    basename = os.path.basename(cmdline[1])
+                    if len(cmdline) == 1:
+                        # if cmdline is for example '/bin/zsh' only
+                        basename = cmdline[0]
+                    else:
+                        basename = os.path.basename(cmdline[1])
                 if proc_name == basename:
                     rv_pids.append(pid)
         return rv_pids
