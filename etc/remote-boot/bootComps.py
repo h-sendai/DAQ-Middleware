@@ -12,6 +12,58 @@ import glob
 import shutil
 #import ExistOkMkdir
 
+class MyProcUtil:
+
+    def __init__(self):
+        self.script_langs = [
+            'python',
+            'python2',
+            'python2.4',
+            'python2.5',
+            'python2.6',
+            'python2.7',
+            'perl',
+            'ruby',
+            'sh',
+            'bash',
+            'tcsh',
+            'zsh'
+        ]
+
+    def get_all_pids(self):
+        return [ int(x) for x in os.listdir('/proc') if x.isdigit() ]
+    
+    def get_cmdline(self, pid):
+        filename = '/proc/%s/cmdline' % (pid)
+        try:
+            f = open(filename, 'r')
+        except IOError, (en, msg):
+            if en == errno.ENOENT:
+                return []
+            else:
+                sys.exit(e)
+        rv =  [ x for x in f.read().split('\x00') if x ]
+        f.close()
+
+        return rv
+
+    def get_pids_by_proc_name(self, proc_name):
+        rv_pids = []
+        for pid in self.get_all_pids():
+            cmdline = self.get_cmdline(pid)
+            if (len(cmdline) > 0):
+                basename = os.path.basename(cmdline[0])
+                if basename in self.script_langs:
+                    basename = os.path.basename(cmdline[1])
+                if proc_name == basename:
+                    rv_pids.append(pid)
+        return rv_pids
+
+def get_pids_exact(proc_name):
+    p = MyProcUtil()
+    pid_list = p.get_pids_by_proc_name(proc_name)
+    return tuple(pid_list)
+
 def start_comp(command_line, log='', env='', foreground='no', no_stdin = 'yes'):
     """
     Execute component binary.
@@ -159,59 +211,6 @@ def is_script_lang(elem_1):
         return True
     else:
         return False
-
-def get_pids_exact(proc_name):
-    """
-    Return process id tuple if 'proc_name' process(es) exist(s).
-    Return empty tuple if there is no proc_name.
-    If the program is a shell script, python script etc, then
-    the first argument of the output of pgrep is /bin/sh,
-    /usr/bin/python (or python if we use #!/usr/bin/env python).
-    This function lookup if the program is written in script language.
-    """
-    pgrep_command = []
-    pgrep_command.append('pgrep')
-    pgrep_command.append('-fl')
-    pgrep_command.append(proc_name)
-
-    try:
-        p = subprocess.Popen(pgrep_command, shell = False,
-                             stdin  = subprocess.PIPE,
-                             stdout = subprocess.PIPE,
-                             stderr = subprocess.PIPE)
-    except OSError, (my_errno, strerror):
-        print '##### OSError ##############'
-        sys.stderr.write('%s: %s' % ('pgrep', strerror))
-        raise
-        #sys.exit(strerror)
-    except:
-        print '##### Unknown Error ##############'
-        sys.stderr.write('get_pid_exact(): unknown error')
-        raise
-
-    p.wait()
-
-    candidate = []
-    for pgrep_line in p.stdout:
-        candidate.append(pgrep_line.rstrip())
-
-    return_pids = []
-    for line in candidate:
-        cols = line.split()
-        pid = cols[0]
-
-        if len(cols) >= 3:
-            if is_script_lang(cols[1]):
-                command = os.path.basename(cols[2])
-            else:
-                command = os.path.basename(cols[1])
-        else:
-            command = os.path.basename(cols[1])
-
-        if command == proc_name:
-            return_pids.append(pid)
-    return tuple(return_pids)
-
 
 def kill_proc_exact(proc_name, sleep_sec = 1, max_retry = 60):
     """
