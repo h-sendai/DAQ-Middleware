@@ -1,3 +1,19 @@
+1.4.0 2015-02-XX Hiroshi Sendai
+
+Summary
+- Add support for Scientific Linux 7.
+- We no longer use pgrep(1) command to lookup DAQ-Component processes,
+  but lookup /proc/<pid>cmdline.  No user visible changes.
+
+Details:
+
+FEATURE:  Support Scientific Linux 7 RPM binary package.
+INTERNAL: package of pgrep(1) command in Scientific Linux 7 is procps-ng
+          (porcps in SL 5 and 6) and options has been changed.  We used
+          pgrep(1) command to lookup DAQ-Component processes.  We now
+          scan /proc/<pid>/cmdline to lookup DAQ-Component processes
+          in run.py
+
 1.3.1 2014-12-24 Hiroshi Sendai
 
 Summary
