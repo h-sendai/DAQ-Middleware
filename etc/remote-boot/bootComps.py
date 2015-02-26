@@ -215,10 +215,12 @@ def is_script_lang(elem_1):
 def kill_proc_exact(proc_name, sleep_sec = 1, max_retry = 60):
     """
     Send SIGTERM signal to proc_name.  Information of process id
-    will be get from pgrep(1) output.  Process lookup will be done
-    based on exact match of the proc_name.  For example,
-    kill_proc_exact('SomeComp') will send SIGTERM to
+    will be get from get_pids_exact() that use MyProcUtil.
+    Process lookup will be done based on exact match of the proc_name.
+    For example,
 
+    kill_proc_exact('SomeComp') will send SIGTERM to
+ 
     /usr/local/bin/SomeComp -f rtc.conf
     ./SomeComp -f rtc.conf
     /bin/sh SomeComp
