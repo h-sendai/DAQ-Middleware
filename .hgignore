@@ -39,3 +39,4 @@ utils/configGUI/confPanel.py
 utils/configGUI/images/four.gif.base64
 utils/configGUI/images/one.gif.base64
 utils/configGUI/images/two.gif.base64
+utils/dmbepanel/dmbepanel.py
