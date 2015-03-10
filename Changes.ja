@@ -1,10 +1,11 @@
-1.4.0 2015-02-XX Hiroshi Sendai
+1.4.0 2015-03-XX Hiroshi Sendai
 
 サマリー
 
 - Scientific Linux 7のサポートを開始しました。
 - run.pyについて内部でpgrepコマンドをやめて、/proc/<pid>/cmdlineを調べる
   ように変更しました。ユーザーのかたから見える部分に変更はありません。
+- 簡単なDAQコンポーネントの例題(TinySource)のバグフィックス
 
 詳細
 
@@ -16,6 +17,8 @@ INTERNAL: Scientific Linux 7からpgrepはprocps-ngのものになり、Scientif
           される可能性を考え、pgrepの使用をやめ、run.py内で/proc/<pid>cmdlineを
           スキャンする方式に変更しました。
           (註) pgrepは同様な方法でプロセスを検索しています。
+BUGFIX:   TinySourceのタイムアウトに関するバグを修正しました。newcompで作る雛型、
+          およびSampleReader, SampleMonitor, SampleLogger, Dispatcherには影響しません。
 
 1.3.1 2014-12-24 Hiroshi Sendai
 

@@ -1,9 +1,10 @@
-1.4.0 2015-02-XX Hiroshi Sendai
+1.4.0 2015-03-XX Hiroshi Sendai
 
 Summary
 - Add support for Scientific Linux 7.
 - We no longer use pgrep(1) command to lookup DAQ-Component processes,
   but lookup /proc/<pid>cmdline.  No user visible changes.
+- Fix a bug found in TinySource (example of DAQ-Component).
 
 Details:
 
@@ -13,6 +14,9 @@ INTERNAL: package of pgrep(1) command in Scientific Linux 7 is procps-ng
           pgrep(1) command to lookup DAQ-Component processes.  We now
           scan /proc/<pid>/cmdline to lookup DAQ-Component processes
           in run.py
+BUGFIX:   Fix a bug found on TinySource on timeout treatment.
+          This bug does not affect SampleReader, SampleMonitor, SampleLogger and
+          Dispatcher components.
 
 1.3.1 2014-12-24 Hiroshi Sendai
 
