@@ -33,6 +33,7 @@ static const char* tinysource_spec[] =
 TinySource::TinySource(RTC::Manager* manager)
     : DAQMW::DaqComponentBase(manager),
       m_OutPort("tinysource_out", m_out_data),
+      m_recv_byte_size(0),
       m_out_status(BUF_SUCCESS),
 
       m_debug(false)
@@ -183,6 +184,10 @@ int TinySource::write_OutPort()
             return -1;
         }
     }
+    else {
+        m_out_status = BUF_SUCCESS; // successfully done
+    }
+
     return 0; // successfully done
 }
 
@@ -197,12 +202,10 @@ int TinySource::daq_run()
         return 0;
     }
 
-    unsigned int recv_byte_size = 0;
-
     if (m_out_status == BUF_SUCCESS) {   // previous OutPort.write() successfully done
-        recv_byte_size = read_data_from_detectors();
-        if (recv_byte_size > 0) {
-            set_data(recv_byte_size);    // set data to OutPort Buffer
+        m_recv_byte_size = read_data_from_detectors();
+        if (m_recv_byte_size > 0) {
+            set_data(m_recv_byte_size);    // set data to OutPort Buffer
         }
     }
 
@@ -211,7 +214,7 @@ int TinySource::daq_run()
     }
     else {    // OutPort write successfully done
         inc_sequence_num();                   // increase sequence num.
-        inc_total_data_size(recv_byte_size);  // increase total data byte size
+        inc_total_data_size(m_recv_byte_size);  // increase total data byte size
     }
 
     return 0;
