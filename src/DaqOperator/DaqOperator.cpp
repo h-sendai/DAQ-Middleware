@@ -255,27 +255,31 @@ void DaqOperator::run_data()
 {
     std::cerr << "\033[;H\033[2J";
 
-    for (int i = 0; i< m_comp_num; i++) {
-        Status_var status;
-        status = m_daqservices[i]->getStatus();
-
-        if (status->comp_status == COMP_FATAL) {
-            RTC::ConnectorProfileList_var myprof =
-                m_DaqServicePorts[i]->get_connector_profiles();
-            std::cerr << myprof[0].name << " "
-                      << "### on ERROR ###  " << std::endl;
-
-            FatalErrorStatus_var errStatus;
-            errStatus = m_daqservices[i]->getFatalStatus();
-            std::cerr << "\033[1;0H";
-            std::cerr << "errStatus.fatalTypes:"
-                      << errStatus->fatalTypes << std::endl;
-            std::cerr << "errStatus.errorCode:"
-                      << errStatus->errorCode  << std::endl;
-            std::cerr << "errStatus.description:"
-                      << errStatus->description  << std::endl;
-            m_err_msg = errStatus->description;
-        } // if fatal
+    try {
+        for (int i = 0; i< m_comp_num; i++) {
+            Status_var status;
+            status = m_daqservices[i]->getStatus();
+              
+            if (status->comp_status == COMP_FATAL) {
+                RTC::ConnectorProfileList_var myprof =
+                    m_DaqServicePorts[i]->get_connector_profiles();
+                std::cerr << myprof[0].name << " "
+                            << "### on ERROR ###  " << std::endl;
+                
+                FatalErrorStatus_var errStatus;
+                errStatus = m_daqservices[i]->getFatalStatus();
+                std::cerr << "\033[1;0H";
+                std::cerr << "errStatus.fatalTypes:"
+                            << errStatus->fatalTypes << std::endl;
+                std::cerr << "errStatus.errorCode:"
+                            << errStatus->errorCode  << std::endl;
+                std::cerr << "errStatus.description:"
+                            << errStatus->description  << std::endl;
+                m_err_msg = errStatus->description;
+            } // if fatal
+        }
+    } catch (...) {
+        std::cerr << "DaqOperator::run_data() Exception was caught" << std::endl;
     }
 
     std::cerr << "\033[0;0H";
