@@ -12,6 +12,7 @@ FILES += DaqComponentException.h
 FILES += FatalType.h
 FILES += Timer.h
 FILES += json2conlist.h
+FILES += DaqLog.h
 
 all:
 	@set -e; for dir in $(SUBDIRS); do $(MAKE) -C $${dir} $@; done
