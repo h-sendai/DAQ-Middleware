@@ -351,7 +351,7 @@ def exist_ok_makedirs (path, mode=0777):
 
 def main():
     #sys.stderr.write('connect')
-    input_line = sys.stdin.readline().rstrip().split(':')
+    input_line = sys.stdin.readline().rstrip().split('\t', 3)
     if len(input_line) < 2:
         sys.exit('-1 need more info.')
 

@@ -710,14 +710,14 @@ def getCompInfoFromXml():
 #def boot_comps_or_die(ip_address, portno, execpath, rtc_conf_path, log):
 def boot_comps_or_die(ip_address, portno, execpath, rtc_conf_path, log, env):
     # kill
-    command_line = 'kill:%s\n' % execpath
+    command_line = 'kill\t%s\n' % execpath
     if send_and_recv_or_die(ip_address, portno, command_line) != True:
         print 'ERROR: kill component failed', command_line
         return False
 
     # boot
     #command_line = 'exec:%s -f %s:%s' %(execpath, rtc_conf_path, log)
-    command_line = 'exec:%s -f %s:%s:%s' %(execpath, rtc_conf_path, log, env)
+    command_line = 'exec\t%s -f %s\t%s\t%s' %(execpath, rtc_conf_path, log, env)
 
     #print 'boot_comps_or_die: ', command_line
     if send_and_recv_or_die(ip_address, portno, command_line) != True:
@@ -752,7 +752,7 @@ def send_file_content(ip_address, portno, file_path, content):
         print 'ERROR: Socket connect', socket.error, e
         return False
 
-    command_line = 'createfile:%s\n' % (file_path)
+    command_line = 'createfile\t%s\n' % (file_path)
 
     try:
         so.send(command_line)
