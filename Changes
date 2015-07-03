@@ -1,3 +1,16 @@
+1.4.1 2015-07-XX Hiroshi Sendai
+
+Summary
+
+- Fix a bug run.py -T (append datetime to log filename) did not work
+  when remote boot was used.
+
+Details:
+
+BUGFIX: Fix a bug run.py -T (append datetime to log filename) did not
+        work when remote boot was used.  Local boot has been worked
+        properly.
+
 1.4.0 2015-06-01 Hiroshi Sendai
 
 Summary
