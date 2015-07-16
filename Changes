@@ -4,12 +4,15 @@ Summary
 
 - Fix a bug run.py -T (append datetime to log filename) did not work
   when remote boot was used.
+- Add an option to run.py to append IP address to log filename (run.py -i)
 
 Details:
 
-BUGFIX: Fix a bug run.py -T (append datetime to log filename) did not
-        work when remote boot was used.  Local boot has been worked
-        properly.
+BUGFIX:  Fix a bug run.py -T (append datetime to log filename) did not
+         work when remote boot was used.  Local boot has been worked
+         properly.
+FEATURE: Add an option to run.py to append IP address to log filename
+         (run.py -i).
 
 1.4.0 2015-06-01 Hiroshi Sendai
 
