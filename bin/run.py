@@ -120,6 +120,7 @@ def opt():
     global giop_max_msg_size
     global daqmw_log_dir
     global append_datetime_to_log
+    global append_ip_address_to_log
 
     usage = "run.py [OPTIONS] [CONFIG_FILE]"
     parser = OptionParser(usage)
@@ -133,6 +134,7 @@ def opt():
     parser.set_defaults(giop_max_msg_size=False)
     parser.set_defaults(daqmw_log_dir='/tmp/daqmw')
     parser.set_defaults(append_datetime_to_log=False)
+    parser.set_defaults(append_ip_address_to_log=False)
 
     parser.add_option("-c", "--console",
                       action="store_true", dest="console", help="console mode. default is HTTP mode")
@@ -156,23 +158,27 @@ def opt():
                       help="specify components log directory")
     parser.add_option("-T", "--append-datetime-to-log",
                       action="store_true", dest="append_datetime_to_log",
-                      help="append date time(2013-04-01T01:02:03) to log filename")
+                      help="append date time (2013-04-01T01:02:03) to log filename")
+    parser.add_option("-i", "--append-ip-address-to-log",
+                      action="store_true", dest="append_ip_address_to_log",
+                      help="append IP address (192.168.10.16) to log filename")
 
     (options, args) = parser.parse_args()
     if len(args) != 1:
         parser.error("ERROR: not specified config file")
 
-    confFile               = args[0]
-    schemaFile             = options.schema
-    operator               = options.operator
-    operator_log           = options.operator_log
-    console                = options.console
-    localBoot              = options.local
-    mydisp                 = options.display
-    verbose                = options.verbose
-    giop_max_msg_size      = options.giop_max_msg_size
-    daqmw_log_dir          = options.daqmw_log_dir
-    append_datetime_to_log = options.append_datetime_to_log
+    confFile                 = args[0]
+    schemaFile               = options.schema
+    operator                 = options.operator
+    operator_log             = options.operator_log
+    console                  = options.console
+    localBoot                = options.local
+    mydisp                   = options.display
+    verbose                  = options.verbose
+    giop_max_msg_size        = options.giop_max_msg_size
+    daqmw_log_dir            = options.daqmw_log_dir
+    append_datetime_to_log   = options.append_datetime_to_log
+    append_ip_address_to_log = options.append_ip_address_to_log
     
     # XXX
     # We have to sleep some seconds not to cause core file
@@ -790,8 +796,11 @@ def localCompsBooting():
         kill_proc_exact(os.path.basename(compInfo['execPath']))
         command_line = '%s -f %s' %(compInfo['execPath'], compInfo['confPath'])
         log_file = daqmw_log_dir +'/log.' + os.path.basename(compInfo['execPath'])
+        if append_ip_address_to_log:
+            log_file += '_'
+            log_file += compInfo['compAddr']
         if append_datetime_to_log:
-            log_file += '.'
+            log_file += '_'
             log_file += timestamp
         start_comp(command_line, log = log_file)
         if comps_invoke_interval > 0:
@@ -806,8 +815,11 @@ def remoteCompsBooting():
     for compInfo in compInfo_list:
         compAddr = compInfo['compAddr']
         log_file  = '%s/log.%s' % (daqmw_log_dir, compInfo['compName'])
+        if append_ip_address_to_log:
+            log_file += '_'
+            log_file += compInfo['compAddr']
         if append_datetime_to_log:
-            log_file += '.'
+            log_file += '_'
             log_file += timestamp
         execPath  = compInfo['execPath']
         compPath  = '%s -f %s > %s 2>&1 &' % \
