@@ -8,6 +8,12 @@ SRCS += FileUtils.cpp
 
 LDLIBS += -lboost_filesystem -lboost_date_time
 
+CAN_RUN_BC = $(shell echo "1+1" | bc)
+ifeq ($(strip $(CAN_RUN_BC)),)
+$(error Cannot execute bc command.\
+Please install bc package.)
+endif
+
 # We have to link libboost_system if Boost version is 1.35 or later
 BOOST_VERSION_FILE=/usr/include/boost/version.hpp
 BOOST_VERSION=$(shell awk '/^\#define BOOST_VERSION / {print $$3}' $(BOOST_VERSION_FILE))

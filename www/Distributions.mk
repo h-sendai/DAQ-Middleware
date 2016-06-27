@@ -97,6 +97,13 @@ HTTPD_CONF_DIR    = /etc/httpd/conf/extra
 USE_MOD_WSGI      = 1
 endif
 
+########## Raspbian ##########
+ifeq ($(strip $(OS)),Raspbian)
+WWW_DOCUMENT_ROOT = /var/www/html
+HTTPD_CONF_DIR    = /etc/apache2/conf-available
+USE_MOD_WSGI      = 1
+endif
+
 ########## Unknown ##########
 ifeq ($(strip $(WWW_DOCUMENT_ROOT)),)
 WWW_DOCUMENT_ROOT = /
