@@ -5,15 +5,29 @@ set -e
 progpath=$0
 progname=$(basename $0)
 
+if which lsb_release > /dev/null 2>&1; then
+    :
+else
+    echo "This script requires lsb_release command to find which OS you are using"
+    echo "If you use Scientific Linux, CentOS, Red Hat Enterprise Linux,"
+    echo "root# yum install redhat-lsb-core"
+fi
+
+os_name=$(lsb_release -is)
 os_major_version=$(lsb_release -rs | sed -e 's/\..*$//')
 el_name="el$os_major_version"
 
 if [ $os_major_version -eq 5 ]; then
     repo_rpm_url=http://daqmw.kek.jp/rpm/${el_name}/noarch/kek-daqmiddleware-repo-2-0.noarch.rpm
     repo_rpm_url_testing=http://daqmw.kek.jp/testing/rpm/${el_name}/noarch/kek-daqmiddleware-testing-repo-2-0.${el_name}.noarch.rpm
-else
+fi
+if [ $os_major_version -eq 6 ]; then
     repo_rpm_url=http://daqmw.kek.jp/rpm/${el_name}/noarch/kek-daqmiddleware-repo-6-0.${el_name}.noarch.rpm
     repo_rpm_url_testing=http://daqmw.kek.jp/testing/rpm/${el_name}/noarch/kek-daqmiddleware-testing-repo-6-0.${el_name}.noarch.rpm
+fi
+if [ $os_major_version -eq 7 ]; then
+    repo_rpm_url=http://daqmw.kek.jp/rpm/${el_name}/noarch/kek-daqmiddleware-repo-7-0.${el_name}.noarch.rpm
+    repo_rpm_url_testing=http://daqmw.kek.jp/testing/rpm/${el_name}/noarch/kek-daqmiddleware-testing-repo-7-0.${el_name}.noarch.rpm
 fi
 
 repo_name=kek-daqmiddleware
@@ -21,6 +35,23 @@ repo_rpm_name=${repo_name}-repo
 repo_name_testing=kek-daqmiddleware-testing
 repo_rpm_name_testing=${repo_name_testing}-repo
 enable_testing=no
+
+case $os_name in
+Scientific*)
+    case $os_major_version in
+        5)
+            enable_dist_repo="--enablerepo=sl-base --enablerepo=sl-security" ;;
+        6)
+            enable_dist_repo="--enablerepo=sl --enablerepo=sl-security" ;;
+        7)
+            enable_dist_repo="--enablerepo=sl --enablerepo=sl-security --enablerepo=sl-fastbugs" ;;
+    esac
+    ;;
+Cent*)
+    enable_dist_repo="--enablerepo=base --enablerepo=updates" ;;
+esac
+
+# echo $enable_dist_repo
 
 usage()
 {
@@ -50,9 +81,9 @@ do_install()
     rpm -ihv $repo_rpm_url
     if [ x"$enable_testing" = x"yes" ]; then
     	rpm -ihv $repo_rpm_url_testing
-        yum -y --disablerepo='*' --enablerepo=$repo_name_testing --enablerepo=$repo_name install DAQ-Middleware
+        yum -y --disablerepo='*' $enable_dist_repo --enablerepo=$repo_name_testing --enablerepo=$repo_name install DAQ-Middleware
     else
-        yum -y --disablerepo='*' --enablerepo=$repo_name install DAQ-Middleware
+        yum -y --disablerepo='*' $enable_dist_repo --enablerepo=$repo_name install DAQ-Middleware
     fi
 }
 
@@ -63,7 +94,7 @@ do_installdep()
 
     # second, install repository configuration file and rpms
     rpm -ihv $repo_rpm_url
-    yum -y --disablerepo='*' --enablerepo=$repo_name install OpenRTM-aist xerces-c-devel xalan-c-devel
+    yum -y --disablerepo='*' $enable_dist_repo --enablerepo=$repo_name install OpenRTM-aist xerces-c-devel xalan-c-devel
 }
 
 do_uninstall()
@@ -98,6 +129,10 @@ do_distclean()
         rm -fr /var/cache/yum/$repo_name
         rm -fr /var/cache/yum/$repo_name_testing
     elif [ $os_major_version -eq 6 ]; then
+        for i in $(find /var/cache/yum -name 'kek-daqmiddleware*' -type d); do
+            rm -fr $i
+        done
+    elif [ $os_major_version -eq 7 ]; then
         for i in $(find /var/cache/yum -name 'kek-daqmiddleware*' -type d); do
             rm -fr $i
         done
