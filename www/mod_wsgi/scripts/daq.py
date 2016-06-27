@@ -141,7 +141,7 @@ def application(environ, start_response):
 	req = environ['REQUEST_METHOD']
 	path = environ['PATH_INFO']
 	method = path[1:]  # extract '/'
-	print >>  sys.stderr, "request = ", req, "  method = ", method
+	# print >>  sys.stderr, "request = ", req, "  method = ", method
 	if req == "GET":
 		params = cgi.parse_qsl(environ['QUERY_STRING'])
 	if req == "POST":
@@ -149,13 +149,13 @@ def application(environ, start_response):
 		content_length = int(environ.get('CONTENT_LENGTH', 0))
 		params = cgi.parse_qsl(wsgi_input.read(content_length))
 	cmd =''
-	print >> sys.stderr, "params ", params
+	# print >> sys.stderr, "params ", params
 	if params != []:
 		for param in params:
-			print >> sys.stderr, "param[0] ", param[0]
+			# print >> sys.stderr, "param[0] ", param[0]
 			if param[0] == 'cmd':
 				cmd = param[1]
-				print >> sys.stderr,"OK ", cmd
+				# print >> sys.stderr,"OK ", cmd
 	response_headers, output =  subroutine[method](req, cmd)
 	start_response(status, response_headers)
 	return [output]
