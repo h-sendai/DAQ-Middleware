@@ -152,11 +152,11 @@ def start_comp(command_line, log='', env='', foreground='no', no_stdin = 'yes'):
     #if options:
     #    command += options
 
-    my_env = {}
-    if env != '':
+    # Copy environment variables from xinetd (env += keyword.  See xinetd.conf manual page)
+    my_env = os.environ
+    if env != '': # -d option specified when invoking run.py (run.py -d 1.2.3.4)
         env_list = env.split('\t')
-        env_val = '%s:%s' % (env_list[1], env_list[2])
-        my_env[env_list[0]] = env_val
+        my_env[env_list[0]] = env_list[1]
 
     try:
         p = subprocess.Popen(proc_title_argv, shell = False,
