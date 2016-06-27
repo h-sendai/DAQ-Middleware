@@ -1,3 +1,18 @@
+1.4.2 2016-07-XX Hiroshi Sendai
+
+サマリー
+
+- run.py -dのバグフィックス
+- daqmw-rpmのSL 7サポートが不完全だったのを修正
+- Raspbianサポート
+
+詳細
+BUGFIX:  リモートブート使用時にrun.py -dでDISPLAY環境変数を設定するルーチンが
+         正常動作しなかったのを修正
+BUGFIX:  RPMパッケージをセットアップするコマンドdaqmw-rpmがScientific Linux 7で
+         正常動作しなかったのを修正
+FEATURE: ソースコードでRaspbianをサポート
+
 1.4.1 2015-07-22 Hiroshi Sendai
 
 サマリー
