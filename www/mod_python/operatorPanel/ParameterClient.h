@@ -44,7 +44,7 @@ namespace DAQMW {
     ParameterClient(std::string host, int port, string delimiter)
       : m_host(host), m_port(port), m_delimiter(delimiter),
       m_clientSock( m_host, m_port ) {
-      cout << "ParameterClient(string,int,string)::constructor host = " << m_host <<  "   port = " << m_port << "   delimiter = " << m_delimiter << endl;
+      // cout << "ParameterClient(string,int,string)::constructor host = " << m_host <<  "   port = " << m_port << "   delimiter = " << m_delimiter << endl;
       try {
 	m_clientSock.connect(m_host, m_port);
       } catch ( SockException& e ) {
@@ -57,7 +57,7 @@ namespace DAQMW {
     ParameterClient(std::string host, int port)
       : m_host(host), m_port(port) {
       m_delimiter = ":";
-      cout << "ParameterClient(string,int)::constructor host = " << m_host <<  "   port = " << m_port << "   delimiter = " << m_delimiter << endl;
+      // cout << "ParameterClient(string,int)::constructor host = " << m_host <<  "   port = " << m_port << "   delimiter = " << m_delimiter << endl;
       try {
 	m_clientSock.connect(m_host, m_port);
       } catch ( SockException& e ) {
@@ -69,7 +69,7 @@ namespace DAQMW {
       m_clientSock.setOptRecvTimeOut(20.0);
     };
     ParameterClient() {
-      cout << "ParameterClient()::constructor host = " << m_host <<  "   port = " << m_port << "   delimiter = " << m_delimiter << endl;
+      // cout << "ParameterClient()::constructor host = " << m_host <<  "   port = " << m_port << "   delimiter = " << m_delimiter << endl;
     }
 
     ~ParameterClient() {
@@ -118,14 +118,14 @@ namespace DAQMW {
       try {
 	buf[0] = size;
 	memcpy(&buf[1], msg.c_str(), size);
-	std::cerr << "ParameterClient::"+com+"() send lenghth = " << buf[0] << std::endl;
+	// std::cerr << "ParameterClient::"+com+"() send lenghth = " << buf[0] << std::endl;
 	st = m_clientSock.sendAll(buf, length);
 	if (st == Sock::ERROR_TIMEOUT) {
-	  std::cerr << "ParameterClient::"+com+"() sendAll Timeout..." << std::endl;
+	  // std::cerr << "ParameterClient::"+com+"() sendAll Timeout..." << std::endl;
 	  delete [] buf;
 	  return -1;
 	}
-	std::cerr << "ParameterClient::"+com+"(): recvAll now calling for length... "<< std::endl;
+	// std::cerr << "ParameterClient::"+com+"(): recvAll now calling for length... "<< std::endl;
 	st = m_clientSock.recvAll((unsigned int*)buf, sizeof(int));
 	if (st == Sock::ERROR_TIMEOUT) {
 	  std::cerr << "ParameterClient::"+com+"() recvAll Timeout for getting size..." << std::endl;
@@ -139,11 +139,11 @@ namespace DAQMW {
 
       int size2 = buf[0];
       delete [] buf;
-      std::cerr << "ParameterClient::"+com+"() receive lenghth = " << size2 << std::endl;
+      // std::cerr << "ParameterClient::"+com+"() receive lenghth = " << size2 << std::endl;
       char *buf2 = (char *)malloc(size2+1);
       buf2[size2] = 0; // terminator
       try {
-	std::cerr << "ParameterClient::"+com+"(): recvAll now calling for message... "<< std::endl;
+	// std::cerr << "ParameterClient::"+com+"(): recvAll now calling for message... "<< std::endl;
 	st = m_clientSock.recvAll((unsigned int*)buf2, size2);
 	if (st == Sock::ERROR_TIMEOUT) {
 	  std::cerr << "ParameterClient::"+com+"() recvAll Timeout for getting message..." << std::endl;
@@ -155,8 +155,8 @@ namespace DAQMW {
         return -1;
       }
       status = buf2;
-      std::cerr << "ParameterClient::"+com+"() received message: ";
-      std::cerr << status << endl;
+      // std::cerr << "ParameterClient::"+com+"() received message: ";
+      // std::cerr << status << endl;
       delete [] buf2;
       result = status;
       return 0;

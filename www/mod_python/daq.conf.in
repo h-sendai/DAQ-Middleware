@@ -1,6 +1,6 @@
 <Directory @WWW_DOCUMENT_ROOT@/daqmw>
     AddHandler mod_python .py
     PythonHandler mod_python.publisher
-    PythonDebug On
+    PythonDebug Off
     PythonPath "['@WWW_DOCUMENT_ROOT@/daqmw', '@WWW_DOCUMENT_ROOT@/daqmw/operatorPanel'] + sys.path"
 </Directory>
