@@ -1,0 +1,1 @@
+SampleReader2: Almost same as SampleReader but socket read time-out is not a fatal error
