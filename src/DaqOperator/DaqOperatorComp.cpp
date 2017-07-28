@@ -74,7 +74,7 @@ typedef std::vector< corbaObj > daq_comps;
 CompInfoList daq_comp_list;
 int comp_num;
 DAQLifeCycleState current_state;
-bool debug = false;
+bool debug = true;
 
 bool isConsoleMode = false;        //initial value
 std::string xml_file = "";         //initial value
@@ -221,7 +221,7 @@ int find_comps(CorbaNaming* naming, CompGroupList* daq_group_list)
             int outport_count = 0;
             int inport_count  = 0;
 
-            for (CORBA::ULong i(0), n(portlist->length()); i < n; ++i)
+            for (CORBA::ULong i(0), n(portlist->length()); i < n; ++i) // Port num
             {
                 PortService_ptr port;
                 port = (*portlist)[i];
