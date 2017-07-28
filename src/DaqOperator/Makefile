@@ -49,7 +49,7 @@ uninstall:
 	@rm -f $(BINDIR)/$(COMP_NAME)Comp
 	@rm -f $(SRCDIR)/*
 
-0bclean:
+obj:
 	rm -rf *.o
 
 include ../mk/comp.mk
