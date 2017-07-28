@@ -59,7 +59,7 @@ DaqOperator::DaqOperator(RTC::Manager* manager)
     m_isConsoleMode(true),
     m_msg(" "),
     m_err_msg(" "),
-    m_debug(false)
+    m_debug(true)
 {
     if (m_debug) {
         std::cerr << "Create DaqOperator\n";
@@ -107,7 +107,7 @@ DaqOperator::DaqOperator(RTC::Manager* manager)
         m_DaqServicePorts.push_back(new RTC::CorbaPort(service_name.c_str() ));
     }
     /// register CorbaPort
-    for (int i=0; i< m_comp_num; i++) {
+    for (int i = 0; i< m_comp_num; i++) {
         m_DaqServicePorts[i]->
             registerConsumer("daq_svc", "DAQService", m_daqservices[i] );
         registerPort( *m_DaqServicePorts[i] );
@@ -608,14 +608,14 @@ int DaqOperator::configure_procedure()
             }
             ::NVList mylist = paramList[index].getList();
             if (m_debug) {
-                for (int i=0; i < (int)mylist.length(); i++) {
+                for (int i = 0; i < (int)mylist.length(); i++) {
                     std::cerr << "  name :" << mylist[i].name  << std::endl;
                     std::cerr << "  value:" << mylist[i].value << std::endl;
                 }
             }
         }
         if (m_debug) {
-            for (int i=0; i< (int)m_daqServiceList.size(); i++) {
+            for (int i = 0; i< (int)m_daqServiceList.size(); i++) {
                 std::cerr << "*** id:" << m_daqServiceList[i].comp_id << std::endl;
             }
         }
