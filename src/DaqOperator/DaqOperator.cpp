@@ -14,6 +14,8 @@
 
 #include "DaqOperator.h"
 
+using namespace std;
+
 static const char* daqserviceconsumer_spec[] =
 {
     "implementation_id", "DaqOperator",
@@ -226,6 +228,11 @@ std::string DaqOperator::check_state(DAQLifeCycleState compState)
     case PAUSED:
         comp_state = "PAUSED";
         break;
+   /*
+   *  case ERROR:
+    * 	comp_state = "ERROR";
+    * 	break;   
+    */
     }
     return comp_state;
 }
@@ -296,6 +303,7 @@ RTC::ReturnCode_t DaqOperator::run_console_mode()
     std::string srunNo = "0";
 
     int command;
+    std::string conso_state = "";
 
     m_tout.tv_sec =  2;
     m_tout.tv_usec = 0;
@@ -312,7 +320,7 @@ RTC::ReturnCode_t DaqOperator::run_console_mode()
               << CMD_PAUSE       << ":pause  "
               << CMD_RESUME      << ":resume   "
               << std::endl;
-
+	
     std::cerr << "\n" << " RUN NO: " << m_runNumber;
     std::cerr << "\n" << " start at: "  << m_start_date
               << "    stop at: "   << m_stop_date << std::endl;
@@ -397,14 +405,14 @@ RTC::ReturnCode_t DaqOperator::run_console_mode()
         std::cerr << "\033[5;0H";
         std::cerr << std::endl;
 
-        std::cerr << "  GROUP:COMP_NAME"
-                  << "        "
-                  << " EVENT  SIZE"
-                  << "      "
-                  << " STATE"
-                  << "       "
-                  << " COMP STATUS"
-                  << std::endl;
+        std::cerr << " GROUP:COMP_NAME"
+					<< "\t   "
+					<< "EVENT  SIZE"
+					<< "\t      "
+					<< "STATE"
+					<< "\t"
+					<< "COMP STATUS"
+					<< std::endl;
         ///std::cerr << "RUN NO: " << m_runNumber << std::endl;
 
         std::string compname;
@@ -413,9 +421,11 @@ RTC::ReturnCode_t DaqOperator::run_console_mode()
             try {
                 RTC::ConnectorProfileList_var myprof
                     = m_DaqServicePorts[i]->get_connector_profiles();
-                compname = myprof[0].name;
-                //std::cerr << "COMPNAME: " << compname << std::endl;
-
+                
+                compname = myprof[0].name; //compname = "group*:"
+				
+				//std::cerr << "COMPNAME: " << compname << std::endl;
+                
                 status = m_daqservices[i]->getStatus();
 
                 std::cerr << myprof[0].name
@@ -432,20 +442,22 @@ RTC::ReturnCode_t DaqOperator::run_console_mode()
                 if (status->comp_status == COMP_FATAL) {
                     FatalErrorStatus_var errStatus;
                     errStatus = m_daqservices[i]->getFatalStatus();
-                    std::cerr << "  ERROR ### " ;
+                    std::cerr << "  ERROR ### ";
                     std::cerr << errStatus->description << std::endl;
                 } ///if Fatal
 
             } catch(...) {
-                std::cerr << "### ERROR: " << compname << "  : cannot connect\n";
+                std::cerr << "### Ctrl+C: " << compname << "stop";
                 sleep(1);
-            }
+            }     
             std::cerr << std::endl;
         }///for
-
-    }///if
+    }///if..else
     std::cerr << std::endl;
-
+	
+	std::cerr << "\033[32m" << " All Grean\033[0m" << std::endl;
+    //if ((sole_state = check_state) == COMP_FATAL
+	
     return RTC::RTC_OK;
 }
 
@@ -624,7 +636,7 @@ int DaqOperator::configure_procedure()
         std::cerr << "### Check the Configuration file\n";
         return 1;
     }
-
+		
     if (m_debug) {
         std::cerr << "m_daqServiceList.size():" << m_daqServiceList.size() << std::endl;
     }
@@ -905,7 +917,7 @@ int DaqOperator::command_unconfigure()
 
 int DaqOperator::command_start()
 {
-    //std::cout << "command_start: enter" << std::endl;
+	//std::cout << "command_start: enter" << std::endl;
 
     if (m_state != CONFIGURED) {
         createDom_ng("Begin");
