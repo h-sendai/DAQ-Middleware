@@ -74,7 +74,7 @@ typedef std::vector< corbaObj > daq_comps;
 CompInfoList daq_comp_list;
 int comp_num;
 DAQLifeCycleState current_state;
-bool debug = true;
+bool debug = false;
 
 bool isConsoleMode = false;        //initial value
 std::string xml_file = "";         //initial value

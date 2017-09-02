@@ -61,7 +61,7 @@ DaqOperator::DaqOperator(RTC::Manager* manager)
     m_isConsoleMode(true),
     m_msg(" "),
     m_err_msg(" "),
-    m_debug(true)
+    m_debug(false)
 {
     if (m_debug) {
         std::cerr << "Create DaqOperator\n";
