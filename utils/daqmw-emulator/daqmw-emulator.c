@@ -1,6 +1,8 @@
 #include "daqmw-emulator.h"
 #include "my_signal.h"
 
+#define DEFAULT_PORT	2222
+
 int debug   = 0;
 int rate    = DEFAULT_BYTES_RATE;
 int bufsize = DEFAULT_BUFSIZE;
@@ -52,7 +54,7 @@ int main(int argc, char *argv[])
 	socklen_t			clilen;
 	struct sockaddr_in	cliaddr, servaddr;
 
-	port    = 2220;
+	port    = DEFAULT_PORT;
 	bufsize = DEFAULT_BUFSIZE;
 	while( (ch = getopt(argc, argv, "b:dh:p:t:N")) != -1) {
 		switch(ch) {
