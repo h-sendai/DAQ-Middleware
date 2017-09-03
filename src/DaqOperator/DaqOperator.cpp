@@ -228,11 +228,9 @@ std::string DaqOperator::check_state(DAQLifeCycleState compState)
     case PAUSED:
         comp_state = "PAUSED";
         break;
-   /*
-   *  case ERROR:
-    * 	comp_state = "ERROR";
-    * 	break;   
-    */
+    case ERROR:
+     	comp_state = "ERROR";
+     	break;
     }
     return comp_state;
 }
@@ -344,6 +342,17 @@ RTC::ReturnCode_t DaqOperator::run_console_mode()
         command = (int)(comm[0] - '0');
 
         switch (m_state) {
+		
+		
+		case ERROR:
+		/*	switch ((DAQCommand)command) {
+			case CMD_FIX:
+				
+				break;
+			default:
+		}*/
+		break;
+			
         case PAUSED:
             switch ((DAQCommand)command) {
             case CMD_RESUME:
@@ -413,7 +422,7 @@ RTC::ReturnCode_t DaqOperator::run_console_mode()
         std::cerr << " GROUP:COMP_NAME"
 					<< "\t   "
 					<< "EVENT  SIZE"
-					<< "\t    "
+					<< "\t     "
 					<< "STATE"
 					<< "   "
 					<< "COMP STATUS"
@@ -442,7 +451,7 @@ RTC::ReturnCode_t DaqOperator::run_console_mode()
 							<< std::right << status->event_size
 							<< '\t';
 
-                std::cerr.width(9);
+                std::cerr.width(10);
                 std::cerr << check_state(status->state);
                 std::cerr.width(10);
                 std::cerr << check_compStatus(status->comp_status); // WORKING
@@ -452,7 +461,9 @@ RTC::ReturnCode_t DaqOperator::run_console_mode()
                     FatalErrorStatus_var errStatus;
                     errStatus = m_daqservices[i]->getFatalStatus();
                     err_display[i] = errStatus; // Under console display
-                    cerr << "(Status:stop)";
+                    //cerr << "State:ERROR";
+                    //err_status_procedure(i);
+                    
                     /*
                 std::cerr << "\033[31m" << errStatus->description << ")"
 								<< "\033[39m"; // socket fatal error表示
@@ -460,7 +471,7 @@ RTC::ReturnCode_t DaqOperator::run_console_mode()
                 } ///if Fatal
 
             } catch(...) {
-                std::cerr << "### Ctrl+C: " << compname << "stop";
+                std::cerr << " ### " << compname << " Ctrl+C stop";
                 sleep(1);
             }     
             std::cerr << std::endl;
@@ -477,7 +488,6 @@ RTC::ReturnCode_t DaqOperator::run_console_mode()
 	for (int i = (m_comp_num - 1); i >= 0; i--) {
 		++count;
 		if ((errcompname_len = errcompname[i].length()) != 0) {
-			set_command(m_daqservices[i], CMD_STOP);
 			cerr 	<< " [" << "\033[31m" << "ERROR"  << count << "\033[39m" << "]"
 					<< " " << errcompname[i] 
 					<< " <= " << err_display[i]->description 
@@ -486,6 +496,14 @@ RTC::ReturnCode_t DaqOperator::run_console_mode()
 	}
 	
     return RTC::RTC_OK;
+}
+
+// ERROR State
+
+int DaqOperator::err_status_procedure(int comp_num)
+{
+	set_command(m_daqservices[comp_num], CMD_STOP);
+	return 0;
 }
 
 bool DaqOperator::parse_body(const char* buf, const std::string tagname)

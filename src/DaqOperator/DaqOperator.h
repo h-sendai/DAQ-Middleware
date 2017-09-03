@@ -129,6 +129,7 @@ private:
     int set_sitcp_num(int sitcp_num);
     int set_service_list();
 
+	int err_status_procedure(int comp_num); // New fanction
     int configure_procedure();
     int unconfigure_procedure();
     int start_procedure();
