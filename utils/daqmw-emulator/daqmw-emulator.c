@@ -52,7 +52,7 @@ int main(int argc, char *argv[])
 	socklen_t			clilen;
 	struct sockaddr_in	cliaddr, servaddr;
 
-	port    = DEFAULT_PORT;
+	port    = 2220;
 	bufsize = DEFAULT_BUFSIZE;
 	while( (ch = getopt(argc, argv, "b:dh:p:t:N")) != -1) {
 		switch(ch) {
