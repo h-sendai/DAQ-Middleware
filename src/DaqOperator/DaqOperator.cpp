@@ -489,8 +489,8 @@ RTC::ReturnCode_t DaqOperator::run_console_mode()
 		++count;
 		if ((errcompname_len = errcompname[i].length()) != 0) {
 			cerr 	<< " [" << "\033[31m" << "ERROR"  << count << "\033[39m" << "]"
-					<< " " << errcompname[i] 
-					<< " <= " << err_display[i]->description 
+					<< " " << errcompname[i]
+					<< "\t\033[6D<= " << err_display[i]->description 
 					<< endl;
 		}
 	}
