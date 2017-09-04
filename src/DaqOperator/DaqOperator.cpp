@@ -471,7 +471,7 @@ RTC::ReturnCode_t DaqOperator::run_console_mode()
                 } ///if Fatal
 
             } catch(...) {
-                std::cerr << " ### " << compname << " Ctrl+C stop";
+                std::cerr << "### ERROR: " << compname << "  : cannot connect" << endl;
                 sleep(1);
             }     
             std::cerr << std::endl;
