@@ -176,7 +176,7 @@ RTC::ReturnCode_t DaqOperator::onExecute(RTC::UniqueId ec_id)
     return ret;
 }
 
-RTC::ReturnCode_t DaqOperator::run_http_mode()
+RTC::ReturnCode_t DaqOperator::run_http_mode() 
 {
     if (g_server == NULL) {
         cerr << "m_param_port:" << m_param_port << endl;
@@ -201,14 +201,12 @@ RTC::ReturnCode_t DaqOperator::run_http_mode()
                        cb_command_confirmconnection);
         g_server->bind("put:dummy", &m_body, cb_command_dummy);
         if (m_debug) {
-            cerr << "*** bind callback functions done\n";
-            cerr << "*** Ready to accept a command\n";
+            cerr << "*** bind callback functions done\n"
+                 << "*** Ready to accept a command\n";
         }
     }
-
     g_server->Run();
     run_data();
-
     return RTC::RTC_OK;
 }
 
@@ -249,7 +247,7 @@ string DaqOperator::check_compStatus(CompStatus compStatus)
         comp_status = "WORNING";
         break;
     case COMP_FATAL:
-        comp_status = "\033[31m   ERROR \033[39m"; //FATAL_ERROR
+        comp_status = "ERROR"; //FATAL_ERROR
         break;
     }
     return comp_status;
@@ -275,11 +273,11 @@ void DaqOperator::run_data()
                 errStatus = m_daqservices[i]->getFatalStatus();
                 cerr << "\033[1;0H";
                 cerr << "errStatus.fatalTypes:"
-                            << errStatus->fatalTypes << endl;
+                     << errStatus->fatalTypes   << endl;
                 cerr << "errStatus.errorCode:"
-                            << errStatus->errorCode  << endl;
+                     << errStatus->errorCode    << endl;
                 cerr << "errStatus.description:"
-                            << errStatus->description  << endl;
+                     << errStatus->description  << endl;
                 m_err_msg = errStatus->description;
             } // if fatal
         }
@@ -301,7 +299,6 @@ RTC::ReturnCode_t DaqOperator::run_console_mode()
     /// New variables
     string errcompname[m_comp_num];
 	FatalErrorStatus_var err_display[m_comp_num];
-	///
 	
     m_tout.tv_sec =  2;
     m_tout.tv_usec = 0;
@@ -322,7 +319,7 @@ RTC::ReturnCode_t DaqOperator::run_console_mode()
 	
     cerr << "\n" << " RUN NO: " << m_runNumber;
     cerr << "\n" << " start at: "  << m_start_date
-                 << "    stop at: "   << m_stop_date << endl;
+                 << "\tstop at: "   << m_stop_date << endl;
     cerr << "\033[1;11H";
 
     select(1, &m_rset, NULL, NULL, &m_tout);
@@ -330,22 +327,15 @@ RTC::ReturnCode_t DaqOperator::run_console_mode()
         return RTC::RTC_OK;
     }
 
-    if (FD_ISSET(0, &m_rset)) {
+    // command check
+    if (FD_ISSET(0, &m_rset)) { 
         char comm[2];
-        if ( read(0, comm, sizeof(comm)) == -1) { //read(0:標準入力(=stdin))
+        if ( read(0, comm, sizeof(comm)) == -1) { //read(0:stdin))
             return RTC::RTC_OK;
         }
         command = (int)(comm[0] - '0');
 
-        switch (m_state) {		
-		case ERROR:
-		/*	switch ((DAQCommand)command) {
-			case CMD_FIX:
-				
-				break;
-			default:
-		}*/
-		break;
+        switch (m_state) {	//m_state = LOADED
         case PAUSED:
             switch ((DAQCommand)command) {
             case CMD_RESUME:
@@ -404,28 +394,34 @@ RTC::ReturnCode_t DaqOperator::run_console_mode()
                 break;
             }
             break;
+        // m_state = ERROR[457]
+        case ERROR:
+            break;
+        /*
+            switch ((DAQCommand)command) {
+            case CMD_FIX:
+                break;
+            default:
+                break;
+            }
+            break;
+        */
         }// switch (m_state)
     }
     else {
         cerr << " " << endl;
-        cerr << "\033[;H\033[2J";
-        cerr << "\033[5;0H";
-        cerr << endl;
+        cerr << "\033[;H\033[2J" << "\033[5;0H" << endl;
 
-        cerr << " GROUP:COMP_NAME"
-					<< "\t   "
-					<< "EVENT  SIZE"
-					<< "\t     "
-					<< "STATE"
-					<< "   "
-					<< "COMP STATUS"
-					<< endl;
+        cerr << " GROUP:COMP_NAME\t    " 
+             << "EVENT_SIZE\t     " 
+             << "STATE   "
+             << "COMP_STATUS" << endl;
+
         ///cerr << "RUN NO: " << m_runNumber << endl;
 
         string compname;
-                
+        Status_var status;
         for (int i = (m_comp_num - 1); i >= 0; i--) {
-            Status_var status;
             try {
 				// myprof
                 RTC::ConnectorProfileList_var myprof
@@ -436,57 +432,58 @@ RTC::ReturnCode_t DaqOperator::run_console_mode()
 				//cerr << "COMPNAME: " << compname << endl;
                 
                 status = m_daqservices[i]->getStatus(); // status input
-				
-				cerr	<< " " << left << setw(22)
-							<< myprof[0].name
-							<< '\t'
-							<< setw(14)
-							<< right << status->event_size
-							<< '\t';
-
-                cerr.width(10);
-                cerr << check_state(status->state);
-                cerr.width(10);
-                cerr << check_compStatus(status->comp_status); // WORKING
+                
+                cerr << " ";
+				cerr << setw(22) << left
+                     << myprof[0].name // group:comp_name 
+                     << '\t'
+                     << setw(14) << right 
+                     << status->event_size // データサイズ(byte)
+                     << setw(12) << right
+                     << check_state(status->state) // ステート(LOADED)
+                     << setw(14) << right;
 
                 if (status->comp_status == COMP_FATAL) {
+                    cerr << "\033[31m"
+                         << check_compStatus(status->comp_status)
+                         << "\033[39m" << endl;
+                    
+                    m_state = ERROR;
                     errcompname[i] = compname;
                     FatalErrorStatus_var errStatus;
                     errStatus = m_daqservices[i]->getFatalStatus();
-                    err_display[i] = errStatus; // Under console display
-                    //cerr << "State:ERROR";
+                    err_display[i] = errStatus; // Use error console display
                     //err_status_procedure(i);
                     
                     /*
                     cerr << "\033[31m" << errStatus->description << ")"
-								<< "\033[39m"; // socket fatal error表示
+								<< "\033[39m"; // socket fatal error
 					*/
                 } ///if Fatal
-
+                else {
+                    cerr << check_compStatus(status->comp_status) << endl;
+                }
+                
             } catch(...) {
                 cerr << "### ERROR: " << compname << "  : cannot connect" << endl;
                 sleep(1);
-            }     
-            cerr << endl;
+            }
         }///for
+        cerr << endl;
+        
+        /* Display Error Console */
+        int count = 0;
+        int errcompname_len;
+        for (int i = (m_comp_num - 1); i >= 0; i--) {
+            ++count;
+            if ((errcompname_len = errcompname[i].length()) != 0) {
+                cerr 	<< " [" << "\033[31m" << "ERROR"  << count << "\033[39m" << "]"
+                        << " " << errcompname[i]
+                        << "\t\033[6D<= " << err_display[i]->description 
+                        << endl;
+            }
+        }
     }///if..else
-    cerr << endl;
-	
-	//cerr << "\033[32m " << "All green" << "\033[39m";
-	//cerr << "\033[2K";
-	
-	/* Error Display */
-	int count = 0;
-	int errcompname_len;
-	for (int i = (m_comp_num - 1); i >= 0; i--) {
-		++count;
-		if ((errcompname_len = errcompname[i].length()) != 0) {
-			cerr 	<< " [" << "\033[31m" << "ERROR"  << count << "\033[39m" << "]"
-					<< " " << errcompname[i]
-					<< "\t\033[6D<= " << err_display[i]->description 
-					<< endl;
-		}
-	}
 	
     return RTC::RTC_OK;
 }
