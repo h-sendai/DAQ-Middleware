@@ -166,7 +166,7 @@ std::string CreateDom::getLog(std::string command, groupStatusList status_list,
 
 std::string CreateDom::getState(DAQLifeCycleState state, bool flag)
 {
-    const char *str1[] = {"", "LOADED", "CONFIGURED",    "RUNNING",   "PAUSED"};
+    const char *str1[] = {"", "LOADED", "CONFIGURED", "RUNNING", "PAUSED", "FIX", "STOP"};
     const char *str2[] = {"", "Ready",  "Parameter Set", "Acquiring", "Paused"};
 
 	int idx = 0;
@@ -182,6 +182,12 @@ std::string CreateDom::getState(DAQLifeCycleState state, bool flag)
 		break;
 	case(PAUSED):
 		idx = 4;
+		break;
+	case(ERROR):
+		idx = 5;
+		break;
+	case(STOP):
+		idx = 6;
 		break;
 	default:
 		idx = 0;
