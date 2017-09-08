@@ -249,8 +249,8 @@ string DaqOperator::check_compStatus(CompStatus compStatus)
     case COMP_FATAL:
         comp_status = "ERROR"; //FATAL_ERROR
         break;
-    case COMP_FIXWAITING:
-		comp_status = "FIX_WAITING"; // COMP wait fix cmd
+    case COMP_FIXWAIT:
+		comp_status = "FIX_WAIT"; // COMP wait fix cmd
 		break;
     }
     return comp_status;
@@ -403,7 +403,7 @@ RTC::ReturnCode_t DaqOperator::run_console_mode()
 				 << endl;
 			switch ((DAQCommand)command) {
             case CMD_FIX:
-				stop_comp();
+				comp_stop_procedure();
 				m_state = STOP;
 				break;
 			case CMD_STOP:
@@ -419,7 +419,7 @@ RTC::ReturnCode_t DaqOperator::run_console_mode()
         case STOP:
             switch ((DAQCommand)command) {
             case CMD_FIX:
-				f_configure_procedure();
+				comp_reboot_procedure();
 				//f_start_procedure();
 				m_state = RUNNING;
                 break;
@@ -470,7 +470,7 @@ RTC::ReturnCode_t DaqOperator::run_console_mode()
                      << setw(14) << right;
 
                 if (status->comp_status == COMP_FATAL || 
-					status->comp_status== COMP_FIXWAITING) {
+					status->comp_status== COMP_FIXWAIT) {
                     cerr << "\033[31m"
                          << check_compStatus(status->comp_status)
                          << "\033[39m" << endl;
@@ -513,7 +513,7 @@ RTC::ReturnCode_t DaqOperator::run_console_mode()
     return RTC::RTC_OK;
 }
 
-int DaqOperator::f_configure_procedure()
+int DaqOperator::comp_reboot_procedure()
 {
     m_com_completed = false;
     ConfFileParser MyParser;
@@ -531,7 +531,7 @@ int DaqOperator::f_configure_procedure()
 			status = m_daqservices[i]->getStatus();
 		}
 	
-	} while (status[i]->comp_status == COMP_FIXWAITING):
+	} while ( == COMP_FIXWAIT):
 	
 	try {
     
@@ -584,6 +584,7 @@ int DaqOperator::f_configure_procedure()
     return 0;
 }
 
+/*
 int DaqOperator::f_start_procedure()
 {
     m_com_completed = false;
@@ -613,8 +614,9 @@ int DaqOperator::f_start_procedure()
     m_com_completed = true;
     return 0;
 }
+*/
 
-int DaqOperator::stop_comp()
+int DaqOperator::comp_stop_procedure()
 {
     m_com_completed = false;
     
@@ -627,10 +629,8 @@ int DaqOperator::stop_comp()
 		}
 	}
 	
-    m_com_completed = true;
-    
+    m_com_completed = true;  
     createDom_ok("End");
-
     return 0;
 }
 

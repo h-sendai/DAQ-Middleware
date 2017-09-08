@@ -56,7 +56,7 @@ enum CompStatus
     COMP_FINISHED,
     COMP_WARNING,
     COMP_FATAL,
-    COMP_FIXWAITING
+    COMP_FIXWAIT
 };
 
 struct FatalErrorStatus

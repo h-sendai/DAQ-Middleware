@@ -130,9 +130,9 @@ private:
     int set_sitcp_num(int sitcp_num);
     int set_service_list();
 
-	int stop_comp(); // New fanction
-	int f_configure_procedure(); // New fanction
-	int f_start_procedure(); // New fanction
+	int comp_stop_procedure(); // New fanction
+	int comp_reboot_procedure(); // New fanction
+	//int f_start_procedure(); // New fanction
 	
     int configure_procedure();
     int unconfigure_procedure();
