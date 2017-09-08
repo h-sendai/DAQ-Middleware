@@ -91,7 +91,7 @@ public:
     bool parse_body(const char* buf, const std::string tagname);
 
     // for callback
-    int command_stop_comp(int comp_num);
+	int command_fix(); // New Command fanction
     int command_configure();
     int command_unconfigure();
     int command_start();
@@ -130,7 +130,10 @@ private:
     int set_sitcp_num(int sitcp_num);
     int set_service_list();
 
-	int err_state_stop_procedure(int comp_num); // New fanction
+	int stop_comp(); // New fanction
+	int f_configure_procedure(); // New fanction
+	int f_start_procedure(); // New fanction
+	
     int configure_procedure();
     int unconfigure_procedure();
     int start_procedure();
