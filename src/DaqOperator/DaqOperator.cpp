@@ -418,9 +418,8 @@ RTC::ReturnCode_t DaqOperator::run_console_mode()
         // NEW 2
         case STOP:
             switch ((DAQCommand)command) {
-            case CMD_FIX:
+            case CMD_FIX: //fix:6
 				comp_reboot_procedure();
-				//f_start_procedure();
 				m_state = RUNNING;
                 break;
             default:
@@ -447,7 +446,7 @@ RTC::ReturnCode_t DaqOperator::run_console_mode()
         for (int i = (m_comp_num - 1); i >= 0; i--) {
             string compname;
             try {
-				// myprof
+
                 RTC::ConnectorProfileList_var myprof
                     = m_DaqServicePorts[i]->get_connector_profiles();
 				
@@ -461,7 +460,7 @@ RTC::ReturnCode_t DaqOperator::run_console_mode()
 				
                 cerr << " ";
 				cerr << setw(22) << left
-                     << myprof[0].name // group:comp_name
+                     << myprof[0].name //group:comp_name
                      << '\t'
                      << setw(14) << right
                      << status->event_size // データサイズ(byte)
@@ -478,11 +477,11 @@ RTC::ReturnCode_t DaqOperator::run_console_mode()
                     FatalErrorStatus_var errStatus;
                     errStatus = m_daqservices[i]->getFatalStatus();
 
-                    // Use error console display
-                    // When COMP_FATAL occer,  these variables in values.
-                    m_state = ERROR; // m_state
-                    d_compname[i] = compname; // Use Console
-                    d_err_message[i] = errStatus; // Use Console
+                    /** Use error console display **/
+                    m_state = ERROR;
+                    d_compname[i] = compname;
+                    d_err_message[i] = errStatus;
+                    
                 } ///if Fatal
                 else {
                     cerr << check_compStatus(status->comp_status) << endl;
@@ -523,8 +522,8 @@ int DaqOperator::comp_reboot_procedure()
     ::NVList groupParamList;
     m_start_date = "";
     m_stop_date  = "";
-	Status_var status[m_comp_num]; // New
-	
+    
+    /*
     do {
 		
 		for (int i = 0; i< m_comp_num; i++) {
@@ -532,9 +531,12 @@ int DaqOperator::comp_reboot_procedure()
 		}
 	
 	} while ( == COMP_FIXWAIT):
-	
+	*/
 	try {
-    
+		m_comp_num = MyParser.readConfFile(m_conf_file.c_str(), true);
+        paramList  = MyParser.getParamList();
+        groupList  = MyParser.getGroupList();
+		
         for (int i = 0; i < (int)m_daqservices.size(); i++) {
             RTC::ConnectorProfileList_var myprof
                 = m_DaqServicePorts[i]->get_connector_profiles();
@@ -559,62 +561,30 @@ int DaqOperator::comp_reboot_procedure()
 				set_command(m_daqservices[i], CMD_CONFIGURE);
 				check_done(m_daqservices[i]);
 			}
-        }
+        }/// for
     } catch (...) {
         cerr << "### ERROR: DaqOperator: Failed to configure Components.\n";
         return 1;
     }
-    /* f_start_procedure() *////////////////////
+    /** start_procedure() *******************************/
     try {
 		
 		for (int i = 0; i< m_comp_num; i++) {
+			Status_var status;
 			status = m_daqservices[i]->getStatus();
 			if (status->state == STOP) {
 				set_command(m_daqservices[i], CMD_START);
 				check_done(m_daqservices[i]);
 			}
-        }
-
+        }/// for
     } catch (...) {
         cerr << "### ERROR: DaqOperator: Failed to start Component.\n";
         return 1;
     }
-    //////////////////////////////////////////////
+    /*****************************************************/
     m_com_completed = true;
     return 0;
 }
-
-/*
-int DaqOperator::f_start_procedure()
-{
-    m_com_completed = false;
-    try {
-		Status_var status;
-        /*for (int i = 0; i< m_comp_num; i++) {
-			status = m_daqservices[i]->getStatus();
-			if (status->state == STOP) {
-				set_runno(m_daqservices[i], m_runNumber);
-				check_done(m_daqservices[i]);
-			}
-        }
-        */
-
-        for (int i = 0; i< m_comp_num; i++) {
-			status = m_daqservices[i]->getStatus();
-			if (status->state == STOP) {
-				set_command(m_daqservices[i], CMD_START);
-				check_done(m_daqservices[i]);
-			}
-        }
-
-    } catch (...) {
-        cerr << "### ERROR: DaqOperator: Failed to start Component.\n";
-        return 1;
-    }
-    m_com_completed = true;
-    return 0;
-}
-*/
 
 int DaqOperator::comp_stop_procedure()
 {
@@ -636,14 +606,14 @@ int DaqOperator::comp_stop_procedure()
 
 int DaqOperator::command_fix()
 {
-    if (m_state != STOP) {
+    if (m_state != STOP || m_state != ERROR) {
         createDom_ng("Params");
         cerr << "   Bad Command\n";
         return 1;
     }
 
     m_config_file = m_config_file_tmp;
-    if (f_configure_procedure() == 1) {
+    if (configure_procedure() == 1) {
         char str_e[128];
         sprintf(str_e, FORMAT_IO_ERR_E, m_config_file.c_str());
 
@@ -651,11 +621,12 @@ int DaqOperator::command_fix()
         sprintf(str_j, FORMAT_IO_ERR_J, m_config_file.c_str());
 
         createDom_ng("Params", RET_CODE_IO_ERR, str_e, str_j);
-
-        return 1;
+		return 1;
     }
-    f_start_procedure();
+    
+    start_procedure();
     m_state = RUNNING;
+    
     createDom_ok("Begin");
     return 0;
 }
