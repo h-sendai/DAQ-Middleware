@@ -517,13 +517,10 @@ int DaqOperator::comp_reboot_procedure()
     m_com_completed = false;
     ConfFileParser MyParser;
     ParamList paramList;
-    CompGroupList groupList;
     ::NVList systemParamList;
     ::NVList groupParamList;
-    m_start_date = "";
-    m_stop_date  = "";
     
-    /*
+    
     do {
 		
 		for (int i = 0; i< m_comp_num; i++) {
@@ -531,12 +528,11 @@ int DaqOperator::comp_reboot_procedure()
 		}
 	
 	} while ( == COMP_FIXWAIT):
-	*/
+	
 	try {
 		m_comp_num = MyParser.readConfFile(m_conf_file.c_str(), true);
         paramList  = MyParser.getParamList();
-        groupList  = MyParser.getGroupList();
-		
+        		
         for (int i = 0; i < (int)m_daqservices.size(); i++) {
             RTC::ConnectorProfileList_var myprof
                 = m_DaqServicePorts[i]->get_connector_profiles();
