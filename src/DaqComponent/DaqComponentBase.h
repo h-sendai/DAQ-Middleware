@@ -340,7 +340,25 @@ namespace DAQMW
             set_status(COMP_FATAL);
             throw DaqCompUserException(type, desc, code);
         }
+        
+		/** set_status(COMP_FIXWAIT) *********************************/
+		void reboot_request(FatalType::Enum type, int code = -1)
+        {
+            set_status(COMP_FIXWAIT);
+            throw DaqCompDefinedException(type, code);
+            m_isOnError = false;
+            // reset_onError();
+        }
 
+        void reboot_request(FatalType::Enum type, const char* desc, int code = -1)
+        {
+            set_status(COMP_FIXWAIT);
+            throw DaqCompUserException(type, desc, code);
+            m_isOnError = false;
+            // reset_onError();
+        }
+        /*************************************************************/
+        
         void init_state_table()
         {
             m_daq_trans_func[CMD_CONFIGURE]   = &DAQMW::DaqComponentBase::daq_base_configure;

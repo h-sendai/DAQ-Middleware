@@ -418,7 +418,7 @@ RTC::ReturnCode_t DaqOperator::run_console_mode()
         // NEW 2
         case STOP:
             switch ((DAQCommand)command) {
-            case CMD_FIX: //fix:6
+            case CMD_FIX:
 				comp_reboot_procedure();
 				m_state = RUNNING;
                 break;
@@ -517,9 +517,7 @@ int DaqOperator::comp_reboot_procedure()
     m_com_completed = false;
     ConfFileParser MyParser;
     ParamList paramList;
-    ::NVList systemParamList;
-    ::NVList groupParamList;
-    
+    Status_var status;
     
     do {
 		
@@ -527,7 +525,7 @@ int DaqOperator::comp_reboot_procedure()
 			status = m_daqservices[i]->getStatus();
 		}
 	
-	} while ( == COMP_FIXWAIT):
+	} while (status->status == COMP_FIXWAIT):
 	
 	try {
 		m_comp_num = MyParser.readConfFile(m_conf_file.c_str(), true);
@@ -551,7 +549,6 @@ int DaqOperator::comp_reboot_procedure()
         }
 				
         for (int i = 0; i< m_comp_num; i++) {
-			Status_var status;
 			status = m_daqservices[i]->getStatus();
 			if (status->state == STOP) {
 				set_command(m_daqservices[i], CMD_CONFIGURE);
@@ -566,7 +563,6 @@ int DaqOperator::comp_reboot_procedure()
     try {
 		
 		for (int i = 0; i< m_comp_num; i++) {
-			Status_var status;
 			status = m_daqservices[i]->getStatus();
 			if (status->state == STOP) {
 				set_command(m_daqservices[i], CMD_START);
@@ -760,8 +756,6 @@ int DaqOperator::configure_procedure()
     ConfFileParser MyParser;
     ParamList paramList;
     CompGroupList groupList;
-    ::NVList systemParamList;
-    ::NVList groupParamList;
     m_start_date = "";
     m_stop_date  = "";
 

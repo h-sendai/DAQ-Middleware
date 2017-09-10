@@ -104,7 +104,10 @@ namespace DAQMW
             USER_DEFINED_ERROR20,
 
             ///unknown error
-            UNKNOWN_FATAL_ERROR
+            UNKNOWN_FATAL_ERROR,
+            
+            ///Component request
+            FIX_WAIT
         };
 
         static const char* toString(Enum fatalTypes)
