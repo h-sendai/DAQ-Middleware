@@ -101,13 +101,13 @@ namespace DAQMW
             USER_DEFINED_ERROR17,
             USER_DEFINED_ERROR18,
             USER_DEFINED_ERROR19,
-            USER_DEFINED_ERROR20,
+            //USER_DEFINED_ERROR20,
+            
+            ///reboot_message
+            REBOOT_REQUEST,
 
             ///unknown error
             UNKNOWN_FATAL_ERROR,
-            
-            ///Component request
-            FIX_WAIT
         };
 
         static const char* toString(Enum fatalTypes)
@@ -163,9 +163,11 @@ namespace DAQMW
                 "USER_DEFINED_ERROR17",
                 "USER_DEFINED_ERROR18",
                 "USER_DEFINED_ERROR19",
-                "USER_DEFINED_ERROR20",
+                //"USER_DEFINED_ERROR20",
 
-                "UNKNOWN_FATAL_ERROR"
+                "REBOOT_REQUEST",
+
+                "UNKNOWN_FATAL_ERROR",
             };
             return strType[fatalTypes];
         }
