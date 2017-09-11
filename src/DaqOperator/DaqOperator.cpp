@@ -469,7 +469,7 @@ RTC::ReturnCode_t DaqOperator::run_console_mode()
                      << setw(14) << right;
 
                 if (status->comp_status == COMP_FATAL || 
-					status->comp_status== COMP_FIXWAIT) {
+					status->comp_status == COMP_FIXWAIT) {
                     cerr << "\033[31m"
                          << check_compStatus(status->comp_status)
                          << "\033[39m" << endl;
@@ -519,13 +519,17 @@ int DaqOperator::comp_reboot_procedure()
     ParamList paramList;
     Status_var status;
     
-    do {
+    while(1) {
 		
 		for (int i = 0; i< m_comp_num; i++) {
 			status = m_daqservices[i]->getStatus();
-		}
-	
-	} while (status->status == COMP_FIXWAIT):
+        }
+        
+        if (status->comp_status == COMP_FIXWAIT) {
+            break;
+        }
+        sleep(1);
+	} 
 	
 	try {
 		m_comp_num = MyParser.readConfFile(m_conf_file.c_str(), true);
