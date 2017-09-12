@@ -1,0 +1,108 @@
+<?xml version="1.0"?>
+<!-- DON'T REMOVE THE ABOVE LINE.                                     -->
+<!-- DON'T PUT ANY LINES ABOVE THE 1ST LINE.                          -->
+<!-- Sample config.xml to run SampleReader and SampleLogger.         -->
+<!-- Please rewrite execPath (2 places), confFile (2 places) suitable -->
+<!-- for your directory structure.                                    -->
+<!-- run.py will create rtc.conf in /tmp/daqmw/rtc.conf               -->
+<!-- If you use run.py, set confFile as /tmp/daqmw/rtc.conf           -->
+<configInfo>
+    <daqOperator>
+        <hostAddr>127.0.0.1</hostAddr>
+    </daqOperator>
+    <daqGroups>
+        <daqGroup gid="group0">
+            <components>
+                <component cid="Reader10">
+                    <hostAddr>127.0.0.1</hostAddr>
+                    <hostPort>50000</hostPort>
+                    <instName>Reader10.rtc</instName>
+                    <execPath>/mnt/c/Bash/Workspace/MyDaq/sample0912/Reader1/Reader1Comp</execPath>
+                    <confFile>/tmp/daqmw/rtc.conf</confFile>
+                    <startOrd>5</startOrd>
+                    <inPorts>
+                    </inPorts>
+                    <outPorts>
+                        <outPort>samplereader_out1</outPort>
+                    </outPorts>
+                    <params>
+                        <param pid="srcAddr">127.0.0.1</param>
+                        <param pid="srcPort">2220</param>
+                    </params>
+                </component>
+                <component cid="Reader20">
+                    <hostAddr>127.0.0.1</hostAddr>
+                    <hostPort>50000</hostPort>
+                    <instName>Reader20.rtc</instName>
+                    <execPath>/mnt/c/Bash/Workspace/MyDaq/sample0912/Reader2/Reader2Comp</execPath>
+                    <confFile>/tmp/daqmw/rtc.conf</confFile>
+                    <startOrd>4</startOrd>
+                    <inPorts>
+                    </inPorts>
+                    <outPorts>
+                        <outPort>samplereader_out2</outPort>
+                    </outPorts>
+                    <params>
+                        <param pid="srcAddr">127.0.0.1</param>
+                        <param pid="srcPort">2221</param>
+                    </params>
+                </component>
+                <component cid="Reader30">
+                    <hostAddr>127.0.0.1</hostAddr>
+                    <hostPort>50000</hostPort>
+                    <instName>Reader30.rtc</instName>
+                    <execPath>/mnt/c/Bash/Workspace/MyDaq/sample0912/Reader3/Reader3Comp</execPath>
+                    <confFile>/tmp/daqmw/rtc.conf</confFile>
+                    <startOrd>3</startOrd>
+                    <inPorts>
+                    </inPorts>
+                    <outPorts>
+                        <outPort>samplereader_out3</outPort>
+                    </outPorts>
+                    <params>
+                        <param pid="srcAddr">127.0.0.1</param>
+                        <param pid="srcPort">2222</param>
+                    </params>
+                </component>
+                <component cid="Merger0">
+                    <hostAddr>127.0.0.1</hostAddr>
+                    <hostPort>50000</hostPort>
+                    <instName>Merger0.rtc</instName>
+                    <execPath>/mnt/c/Bash/Workspace/MyDaq/sample0912/Merger/MergerComp</execPath>
+                    <confFile>/tmp/daqmw/rtc.conf</confFile>
+                    <startOrd>2</startOrd>
+                    <inPorts>
+                        <inPort from="Reader10:reader_out1">collector_in0</inPort>
+                        <inPort from="Reader20:reader_out2">collector_in1</inPort>
+                        <inPort from="Reader30:reader_out3">collector_in2</inPort>
+                    </inPorts>
+                    <outPorts>
+                        <outPort>e16merger_out</outPort>
+                    </outPorts>
+                    <params>
+                        <param pid="separate_flag">0</param>
+                    </params>
+                </component>
+                <component cid="SampleLogger0">
+                    <hostAddr>127.0.0.1</hostAddr>
+                    <hostPort>50000</hostPort>
+                    <instName>SampleLogger0.rtc</instName>
+                    <execPath>/mnt/c/Bash/Workspace/MyDaq/sample0912/SampleLogger/SampleLoggerComp</execPath>
+                    <confFile>/tmp/daqmw/rtc.conf</confFile>
+                    <startOrd>1</startOrd>
+                    <inPorts>
+                        <inPort from="Merger0:e16merger_out">samplelogger_in</inPort>
+                    </inPorts>
+                    <outPorts>
+                    </outPorts>
+                    <params>
+                    	<param pid="dirName">/tmp</param>
+                        <param pid="isLogging">yes</param>
+                        <param pid="maxFileSizeInMegaByte">1024</param>
+                        <param pid="LoggerUpdateRate">20</param>
+                    </params>
+                </component>
+            </components>
+        </daqGroup>
+    </daqGroups>
+</configInfo>

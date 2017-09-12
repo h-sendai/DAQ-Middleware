@@ -28,8 +28,7 @@ enum DAQLifeCycleState
     CONFIGURED,
     RUNNING,
     PAUSED,
-    ERROR,
-    STOP
+    ERROR
 };
 
 enum DAQCommand
