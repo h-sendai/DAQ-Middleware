@@ -131,7 +131,8 @@ private:
     int set_service_list();
 
 	int comp_stop_procedure(); // New fanction
-	int comp_reboot_procedure(); // New fanction
+    int comp_reboot_procedure(); // New fanction
+    int next_procedure();
 	
     int configure_procedure();
     int unconfigure_procedure();
