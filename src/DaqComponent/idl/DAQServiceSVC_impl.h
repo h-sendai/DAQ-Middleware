@@ -29,7 +29,7 @@ class DAQServiceSVC_impl
 private:
     // Make sure all instances are built on the heap by making the
     // destructor non-public
-    //virtual ~DAQServiceSVC_impl();
+    // virtual ~DAQServiceSVC_impl();
 
 public:
     // standard constructor

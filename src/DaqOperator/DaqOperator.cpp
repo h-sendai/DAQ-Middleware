@@ -227,7 +227,7 @@ string DaqOperator::check_state(DAQLifeCycleState compState)
      	comp_state = "ERROR"; // Teel Error
         break;
     case STOP:
-        comp_state = "ERROR"; // Tell Stop Successful
+        comp_state = "FIX_WAIT"; // Tell Stop Successful
         break;
     }
     return comp_state;
@@ -250,12 +250,11 @@ string DaqOperator::check_compStatus(CompStatus compStatus)
         comp_status = "ERROR"; //FATAL_ERROR
         break;
     case COMP_FIXWAIT:
-		comp_status = "FIX_WAIT"; // COMP wait fix cmd
+		comp_status = "GET_REQUEST"; // COMP wait fix cmd
 		break;
     }
     return comp_status;
 }
-
 
 void DaqOperator::run_data()
 {
@@ -309,14 +308,14 @@ RTC::ReturnCode_t DaqOperator::run_console_mode()
     FD_SET(0, &m_rset);
 
     cerr    << "\033[0;0H";
-    cerr    << " Command:    " 	<< endl
+    cerr    << " Command:" 	    << endl
     << " "  << CMD_CONFIGURE   	<< ":configure  "
             << CMD_START       	<< ":start  "
             << CMD_STOP        	<< ":stop  "
             << CMD_UNCONFIGURE	<< ":unconfigure  "
             << CMD_PAUSE       	<< ":pause  "
             << CMD_RESUME      	<< ":resume  "
-            << CMD_FIX			<< ":fix" // NEW STATE
+            << CMD_FIX			    << ":fix/reboot" // NEW STATE
             << endl;
 
     cerr << "\n" << " RUN NO: " 	<< m_runNumber;
@@ -396,27 +395,25 @@ RTC::ReturnCode_t DaqOperator::run_console_mode()
                 break;
             }
             break;
-        // NEW1
         case ERROR:
-			cerr << "\033[3;H" 
-				 <<	"2:stop(All comp),6:reboot(Error comp only)" 
-				 << endl;
 			switch ((DAQCommand)command) {
-            case CMD_FIX:
-				comp_stop_procedure();
-				m_state = STOP;
-				break;
 			case CMD_STOP:
 				stop_procedure();
                 m_state = CONFIGURED;
+				break;
+            case CMD_FIX:
+				comp_stop_procedure();
+				m_state = STOP;
 				break;
 			default:
 				cerr << "\tBad Command: " << endl;
 				break;
 			}
 			break;
-        // NEW 2
         case STOP:
+            cerr << "\033[3;H" 
+				 <<	" 6:Reboot error comp" 
+				 << endl;
             switch ((DAQCommand)command) {
             case CMD_FIX:
 				comp_reboot_procedure();
@@ -469,23 +466,27 @@ RTC::ReturnCode_t DaqOperator::run_console_mode()
                      << setw(14) << right;
 
                 if (status->comp_status == COMP_FATAL || 
-					status->comp_status == COMP_FIXWAIT) {
+                    status->comp_status == COMP_FIXWAIT) {
                     cerr << "\033[31m"
                          << check_compStatus(status->comp_status)
                          << "\033[39m" << endl;
 
                     FatalErrorStatus_var errStatus;
                     errStatus = m_daqservices[i]->getFatalStatus();
-
-                    /** Use error console display **/
+                    
                     m_state = ERROR;
+                    cerr << "\033[3;H" 
+                         <<	" 2:Stop(All comp), 6:Stop(Error comp only)" 
+                         << endl;
+                    
+                    /** Use error console display **/
                     d_compname[i] = compname;
                     d_err_message[i] = errStatus;
                     
-                } ///if Fatal
+                } ///if = red word descript
                 else {
                     cerr << check_compStatus(status->comp_status) << endl;
-                }
+                } ///else = white word descript         
                 
             } catch(...) {
                 cerr << "### ERROR: " << compname << "  : cannot connect" << endl;
@@ -503,8 +504,7 @@ RTC::ReturnCode_t DaqOperator::run_console_mode()
 				++count;
 				cerr<< " [" << "\033[31m" << "ERROR"  << count << "\033[39m" << "] "
 				<< d_compname[i] << "\t\033[D<= "
-				<< d_err_message[i]->description 
-				<< endl;
+				<< d_err_message[i]->description << endl;
 			}
 		}///for		
     }///if..else
@@ -519,7 +519,7 @@ int DaqOperator::comp_reboot_procedure()
     ParamList paramList;
     Status_var status;
     
-    while(1) {
+    /*while(1) {
 		
 		for (int i = 0; i< m_comp_num; i++) {
 			status = m_daqservices[i]->getStatus();
@@ -529,7 +529,7 @@ int DaqOperator::comp_reboot_procedure()
             break;
         }
         sleep(1);
-	} 
+	}*/
 	
 	try {
 		m_comp_num = MyParser.readConfFile(m_conf_file.c_str(), true);
@@ -599,7 +599,7 @@ int DaqOperator::comp_stop_procedure()
     createDom_ok("End");
     return 0;
 }
-
+/*
 int DaqOperator::command_fix()
 {
     if (m_state != STOP || m_state != ERROR) {
@@ -626,7 +626,7 @@ int DaqOperator::command_fix()
     createDom_ok("Begin");
     return 0;
 }
-
+*/
 bool DaqOperator::parse_body(const char* buf, const string tagname)
 {
     XercesDOMParser* parser = new XercesDOMParser;

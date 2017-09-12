@@ -101,7 +101,7 @@ namespace DAQMW
             USER_DEFINED_ERROR17,
             USER_DEFINED_ERROR18,
             USER_DEFINED_ERROR19,
-            //USER_DEFINED_ERROR20,
+            USER_DEFINED_ERROR20,
             
             ///reboot_message
             REBOOT_REQUEST,
@@ -163,7 +163,7 @@ namespace DAQMW
                 "USER_DEFINED_ERROR17",
                 "USER_DEFINED_ERROR18",
                 "USER_DEFINED_ERROR19",
-                //"USER_DEFINED_ERROR20",
+                "USER_DEFINED_ERROR20",
 
                 "REBOOT_REQUEST",
 

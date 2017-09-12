@@ -132,7 +132,6 @@ private:
 
 	int comp_stop_procedure(); // New fanction
 	int comp_reboot_procedure(); // New fanction
-	//int f_start_procedure(); // New fanction
 	
     int configure_procedure();
     int unconfigure_procedure();
