@@ -130,7 +130,7 @@ private:
     int set_sitcp_num(int sitcp_num);
     int set_service_list();
 
-	int comp_stop_procedure(int errOccur[]); // New fanction
+    int comp_stop_procedure(int errOccur[]); // New fanction
     int comp_reboot_procedure(int errOccur[]); // New fanction
     int next_procedure(int errOccur[]);
 	
