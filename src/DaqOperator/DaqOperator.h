@@ -130,8 +130,9 @@ private:
     int set_sitcp_num(int sitcp_num);
     int set_service_list();
 
-	int comp_stop_procedure(); // New fanction
-	int comp_reboot_procedure(); // New fanction
+	int comp_stop_procedure(int errOccur[]); // New fanction
+    int comp_reboot_procedure(int errOccur[]); // New fanction
+    int next_procedure(int errOccur[]);
 	
     int configure_procedure();
     int unconfigure_procedure();
@@ -184,7 +185,7 @@ private:
 
     std::string m_config_file;
     std::string m_config_file_tmp;
-
+	
     bool m_debug;
 };
 

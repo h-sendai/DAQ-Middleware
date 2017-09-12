@@ -186,9 +186,6 @@ std::string CreateDom::getState(DAQLifeCycleState state, bool flag)
 	case(ERROR):
 		idx = 5;
 		break;
-	case(STOP):
-		idx = 6;
-		break;
 	default:
 		idx = 0;
 		break;
