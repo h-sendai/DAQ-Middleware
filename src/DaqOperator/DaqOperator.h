@@ -91,8 +91,7 @@ public:
     bool parse_body(const char* buf, const std::string tagname);
 
     // for callback
-	int command_fix(); // New Command fanction
-    int command_configure();
+	int command_configure();
     int command_unconfigure();
     int command_start();
     int command_stop();
@@ -108,6 +107,7 @@ public:
     int command_save();
     int command_confirmconnection();
     int command_dummy();
+    int command_fix(); // New Command fanction
 
     void set_console_flag(bool console);
     void set_port_no(int port);
@@ -130,10 +130,6 @@ private:
     int set_sitcp_num(int sitcp_num);
     int set_service_list();
 
-    int comp_stop_procedure(int errOccur[]); // New fanction
-    int comp_reboot_procedure(int errOccur[]); // New fanction
-    int next_procedure(int errOccur[]);
-	
     int configure_procedure();
     int unconfigure_procedure();
     int start_procedure();
@@ -143,6 +139,10 @@ private:
     int abort_procedure();
     int putstatus_procedure();
     int log_procedure();
+
+    // New fanction
+    int comp_stop_procedure(int* errOccur); 
+    int comp_restart_procedure(int* errOccur);	
 
     RTC::ReturnCode_t run_console_mode();
     RTC::ReturnCode_t run_http_mode();
