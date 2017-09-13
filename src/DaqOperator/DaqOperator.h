@@ -45,7 +45,7 @@
 using namespace RTC;
 
 // error code for dom
-static const int RET_CODE_IO_ERR		= (-14);
+static const int RET_CODE_IO_ERR		    = (-14);
 static const int RET_CODE_REQ_INV_IN_STS	= (-26);
 
 struct serviceInfo {
@@ -129,7 +129,11 @@ private:
     int check_done(RTC::CorbaConsumer<DAQService> daqservice);
     int set_sitcp_num(int sitcp_num);
     int set_service_list();
-
+    
+    // New interfaces
+    int set_errFlag();
+    int remove_errFlag();
+    
     int configure_procedure();
     int unconfigure_procedure();
     int start_procedure();
@@ -165,7 +169,7 @@ private:
     
     fd_set    m_allset;
     fd_set    m_rset;
-    int       m_maxfd;
+    int        m_maxfd;
     struct timeval m_tout;
     DAQLifeCycleState m_state;
 

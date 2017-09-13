@@ -60,6 +60,7 @@ private:
     FatalErrorStatus m_fatalStatus;
     NVList m_comp_params;
     CORBA::Long   m_run_no;
+    bool errOccur;
 };
 
 #endif // DAQSERVICESVC_IMPL_H

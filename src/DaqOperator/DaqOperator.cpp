@@ -503,7 +503,7 @@ RTC::ReturnCode_t DaqOperator::run_console_mode()
         
         if (m_state == ERROR) {
                 cerr << "\033[;13H\033[31m" // [height=13, [31m=red
-                     << "### ERR_MODE 2:Stop(All comp), 6:Stop(Error comp only)"
+                     << "### ERR_STATE 2:Stop(All comp), 6:Stop(Error comp only)"
                      << "\033[39m" << endl;
         }            
     }///if..else
