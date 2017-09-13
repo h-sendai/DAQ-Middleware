@@ -107,7 +107,10 @@ public:
     int command_save();
     int command_confirmconnection();
     int command_dummy();
-    int command_fix(); // New Command fanction
+    
+    
+    // New Command fanction
+    int command_fix(); 
 
     void set_console_flag(bool console);
     void set_port_no(int port);
@@ -129,11 +132,7 @@ private:
     int check_done(RTC::CorbaConsumer<DAQService> daqservice);
     int set_sitcp_num(int sitcp_num);
     int set_service_list();
-    
-    // New interfaces
-    int set_errFlag();
-    int remove_errFlag();
-    
+        
     int configure_procedure();
     int unconfigure_procedure();
     int start_procedure();
@@ -144,9 +143,13 @@ private:
     int putstatus_procedure();
     int log_procedure();
 
+
     // New fanction
-    int comp_stop_procedure(int* errOccur); 
-    int comp_restart_procedure(int* errOccur);	
+    int comp_stop_procedure(); 
+    int comp_restart_procedure();
+    
+    // New fanction
+    Status_var d_status[256];
 
     RTC::ReturnCode_t run_console_mode();
     RTC::ReturnCode_t run_http_mode();

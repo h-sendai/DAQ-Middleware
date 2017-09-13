@@ -139,16 +139,6 @@ FatalErrorStatus* DAQServiceSVC_impl::getFatalStatus()
     return myfatal;
 }
 
-void DAQServiceSVC_impl::set_errFlag()
-{
-    bool errOccur = true;
-}
-
-void DAQServiceSVC_impl::remove_errFlag()
-{
-    bool errOccur = false;
-}
-
 /*
 void DAQServiceSVC_impl::setMessage(const char* message) {
     std::cerr << "setMessage:" << message << std::endl;

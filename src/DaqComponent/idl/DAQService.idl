@@ -71,6 +71,7 @@ struct Status
     DAQLifeCycleState state;
     unsigned long long event_size;
     CompStatus comp_status;
+    boolean errOccur;
 };
 
 interface DAQService
@@ -88,7 +89,5 @@ interface DAQService
     long getRunNo();
     void setFatalStatus(in FatalErrorStatus fatalStaus);
     FatalErrorStatus    getFatalStatus();
-    void set_errFlag();
-    void remove_errFlag();
 };
 
