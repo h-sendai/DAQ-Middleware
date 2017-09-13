@@ -50,7 +50,7 @@ public:
     void setFatalStatus(const FatalErrorStatus& fatalStaus);
 
     FatalErrorStatus* getFatalStatus();
-
+    
 private:
     DAQCommand m_command;
     int m_new;
