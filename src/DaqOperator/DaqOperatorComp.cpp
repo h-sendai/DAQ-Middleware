@@ -173,20 +173,20 @@ int find_comps(CorbaNaming* naming, CompGroupList* daq_group_list)
                     }
                 }
                 catch(CosNaming::NamingContext::NotFound& e) {
-                    std::cerr << "Could not find a Component, retry..." << std::endl;
+                    std::cerr << " Could not find a Component, retry..." << std::endl;
                     retry_counts--;
                     usleep(500000); //500ms
                 }
                 catch(CosNaming::NamingContext::CannotProceed& e) {
-                    std::cerr << "Caught exception: Cannot Proceed" << std::endl;
+                    std::cerr << " Caught exception: Cannot Proceed" << std::endl;
                     throw;
                 }
                 catch(CosNaming::NamingContext::InvalidName& e) {
-                    std::cerr << "Caught exception: Invalid Name" << std::endl;
+                    std::cerr << " Caught exception: Invalid Name" << std::endl;
                     throw;
                 }
                 catch(...) {
-                    std::cerr << "Caught exception: Unknown exception" << std::endl;
+                    std::cerr << " Caught exception: Unknown exception" << std::endl;
                     throw;
                 }
             }

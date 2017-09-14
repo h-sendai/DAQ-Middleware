@@ -148,9 +148,6 @@ private:
     int comp_stop_procedure(); 
     int comp_restart_procedure();
     
-    // New fanction
-    Status_var d_status[256];
-
     RTC::ReturnCode_t run_console_mode();
     RTC::ReturnCode_t run_http_mode();
     ///std::string check_fatal(FatalErrorStatus errStatus);

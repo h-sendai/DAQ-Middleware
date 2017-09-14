@@ -71,7 +71,6 @@ struct Status
     DAQLifeCycleState state;
     unsigned long long event_size;
     CompStatus comp_status;
-    boolean errOccur;
 };
 
 interface DAQService

@@ -437,7 +437,6 @@ RTC::ReturnCode_t DaqOperator::run_console_mode()
 				
                 Status_var status;
                 status = m_daqservices[i]->getStatus(); // status input
-				
                 cerr << " " << setw(22) << left
                      << myprof[0].name //group:comp_name
                      << '\t'
@@ -446,9 +445,8 @@ RTC::ReturnCode_t DaqOperator::run_console_mode()
                      << setw(12) << right
                      << check_state(status->state) // state(LOADED,CONFIGURED,RUNNING)
                      << setw(14) << right;
-
-                if (status->comp_status == COMP_FATAL || 
-                    status->comp_status == COMP_FIXWAIT) {
+                
+                if (status->comp_status == COMP_FATAL || status->comp_status == COMP_FIXWAIT) {
                     cerr << "\033[31m"
                          << check_compStatus(status->comp_status) //status(COMP_*)
                          << "\033[39m" << endl;
@@ -457,19 +455,17 @@ RTC::ReturnCode_t DaqOperator::run_console_mode()
                     errStatus = m_daqservices[i]->getFatalStatus();
                     
                     /** Use error console display **/
+                    
                     d_err_compname[i] = compname;
                     d_err_message[i] = errStatus;
                     
-                    /** Error_component save **/
-                    d_status[i] = status;
-                    d_status[i]->errOccur = true;
+                    /** component change **/
                     
                     m_state = ERROR;
                     
                 } ///if = red word descript
                 else {
                     cerr << check_compStatus(status->comp_status) << endl;
-                    d_status[i]->errOccur = false;
 
                 } ///else = white word descript         
                 
@@ -491,9 +487,9 @@ RTC::ReturnCode_t DaqOperator::run_console_mode()
                     << d_err_compname[i] << "\t\033[D<= "
                     << d_err_message[i]->description << endl;
                 
-                if (d_status[i]->comp_status == COMP_FIXWAIT) {
+                /*if (d_status[i]->comp_status == COMP_FIXWAIT) {
                     cerr << "Fix wait.." << endl;
-                }
+                }*/
 			}            
 		}///for
         
@@ -513,7 +509,7 @@ int DaqOperator::comp_stop_procedure()
     
     try {
         for (int i = 0; i < m_comp_num; i++) {
-            if (d_status[i]->errOccur == true) {
+            if () {
                 set_command(m_daqservices[i], CMD_STOP);
                 check_done(m_daqservices[i]);			
             }
@@ -540,14 +536,14 @@ int DaqOperator::comp_restart_procedure()
         m_stop_date = "";
         */
         for (int i = 0; i< m_comp_num; i++) {
-            if (d_status[i]->errOccur == true) {
+            if () {
                 set_runno(m_daqservices[i], m_runNumber);
                 check_done(m_daqservices[i]);
             }
         }
 
         for (int i = 0; i< m_comp_num; i++) {
-            if (d_status[i]->errOccur == true) {
+            if () {
                 set_command(m_daqservices[i], CMD_START);
                 check_done(m_daqservices[i]);
             }
