@@ -143,14 +143,15 @@ private:
     int putstatus_procedure();
     int log_procedure();
 
-
-    // New fanction
-    int comp_stop_procedure(Status_var *status_ptr); 
-    int comp_restart_procedure(Status_var *status_ptr);
+    
+    // New structure (include Status_var)
+    struct SetCompData {
+        bool err_occur[18];
+    };
     
     // New fanction
-    Status_var d_status[50];
-    Status_var *status_ptr;
+    int comp_stop_procedure(SetCompData *scd); 
+    int comp_restart_procedure(SetCompData *scd);
     
     RTC::ReturnCode_t run_console_mode();
     RTC::ReturnCode_t run_http_mode();
