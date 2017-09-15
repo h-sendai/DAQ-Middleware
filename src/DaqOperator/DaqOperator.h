@@ -146,13 +146,14 @@ private:
     
     // New structure (include Status_var)
     struct SetCompData {
-        bool err_occur[18];
-    } *scd;
-    
+        bool err_occur;
+    } SCD_t;
     
     // New fanction
     int comp_stop_procedure(SetCompData *ptr_status); 
     int comp_restart_procedure(SetCompData *ptr_status);
+    
+    vector<bool> m_scd;
     
     RTC::ReturnCode_t run_console_mode();
     RTC::ReturnCode_t run_http_mode();

@@ -294,8 +294,11 @@ void DaqOperator::run_data()
 RTC::ReturnCode_t DaqOperator::run_console_mode()
 {
     //new variables
+    struct SetCompData sdc;
 	string d_err_compname[m_comp_num];
 	FatalErrorStatus_var d_err_message[m_comp_num];
+    
+    for (int i = (m_comp_num - 1); i >= 0; i--) {
     
     string srunNo = "0";
     int command;
@@ -307,7 +310,7 @@ RTC::ReturnCode_t DaqOperator::run_console_mode()
     FD_SET(0, &m_rset);
 
     cerr    << "\033[0;0H";
-    cerr    << " Command:\t" 	    << endl;
+    cerr    << " Command:\t"    << endl;
     cerr    << " "
             << CMD_CONFIGURE   	<< ":configure  "
             << CMD_START       	<< ":start  "
@@ -375,7 +378,7 @@ RTC::ReturnCode_t DaqOperator::run_console_mode()
                 break;
             if (m_status == ERROR) {
                 case CMD_FIX:
-                    comp_restart_procedure(scd);
+                    comp_restart_procedure(m_scd);
                     m_state = RUNNING;///
                     break;
             }
@@ -406,7 +409,7 @@ RTC::ReturnCode_t DaqOperator::run_console_mode()
                 m_state = CONFIGURED;///
 				break;
             case CMD_FIX:
-                comp_stop_procedure(scd);
+                comp_stop_procedure(m_sdc);
 				m_state = CONFIGURED;///
 				break;
 			default:
@@ -428,6 +431,9 @@ RTC::ReturnCode_t DaqOperator::run_console_mode()
         for (int i = (m_comp_num - 1); i >= 0; i--) {
             string compname;
             
+            vector<int> m_sdc;
+            m_sdc.push_back(sdc);
+            
             try {
 
                 RTC::ConnectorProfileList_var myprof
@@ -435,7 +441,7 @@ RTC::ReturnCode_t DaqOperator::run_console_mode()
 				
                 compname = myprof[0].name; //compname = "group*:*"
 				//cerr << "COMPNAME: " << compname << endl;
-				
+                
                 Status_var status;
                 status = m_daqservices[i]->getStatus(); // status input
                 
@@ -447,8 +453,12 @@ RTC::ReturnCode_t DaqOperator::run_console_mode()
                      << setw(12) << right
                      << check_state(status->state); // state(LOADED,CONFIGURED,RUNNING)
                 
+                cerr << "clear" << endl;
+                
                 if (status->comp_status == COMP_FATAL) {
-                    scd->err_occur[i] = true;
+                    cerr << "if";
+                    scd->err_occur = true;
+                    printf("true? = %d", scd->err_occur[i]);
                     cerr << "\033[31m" << setw(14) << right
                          << check_compStatus(status->comp_status) //status(COMP_*)
                          << "\033[39m" << endl;
@@ -463,7 +473,9 @@ RTC::ReturnCode_t DaqOperator::run_console_mode()
                     
                 } ///if = red word descript
                 else {
-                    scd->err_occur[i] = false;
+                    cerr << "else";
+                    scd->err_occur = false;
+                    printf("false? = %d", scd->err_occur[i]);
                     cerr << setw(14) << right
                          <<check_compStatus(status->comp_status) << endl;
 				
@@ -509,7 +521,7 @@ int DaqOperator::comp_stop_procedure(SetCompData *ptr_status)
     
     try {
         for (int i = 0; i < m_comp_num; i++) {
-            if (ptr_status->err_occur[i] == true) {
+            if ((ptr_status+i)->err_occur == true) {
                 set_command(m_daqservices[i], CMD_STOP);
                 check_done(m_daqservices[i]);		
             }
@@ -528,22 +540,22 @@ int DaqOperator::comp_restart_procedure(SetCompData *ptr_status)
     m_com_completed = false;
     
     try {
-        
+        /*
         time_t now = time(0);
         m_start_date = asctime(localtime(&now));
         m_start_date[m_start_date.length()-1] = ' ';
         m_start_date.erase(0, 4);
         m_stop_date = "";
-        
+        */
         for (int i = 0; i < m_comp_num; i++) {
-            if (ptr_status->err_occur[i] == true) {
+            if ((ptr_status+i)->err_occur == true) {
                 set_runno(m_daqservices[i], m_runNumber);
                 check_done(m_daqservices[i]);
             }
         }
 
         for (int i = 0; i < m_comp_num; i++) {
-            if (ptr_status->err_occur[i] == true) {
+            if ((ptr_status+i)->err_occur == true) {
                 set_command(m_daqservices[i], CMD_START);
                 check_done(m_daqservices[i]);
             }
