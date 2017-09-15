@@ -145,8 +145,12 @@ private:
 
 
     // New fanction
-    int comp_stop_procedure(); 
-    int comp_restart_procedure();
+    int comp_stop_procedure(Status_var *status_ptr); 
+    int comp_restart_procedure(Status_var *status_ptr);
+    
+    // New fanction
+    Status_var d_status[50];
+    Status_var *status_ptr;
     
     RTC::ReturnCode_t run_console_mode();
     RTC::ReturnCode_t run_http_mode();
