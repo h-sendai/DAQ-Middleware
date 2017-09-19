@@ -42,6 +42,9 @@
 #include "CreateDom.h"
 #include "ParameterServer.h"
 
+// new header
+#include "Myheader.h"
+
 using namespace RTC;
 
 // error code for dom
@@ -107,25 +110,12 @@ public:
     int command_save();
     int command_confirmconnection();
     int command_dummy();
-    
-    
-    // New Command fanction
+    // New command(fix)
     int command_fix(); 
-
+    
     void set_console_flag(bool console);
     void set_port_no(int port);
     std::string getConfFilePath();
-
-
-// New private
-private:
-	// Component 
-    struct EachCompManager {
-		std::string c_compname;
-		Status_var c_status;
-		FatalErrorStatus* c_errStatus;
-		bool err_occur;
-	} *ECM; 
 
 protected:
     std::vector<RTC::CorbaPort *> m_DaqServicePorts;
@@ -153,11 +143,9 @@ private:
     int abort_procedure();
     int putstatus_procedure();
     int log_procedure();
-
-    
-    // New fanction
-    int comp_stop_procedure(struct EachCompManager* v); 
-    int comp_restart_procedure(struct EachCompManager* v);
+    // New fanctions
+    int comp_stop_procedure(); 
+    int comp_restart_procedure(); 
     
     RTC::ReturnCode_t run_console_mode();
     RTC::ReturnCode_t run_http_mode();

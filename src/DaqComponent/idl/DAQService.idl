@@ -88,5 +88,7 @@ interface DAQService
     long    getRunNo();
     void    setFatalStatus(in FatalErrorStatus fatalStaus);
     FatalErrorStatus getFatalStatus();
+    void    setErrorStatus(in boolean err_occur);
+    boolean getErrorStatus();
 };
 
