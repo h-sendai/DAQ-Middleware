@@ -324,6 +324,7 @@ namespace DAQMW
         virtual int daq_stop()        = 0;
         virtual int daq_pause()       = 0;
         virtual int daq_resume()      = 0;
+        virtual int daq_fix()          =0;
 
         virtual int parse_params( ::NVList* list ) = 0;
 
@@ -359,7 +360,7 @@ namespace DAQMW
             m_isOnError = false;
             // reset_onError();
         }
-        /********************************************************/
+        /*******************************************************************/
 
         void init_state_table()
         {

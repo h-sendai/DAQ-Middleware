@@ -42,9 +42,6 @@
 #include "CreateDom.h"
 #include "ParameterServer.h"
 
-// new header
-#include "Myheader.h"
-
 using namespace RTC;
 
 // error code for dom

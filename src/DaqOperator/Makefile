@@ -38,10 +38,6 @@ FILES += Parameter.h
 FILES += ParameterServer.h
 FILES += Callback.h
 
-#New files
-FILES += Myheader.cpp
-FILES += Myheader.h
-
 install: all
 	@mkdir -p $(BINDIR)
 	@install -m 755 $(COMP_NAME)Comp $(BINDIR)
