@@ -51,6 +51,9 @@ public:
 
     FatalErrorStatus* getFatalStatus();
     
+    void setErrorStatus(const bool err_occur);
+    bool getErrorStatus();
+    
 private:
     DAQCommand m_command;
     int m_new;
@@ -60,6 +63,7 @@ private:
     FatalErrorStatus m_fatalStatus;
     NVList m_comp_params;
     CORBA::Long   m_run_no;
+    bool m_err_occur;
 };
 
 #endif // DAQSERVICESVC_IMPL_H

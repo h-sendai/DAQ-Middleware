@@ -107,9 +107,11 @@ public:
     int command_save();
     int command_confirmconnection();
     int command_dummy();
-    // New command(fix)
-    int command_fix(); 
     
+    
+    // New Command fanction
+    int command_fix(); 
+
     void set_console_flag(bool console);
     void set_port_no(int port);
     std::string getConfFilePath();
@@ -140,9 +142,17 @@ private:
     int abort_procedure();
     int putstatus_procedure();
     int log_procedure();
-    // New fanctions
-    int comp_stop_procedure(); 
-    int comp_restart_procedure(); 
+
+    
+    // New structure (include Status_var)
+    struct SetCompData {
+        bool err_occur[18];
+    } *scd;
+    
+    
+    // New fanction
+    int comp_stop_procedure(SetCompData *ptr_status); 
+    int comp_restart_procedure(SetCompData *ptr_status);
     
     RTC::ReturnCode_t run_console_mode();
     RTC::ReturnCode_t run_http_mode();
@@ -165,7 +175,7 @@ private:
     
     fd_set    m_allset;
     fd_set    m_rset;
-    int       m_maxfd;
+    int        m_maxfd;
     struct timeval m_tout;
     DAQLifeCycleState m_state;
 

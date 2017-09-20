@@ -71,23 +71,24 @@ struct Status
     DAQLifeCycleState state;
     unsigned long long event_size;
     CompStatus comp_status;
-    boolean errOccur;
 };
 
 interface DAQService
 {
-    DAQLifeCycleState   getState();
-    RTC::ReturnCode_t   setCommand(in DAQCommand command);
-    DAQCommand          getCommand();
-    DAQDone             checkDone();
-    void    etDone();
+    DAQLifeCycleState getState();
+    RTC::ReturnCode_t setCommand(in DAQCommand command);
+    DAQCommand  getCommand();
+    DAQDone     checkDone();
+    void    setDone();
     void    setStatus(in Status stat);
     Status  getStatus();
-    void setCompParams(in NVList comp_params);
-    NVList getCompParams();
-    void setRunNo(in long run_no);
-    long getRunNo();
-    void setFatalStatus(in FatalErrorStatus fatalStaus);
-    FatalErrorStatus    getFatalStatus();
+    void    setCompParams(in NVList comp_params);
+    NVList  getCompParams();
+    void    setRunNo(in long run_no);
+    long    getRunNo();
+    void    setFatalStatus(in FatalErrorStatus fatalStaus);
+    FatalErrorStatus getFatalStatus();
+    void    setErrorStatus(in boolean err_occur);
+    boolean getErrorStatus();
 };
 

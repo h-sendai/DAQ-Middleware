@@ -36,7 +36,7 @@ FILES += DaqOperator.h
 FILES += DaqOperatorComp.cpp
 FILES += Parameter.h
 FILES += ParameterServer.h
-FILES += callback.h
+FILES += Callback.h
 
 install: all
 	@mkdir -p $(BINDIR)

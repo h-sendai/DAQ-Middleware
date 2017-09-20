@@ -25,7 +25,8 @@ DAQServiceSVC_impl::DAQServiceSVC_impl()
       m_new(0), 
       m_done(DONE), 
       m_state(LOADED), 
-      m_run_no(0)
+      m_run_no(0),
+      m_err_occur(false)
 {
     // Please add extra constructor code here.
 }
@@ -137,6 +138,18 @@ FatalErrorStatus* DAQServiceSVC_impl::getFatalStatus()
     FatalErrorStatus* myfatal = new FatalErrorStatus;
     *myfatal = m_fatalStatus;
     return myfatal;
+}
+
+void DAQServiceSVC_impl::setErrorStatus(const bool err_occur)
+{
+    m_err_occur = err_occur;
+}
+
+bool DAQServiceSVC_impl::getErrorStatus()
+{
+    bool* myerror = new bool;
+    *myerror = m_err_occur;
+    return myerror;
 }
 
 /*
