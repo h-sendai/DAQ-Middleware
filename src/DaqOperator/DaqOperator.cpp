@@ -340,7 +340,7 @@ RTC::ReturnCode_t DaqOperator::run_console_mode()
         case PAUSED:
             switch ((DAQCommand)command) {
             case CMD_RESUME:
-                resume_procedure();///
+                resume_procedure();
                 m_state = RUNNING;
                 break;
             default:
@@ -351,7 +351,7 @@ RTC::ReturnCode_t DaqOperator::run_console_mode()
         case LOADED:
             switch ((DAQCommand)command) {
             case CMD_CONFIGURE:
-                configure_procedure();///
+                configure_procedure();
                 m_state = CONFIGURED;
                 break;
             default:
@@ -367,17 +367,17 @@ RTC::ReturnCode_t DaqOperator::run_console_mode()
                 cerr << "\033[4;62H"; // 1 or 4
                 cin >> srunNo;
                 m_runNumber = atoi(srunNo.c_str());
-                start_procedure();///
+                start_procedure();
                 m_state = RUNNING;
                 break;
             case CMD_UNCONFIGURE:
-                unconfigure_procedure();///
+                unconfigure_procedure();
                 m_state = LOADED;
                 break;
             if (m_status == ERROR) {
                 case CMD_FIX:
                     comp_restart_procedure();
-                    m_state = RUNNING;///
+                    m_state = RUNNING;
                     break;
             }
             default:
@@ -388,11 +388,11 @@ RTC::ReturnCode_t DaqOperator::run_console_mode()
         case RUNNING:
             switch ((DAQCommand)command) {
             case CMD_STOP:
-                stop_procedure();///
+                stop_procedure();
                 m_state = CONFIGURED;
                 break;
             case CMD_PAUSE:
-                pause_procedure();///
+                pause_procedure();
                 m_state = PAUSED;
                 break;
             default:
@@ -484,7 +484,8 @@ RTC::ReturnCode_t DaqOperator::run_console_mode()
         int count = 0;
 
         for (int i = (m_comp_num - 1); i >= 0; i--) {
-			if (m_daqservices[i]->getErrorStatus() == true) {
+            bool bool_check;
+			if ((bool_check = m_daqservices[i]->getErrorStatus()) == true) {
 				count++;
 				cerr<< " [" << "\033[31m" << "ERROR"  << count << "\033[39m" << "] "
                     << d_err_compname[i] << "\t\033[D<= "
