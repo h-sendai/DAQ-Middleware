@@ -139,18 +139,6 @@ FatalErrorStatus* DAQServiceSVC_impl::getFatalStatus()
     return myfatal;
 }
 
-void DAQServiceSVC_impl::setErrorStatus(const ErrorStatus& err_occur)
-{
-    m_err_occur = err_occur;
-}
-
-ErrorStatus* DAQServiceSVC_impl::getErrorStatus()
-{
-    ErrorStatus* m_error = new ErrorStatus;
-    *m_error = m_err_occur;
-    return m_error;
-}
-
 /*
 void DAQServiceSVC_impl::setMessage(const char* message) {
     std::cerr << "setMessage:" << message << std::endl;

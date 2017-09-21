@@ -73,27 +73,20 @@ struct Status
     CompStatus comp_status;
 };
 
-struct ErrorStatus
-{
-    boolean aaaa;
-};
-
 interface DAQService
 {
     DAQLifeCycleState getState();
     RTC::ReturnCode_t setCommand(in DAQCommand command);
-    DAQCommand  getCommand();
-    DAQDone     checkDone();
+    DAQCommand getCommand();
+    DAQDone checkDone();
     void    setDone();
-    void    setStatus(in Status stat);
-    Status  getStatus();
-    void    setCompParams(in NVList comp_params);
-    NVList  getCompParams();
-    void    setRunNo(in long run_no);
-    long    getRunNo();
-    void    setFatalStatus(in FatalErrorStatus fatalStaus);
+    void   setStatus(in Status stat);
+    Status getStatus();
+    void setCompParams(in NVList comp_params);
+    NVList getCompParams();
+    void setRunNo(in long run_no);
+    long getRunNo();
+    void setFatalStatus(in FatalErrorStatus fatalStaus);
     FatalErrorStatus getFatalStatus();
-    void    setErrorStatus(in ErrorStatus err_occur);
-    ErrorStatus getErrorStatus();
 };
 
