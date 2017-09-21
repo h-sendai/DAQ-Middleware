@@ -293,6 +293,7 @@ void DaqOperator::run_data()
 
 RTC::ReturnCode_t DaqOperator::run_console_mode()
 {   
+    struct ErrorStatus* es;
 	string d_err_compname[m_comp_num];
 	FatalErrorStatus_var d_err_message[m_comp_num];
 	
@@ -447,7 +448,8 @@ RTC::ReturnCode_t DaqOperator::run_console_mode()
                      << check_state(status->state); // state(LOADED,CONFIGURED,RUNNING)
                 
                 if (status->comp_status == COMP_FATAL) {
-                    m_daqservices[i]->setErrorStatus(true);
+                    es->bo = true;
+                    m_daqservices[i]->setErrorStatus(es);
                     cerr << "\033[31m" << setw(14) << right
                          << check_compStatus(status->comp_status) //status(COMP_*)
                          << "\033[39m" << endl;
@@ -463,7 +465,8 @@ RTC::ReturnCode_t DaqOperator::run_console_mode()
                     
                 } ///if = red word descript
                 else {
-                    m_daqservices[i]->setErrorStatus(false);
+                    es->bo = false;
+                    m_daqservices[i]->setErrorStatus(es);
                     cerr << setw(14) << right
                          << check_compStatus(status->comp_status) 
                          << endl;
@@ -484,8 +487,8 @@ RTC::ReturnCode_t DaqOperator::run_console_mode()
         int count = 0;
 
         for (int i = (m_comp_num - 1); i >= 0; i--) {
-            bool bool_check;
-			if ((bool_check = m_daqservices[i]->getErrorStatus()) == true) {
+            es_var = m_daqservices[i]->getErrorStatus();
+			if (es_var->bo == true){
 				count++;
 				cerr<< " [" << "\033[31m" << "ERROR"  << count << "\033[39m" << "] "
                     << d_err_compname[i] << "\t\033[D<= "
@@ -512,9 +515,12 @@ int DaqOperator::comp_stop_procedure()
 {
     m_com_completed = false;
     
+    ErrorStatus* es_var;
+    
     try {
         for (int i = (m_comp_num - 1); i >= 0; i--) {
-			if (m_daqservices[i]->getErrorStatus() == true){
+            es_var = m_daqservices[i]->getErrorStatus();
+			if (es_var->bo == true){
 				set_command(m_daqservices[i], CMD_STOP);
 				check_done(m_daqservices[i]);
 			}
@@ -544,16 +550,20 @@ int DaqOperator::comp_restart_procedure()
     m_start_date.erase(0, 4);
     m_stop_date = "";
         
+    ErrorStatus* es_var;
+    
     try {
         for (int i = 0; i < m_comp_num; i++) {
-			if (m_daqservices[i]->getErrorStatus() == true){
+            es_var = m_daqservices[i]->getErrorStatus();
+			if (es_var->bo == true){
 				set_runno(m_daqservices[i], m_runNumber);
 				check_done(m_daqservices[i]);
 			}
 		}
 	
 		for (int i = 0; i < m_comp_num; i++) {
-			if (m_daqservices[i]->getErrorStatus() == true){
+             es_var = m_daqservices[i]->getErrorStatus();
+			if (es_var->bo == true){
 				set_command(m_daqservices[i], CMD_START);
 				check_done(m_daqservices[i]);
 			}
@@ -728,6 +738,8 @@ int DaqOperator::configure_procedure()
     ConfFileParser MyParser;
     ParamList paramList;
     CompGroupList groupList;
+    ::NVList systemParamList;
+    ::NVList groupParamList;
     m_start_date = "";
     m_stop_date  = "";
 
