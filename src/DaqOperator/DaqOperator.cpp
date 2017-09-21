@@ -314,7 +314,7 @@ RTC::ReturnCode_t DaqOperator::run_console_mode()
             << CMD_UNCONFIGURE	<< ":unconfigure  "
             << CMD_PAUSE       	<< ":pause  "
             << CMD_RESUME      	<< ":resume"   << endl 
-            << CMD_FIX             << ":fix"      << endl;
+            << CMD_FIX          << ":fix"      << endl;
                         
     cerr    << endl << " RUN NO: " << m_runNumber; //endl = "input..."
     cerr    << endl << " start at: " << m_start_date
