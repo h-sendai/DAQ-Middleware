@@ -29,7 +29,7 @@ class DAQServiceSVC_impl
 private:
     // Make sure all instances are built on the heap by making the
     // destructor non-public
-    // virtual ~DAQServiceSVC_impl();
+    //virtual ~DAQServiceSVC_impl();
 
 public:
     // standard constructor
@@ -50,10 +50,7 @@ public:
     void setFatalStatus(const FatalErrorStatus& fatalStaus);
 
     FatalErrorStatus* getFatalStatus();
-    
-    void setErrorStatus(const bool err_occur);
-    bool getErrorStatus();
-    
+
 private:
     DAQCommand m_command;
     int m_new;
@@ -63,7 +60,6 @@ private:
     FatalErrorStatus m_fatalStatus;
     NVList m_comp_params;
     CORBA::Long   m_run_no;
-    bool m_err_occur;
 };
 
 #endif // DAQSERVICESVC_IMPL_H
