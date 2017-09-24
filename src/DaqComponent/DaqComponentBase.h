@@ -340,6 +340,26 @@ namespace DAQMW
             set_status(COMP_FATAL);
             throw DaqCompUserException(type, desc, code);
         }
+        
+		/** set_status(COMP_FIXWAIT) ****************************/
+		void reboot_request(FatalType::Enum type, int code = -1)
+        {
+            m_isOnError = true;
+            set_status(COMP_FIXWAIT);
+            throw DaqCompDefinedException(type, code);
+            m_isOnError = false;
+            // reset_onError();
+        }
+
+        void reboot_request(FatalType::Enum type, const char* desc, int code = -1)
+        {
+            m_isOnError = true;
+            set_status(COMP_FIXWAIT);
+            throw DaqCompUserException(type, desc, code);
+            m_isOnError = false;
+            // reset_onError();
+        }
+        /*******************************************************************/
 
         void init_state_table()
         {
@@ -386,7 +406,7 @@ namespace DAQMW
             RTC::DataPortStatus::Enum out_status = myOutPort.getStatus(index);
             if(m_debug) {
                 std::cerr << "OutPort status: "
-                          << RTC::DataPortStatus::toString(out_status) 
+                          << RTC::DataPortStatus::toString(out_status)
                           << std::endl;
             }
             switch(out_status) {
@@ -461,7 +481,7 @@ namespace DAQMW
                           << std::endl;
                 ret = BUF_FATAL;
                 break;
-                /*** Could never happen in this case ***/
+            /*** Could never happen in this case ***/
             case RTC::DataPortStatus::BUFFER_FULL:
             case RTC::DataPortStatus::RECV_TIMEOUT:
             case RTC::DataPortStatus::SEND_TIMEOUT:

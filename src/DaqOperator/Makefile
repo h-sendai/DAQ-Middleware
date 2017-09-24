@@ -36,7 +36,7 @@ FILES += DaqOperator.h
 FILES += DaqOperatorComp.cpp
 FILES += Parameter.h
 FILES += ParameterServer.h
-FILES += callback.h
+FILES += Callback.h
 
 install: all
 	@mkdir -p $(BINDIR)
@@ -48,5 +48,8 @@ install: all
 uninstall:
 	@rm -f $(BINDIR)/$(COMP_NAME)Comp
 	@rm -f $(SRCDIR)/*
+
+obj:
+	rm -rf *.o
 
 include ../mk/comp.mk
