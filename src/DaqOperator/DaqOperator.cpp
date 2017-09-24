@@ -293,27 +293,10 @@ void DaqOperator::run_data()
 
 RTC::ReturnCode_t DaqOperator::run_console_mode()
 {   
-	string d_err_compname[m_comp_num];
-	FatalErrorStatus_var d_err_message[m_comp_num];
-    int shogi[m_comp_num];
+    string d_compname[m_comp_num];
+    FatalErrorStatus_var d_message[m_comp_num];
+    int errFlag[m_comp_num];
     Status_var d_status[m_comp_num];
-    
-    /*
-    cerr << "dead" << endl;
-    Status_var sta;
-    for (int i = 0; i < m_comp_num; i++) {
-        cerr << "見せろ" << endl;
-        
-        sta = m_daqservices[i]->getStatus();
-                
-        if (sta->comp_status == COMP_FATAL){
-            shogi[i] = 1;                   
-        }else{
-            shogi[i] = 0;
-        }
-    }
-	cerr << "見せろ2" << endl;
-    */
     
     string srunNo = "0";
     int command;
@@ -324,8 +307,8 @@ RTC::ReturnCode_t DaqOperator::run_console_mode()
     FD_ZERO(&m_rset);
     FD_SET(0, &m_rset);
 
-    cerr    << "\033[1;0H";
-    // cerr    << " Command:\t"    << endl;
+    cerr    << "\033[0;0H";
+    cerr    << " Command:\t"    << endl;
     cerr    << " "
             << CMD_CONFIGURE   	<< ":configure  "
             << CMD_START       	<< ":start  "
@@ -333,7 +316,7 @@ RTC::ReturnCode_t DaqOperator::run_console_mode()
             << CMD_UNCONFIGURE	<< ":unconfigure  "
             << CMD_PAUSE       	<< ":pause  "
             << CMD_RESUME      	<< ":resume  " 
-            << CMD_FIX             << ":fix"      << endl;
+            << CMD_FIX          << ":fix"      << endl;
                         
     cerr    << endl << " RUN NO: " << m_runNumber; //endl = "input..."
     cerr    << endl << " start at: " << m_start_date
@@ -376,7 +359,7 @@ RTC::ReturnCode_t DaqOperator::run_console_mode()
                  << check_state(status->state); // state(LOADED,CONFIGURED,RUNNING)
             
             if (status->comp_status == COMP_FATAL) {
-                shogi[i] = 1;
+                errFlag[i] = 1;
                 cerr << "\033[31m" << setw(14) << right
                      << check_compStatus(status->comp_status) //status(COMP_*)
                      << "\033[39m" << endl;
@@ -385,14 +368,14 @@ RTC::ReturnCode_t DaqOperator::run_console_mode()
                 errStatus = m_daqservices[i]->getFatalStatus();                    
                 
                 /** Use error console display **/                    
-                d_err_compname[i] = compname;
-                d_err_message[i] = errStatus;
+                d_compname[i] = compname;
+                d_message[i] = errStatus;
                 
                 m_state = ERROR;
                 
             } ///if = red word descript
             else {
-                shogi[i] = 0;
+                errFlag[i] = 0;
                 cerr << setw(14) << right
                      << check_compStatus(status->comp_status) 
                      << endl;
@@ -406,28 +389,6 @@ RTC::ReturnCode_t DaqOperator::run_console_mode()
                  
             sleep(1);
         }
-    }
-    
-    /* Display Error Console */
-    int count = 0;
-    for (int i = (m_comp_num - 1); i >= 0; i--) {
-    	if (shogi[i] == 1){
-    		count++;
-    		cerr << " [" << "\033[31m" << "ERROR"  << count << "\033[39m" << "] "
-                 << d_err_compname[i] << "\t\033[D<= "
-                 << d_err_message[i]->description << endl;
-        }
-        
-        if (d_status[i]->comp_status == COMP_FIXWAIT) {
-            cerr << "Fix wait.." << endl;
-        }
-        
-    }///for
-    
-    if (m_state == ERROR) {
-        cerr << "\033[;13H" << "\033[31m" // [height=13, [31m=red
-             << "### ERR_STATE 2:Stop(All comp), 6:Stop(Error comp only)"
-             << "\033[39m" << endl;
     }
     
     // command check
@@ -483,7 +444,7 @@ RTC::ReturnCode_t DaqOperator::run_console_mode()
                 break;
             if (m_status == ERROR) {
                 case CMD_FIX:
-                    comp_restart_procedure(shogi);
+                    comp_restart_procedure(errFlag);
                     m_state = RUNNING;
                     break;
             }
@@ -514,7 +475,7 @@ RTC::ReturnCode_t DaqOperator::run_console_mode()
                 m_state = CONFIGURED;///
                 break;
             case CMD_FIX:
-                comp_stop_procedure(shogi);
+                comp_stop_procedure(errFlag);
                 m_state = CONFIGURED;///
                 break;
             default:
@@ -524,96 +485,29 @@ RTC::ReturnCode_t DaqOperator::run_console_mode()
             break;
         }/// switch (m_state) 
     }///if
-    
-    /*
-    else 
-    {
-        cerr << " " << endl;
-        cerr << "\033[;H\033[2J" << "\033[6;0H" << endl;
-        cerr << setw(16) << right << "GROUP:COMP_NAME"
-             << setw(22) << right << "EVENT_SIZE"
-             << setw(12) << right << "STATE"
-             << setw(14) << right << "COMP_STATUS" << endl;
-		
-        string compname;
-        for (int i = (m_comp_num - 1); i >= 0; i--) {
-            
-            try {
-                RTC::ConnectorProfileList_var myprof
-                    = m_DaqServicePorts[i]->get_connector_profiles();
-				
-                compname = myprof[0].name; //compname = "group*:*"
-				//cerr << "COMPNAME: " << compname << endl;
-                
-                Status_var status;
-                status = m_daqservices[i]->getStatus(); // status input
-                                
-                cerr << " "  << setw(22) << left
-                     << myprof[0].name //group:comp_name
-                     << '\t'
-                     << setw(14) << right
-                     << status->event_size // データサイズ(byte)
-                     << setw(12) << right
-                     << check_state(status->state); // state(LOADED,CONFIGURED,RUNNING)
-                
-                if (status->comp_status == COMP_FATAL) {
-                    cerr << "\033[31m" << setw(14) << right
-                         << check_compStatus(status->comp_status) //status(COMP_*)
-                         << "\033[39m" << endl;
 
-                    FatalErrorStatus_var errStatus;
-                    errStatus = m_daqservices[i]->getFatalStatus();                    
-                    
-                    // Use error console display                
-                    d_err_compname[i] = compname;
-                    d_err_message[i] = errStatus;
-                    
-                    m_state = ERROR;
-                    
-                } ///if = red word descript
-                else {
-                    cerr << setw(14) << right
-                         << check_compStatus(status->comp_status) 
-                         << endl;
-				
-                } ///else = white word descript         
-                
-            } catch(...) {
-                cerr << " ### ERROR: " << compname 
-					 << " : cannot connect" 
-					 << endl;
-					 
-                sleep(1);
-            }
-        }///for
-         */
-         
-        //cerr << endl;
-
-        /* Display Error Console */
-        //int count = 0;
-
-        //for (int i = (m_comp_num - 1); i >= 0; i--) {
-		//	if (shogi[i] == 1){
-		//		count++;
-		//		cerr<< " [" << "\033[31m" << "ERROR"  << count << "\033[39m" << "] "
-        //            << d_err_compname[i] << "\t\033[D<= "
-        //            << d_err_message[i]->description << endl;
-               
-			/*
-			if (d_status[i]->comp_status == COMP_FIXWAIT) {
-				cerr << "Fix wait.." << endl;
-			}*/
-			//}            
-		//}///for
-        
-        /*if (m_state == ERROR) {
-			cerr << "\033[;13H\033[31m" // [height=13, [31m=red
-				 << "### ERR_STATE 2:Stop(All comp), 6:Stop(Error comp only)"
-				 << "\033[39m" << endl;
+    /* Display Error Console */
+    int count = 0;
+    for (int i = (m_comp_num - 1); i >= 0; i--) {
+        if (errFlag[i] == 1){
+            count++;
+            cerr << " [" << "\033[31m" << "ERROR"  << count << "\033[39m" << "] "
+                    << d_compname[i] << "\t\033[D<= "
+                    << d_message[i]->description << endl;
         }
-        */        
-    //}///if..else
+        
+        if (d_status[i]->comp_status == COMP_FIXWAIT) {
+            cerr << "Fix wait.." << endl;
+        }
+        
+    }///for
+    
+    if (m_state == ERROR) {
+        cerr << "\033[;13H" << "\033[31m" // [height=13, [31m=red
+                << "### ERR_STATE 2:Stop(All comp), 6:Stop(Error comp only)"
+                << "\033[39m" << endl;
+    }
+
     return RTC::RTC_OK;
 }
 
