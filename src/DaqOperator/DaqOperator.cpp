@@ -400,7 +400,7 @@ RTC::ReturnCode_t DaqOperator::run_console_mode()
                 m_state = CONFIGURED;///
                 break;
             case CMD_FIX:
-                cerr << "\033[0J";
+                cerr << "\033[0;13H\033[0J";
                 comp_restart_procedure();
                 for (int i = (m_comp_num - 1); i >= 0; i--) {
                     Status_var checkStatus;
@@ -472,8 +472,13 @@ RTC::ReturnCode_t DaqOperator::run_console_mode()
                     cerr << setw(14) << right
                          << check_compStatus(status->comp_status) 
                          << endl;
-                
-                } ///else = white word descript         
+                } ///else = white word descript
+
+                if (status->comp_status == COMP_FIXWAIT) {
+                    comp_restart_procedure();
+                    cerr << "\033[0;13H";
+                    cerr << "\033[38m" << "Fix wait." << "\033[39m" <<endl;
+                }
                 
             } catch(...) {
                 cerr << " ### ERROR: " << compname << " : cannot connect" << endl;                    
@@ -488,8 +493,7 @@ RTC::ReturnCode_t DaqOperator::run_console_mode()
     if (m_state == ERROR) {
         for (int i = (m_comp_num - 1); i >= 0; i--) {
             ++count;
-            int len;
-            if ((len = d_compname[i].length()) != 0) {
+            if (d_compname[i].length() != 0) {
                 cerr << " [" << "\033[31m" << "ERROR"  << count << "\033[39m" << "] "
                      << d_compname[i] << "\t\033[D<= "
                      << d_message[i]->description << endl;
@@ -550,14 +554,14 @@ int DaqOperator::comp_restart_procedure()
 
     try {
         for (int i = (m_comp_num - 1); i >= 0; i--) {
-            if (check_state(saveStatus[i]->state) == "CONFIGURED") {
+            if (check_state(saveStatus[i]->state) == "CONFIGURED" || saveStatus[i]->comp_status == COMP_FIXWAIT) {
                 set_runno(m_daqservices[i], m_runNumber);
                 check_done(m_daqservices[i]);
             }
 		}
 	
 		for (int i = (m_comp_num - 1); i >= 0; i--) {
-            if (check_state(saveStatus[i]->state) == "CONFIGURED") {
+            if (check_state(saveStatus[i]->state) == "CONFIGURED" || saveStatus[i]->comp_status == COMP_FIXWAIT) {
                 set_command(m_daqservices[i], CMD_START);
                 check_done(m_daqservices[i]);
             }

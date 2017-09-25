@@ -359,8 +359,8 @@ namespace DAQMW
             m_isOnError = false;
             // reset_onError();
         }
-        /*******************************************************************/
-
+        /********************************************************/
+        
         void init_state_table()
         {
             m_daq_trans_func[CMD_CONFIGURE]   = &DAQMW::DaqComponentBase::daq_base_configure;
