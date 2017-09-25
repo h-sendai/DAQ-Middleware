@@ -347,7 +347,9 @@ RTC::ReturnCode_t DaqOperator::run_console_mode()
     
     cerr << " " << endl;
     cerr << "\033[;H\033[2J";
-    cerr << "\033[6;0H" << endl;
+    cerr    << "\033[0;0H";
+    cerr    << " Command:\t"    << endl;
+    cerr << "\033[5;0H" << endl;
     cerr << setw(16) << right << "GROUP:COMP_NAME"
          << setw(22) << right << "EVENT_SIZE"
          << setw(12) << right << "STATE"
@@ -407,6 +409,7 @@ RTC::ReturnCode_t DaqOperator::run_console_mode()
             sleep(1);
         }
     }
+    cerr << endl;
     
     /* Display Error Console */
     int count = 0;
@@ -431,8 +434,6 @@ RTC::ReturnCode_t DaqOperator::run_console_mode()
     }
     
     // command check
-    cerr    << "\033[0;0H";
-    cerr    << " Command:\t"    << endl;
     
     if (FD_ISSET(0, &m_rset)) {
         char comm[2];
