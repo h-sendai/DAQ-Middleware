@@ -347,6 +347,8 @@ namespace DAQMW
             m_isOnError = true;
             set_status(COMP_FIXWAIT);
             throw DaqCompDefinedException(type, code);
+            m_isOnError = false;
+            // reset_onError();
         }
 
         void reboot_request(FatalType::Enum type, const char* desc, int code = -1)
@@ -354,6 +356,8 @@ namespace DAQMW
             m_isOnError = true;
             set_status(COMP_FIXWAIT);
             throw DaqCompUserException(type, desc, code);
+            m_isOnError = false;
+            // reset_onError();
         }
         /********************************************************/
         

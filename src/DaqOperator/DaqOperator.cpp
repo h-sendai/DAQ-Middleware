@@ -564,7 +564,7 @@ int DaqOperator::comp_restart_procedure()
     try
     {
         for (int i = (m_comp_num - 1); i >= 0; i--) {
-            if (save_status[i]->comp_status == COMP_FIXWAIT) {
+            if (save_status[i]->comp_status == COMP_FATAL) {
                 set_command(m_daqservices[i], CMD_STOP);
                 check_done(m_daqservices[i]);
             }
@@ -584,7 +584,7 @@ int DaqOperator::comp_restart_procedure()
 		}
 	
 		for (int i = (m_comp_num - 1); i >= 0; i--) {
-            if (save_status[i]->comp_status == COMP_FIXWAIT) {
+            if (check_state(save_status[i]->state) == "CONFIGURED" || save_status[i]->comp_status == COMP_FIXWAIT) {
                 set_command(m_daqservices[i], CMD_START);
                 check_done(m_daqservices[i]);
             }
