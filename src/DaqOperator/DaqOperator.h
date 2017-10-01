@@ -141,7 +141,7 @@ private:
     int putstatus_procedure();
     int log_procedure();
     // New fanctions
-    //int comp_stop_procedure(); 
+    int comp_stop_procedure(int i); 
     int comp_restart_procedure(); 
     
     RTC::ReturnCode_t run_console_mode();

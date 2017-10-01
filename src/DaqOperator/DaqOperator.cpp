@@ -454,6 +454,7 @@ RTC::ReturnCode_t DaqOperator::run_console_mode()
                      << check_state(status->state); // state(LOADED,CONFIGURED,RUNNING)
                 
                 if (status->comp_status == COMP_FATAL) {
+                    comp_stop_procedure(i);
                     cerr << "\033[31m" << setw(14) << right
                          << check_compStatus(status->comp_status) //status(COMP_*)
                          << "\033[39m" << endl;
@@ -492,8 +493,7 @@ RTC::ReturnCode_t DaqOperator::run_console_mode()
     if (m_state == ERROR) {
         for (int i = (m_comp_num - 1); i >= 0; i--) {
             ++count;
-            int len = 0;
-            if ((len = d_compname[i].length()) != 0) {
+            if (d_compname[i].length() != 0) {
                 cerr << " [" << "\033[31m" << "ERROR"  << count << "\033[39m" << "] "
                      << d_compname[i] << "\t\033[D<= "
                      << d_message[i]->description << endl;
@@ -510,39 +510,30 @@ RTC::ReturnCode_t DaqOperator::run_console_mode()
     return RTC::RTC_OK;
 }
 
-/* 
-int DaqOperator::comp_stop_procedure()
+int DaqOperator::comp_stop_procedure(int i)
 {
     m_com_completed = false;
 
-    Status_var save_status[m_comp_num];
-    for (int i = (m_comp_num - 1); i >= 0; i--) {
-        save_status[i] = m_daqservices[i]->getStatus();
-    }
-
     try
     {
-        for (int i = (m_comp_num - 1); i >= 0; i--) {
-            if (save_status[i]->comp_status == COMP_FATAL) {
-                set_command(m_daqservices[i], CMD_STOP);
-                check_done(m_daqservices[i]);
-            }
-        }
+        set_command(m_daqservices[i], CMD_STOP);
+        check_done(m_daqservices[i]);
     } catch (...) {
         cerr << "### ERROR: DaqOperator: Failed to stop Component.\n";
         return 1;
     }
     
+    /* 
     time_t now = time(0);
     m_stop_date = asctime(localtime(&now));
     m_stop_date[m_stop_date.length()-1] = ' ';
     m_stop_date.erase(0, 4);
-
+    */
+    
     m_com_completed = true;  
     m_state = ERROR;
     return 0;
 }
-*/
 
 int DaqOperator::comp_restart_procedure()
 {
@@ -556,35 +547,21 @@ int DaqOperator::comp_restart_procedure()
     m_stop_date = "";
     */
 
-    Status_var save_status[m_comp_num];
+    Status_var saveStatus[m_comp_num];
     for (int i = (m_comp_num - 1); i >= 0; i--) {
-        save_status[i] = m_daqservices[i]->getStatus();
+        saveStatus[i] = m_daqservices[i]->getStatus();
     }
 
-    try
-    {
+    try {
         for (int i = (m_comp_num - 1); i >= 0; i--) {
-            if (save_status[i]->comp_status == COMP_FATAL) {
-                set_command(m_daqservices[i], CMD_STOP);
-                check_done(m_daqservices[i]);
-            }
-        }
-    } catch (...) {
-        cerr << "### ERROR: DaqOperator: Failed to stop Component.\n";
-        return 1;
-    }
-
-    try 
-    {
-        for (int i = (m_comp_num - 1); i >= 0; i--) {
-            if (check_state(save_status[i]->state) == "CONFIGURED" || save_status[i]->comp_status == COMP_FIXWAIT) {
+            if (check_state(saveStatus[i]->state) == "CONFIGURED" || saveStatus[i]->comp_status == COMP_FIXWAIT) {
                 set_runno(m_daqservices[i], m_runNumber);
                 check_done(m_daqservices[i]);
             }
 		}
 	
 		for (int i = (m_comp_num - 1); i >= 0; i--) {
-            if (check_state(save_status[i]->state) == "CONFIGURED" || save_status[i]->comp_status == COMP_FIXWAIT) {
+            if (check_state(saveStatus[i]->state) == "CONFIGURED" || saveStatus[i]->comp_status == COMP_FIXWAIT) {
                 set_command(m_daqservices[i], CMD_START);
                 check_done(m_daqservices[i]);
             }
@@ -594,7 +571,6 @@ int DaqOperator::comp_restart_procedure()
         cerr << "### ERROR: DaqOperator: Failed to start Component.\n";
         return 1;
     }
-
     m_com_completed = true;
     return 0;
 }
