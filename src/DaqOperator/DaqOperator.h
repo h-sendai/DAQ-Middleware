@@ -141,7 +141,7 @@ private:
     int putstatus_procedure();
     int log_procedure();
     // New fanctions
-    //int comp_stop_procedure(); 
+    int comp_stop_procedure(); 
     int comp_restart_procedure(); 
     
     RTC::ReturnCode_t run_console_mode();
@@ -185,7 +185,11 @@ private:
 
     std::string m_config_file;
     std::string m_config_file_tmp;
-	
+    
+    // New variables
+    bool errFlag;
+    bool moniFlag;
+
     bool m_debug;
 };
 
