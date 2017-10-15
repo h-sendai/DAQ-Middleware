@@ -1,6 +1,8 @@
 #include "daqmw-emulator.h"
 #include "my_signal.h"
 
+#define DEFAULT_PORT	2222
+
 int debug   = 0;
 int rate    = DEFAULT_BYTES_RATE;
 int bufsize = DEFAULT_BUFSIZE;

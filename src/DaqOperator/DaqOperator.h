@@ -45,7 +45,7 @@
 using namespace RTC;
 
 // error code for dom
-static const int RET_CODE_IO_ERR		= (-14);
+static const int RET_CODE_IO_ERR		    = (-14);
 static const int RET_CODE_REQ_INV_IN_STS	= (-26);
 
 struct serviceInfo {
@@ -91,7 +91,7 @@ public:
     bool parse_body(const char* buf, const std::string tagname);
 
     // for callback
-    int command_configure();
+	int command_configure();
     int command_unconfigure();
     int command_start();
     int command_stop();
@@ -107,7 +107,9 @@ public:
     int command_save();
     int command_confirmconnection();
     int command_dummy();
-
+    // New command(fix)
+    int command_fix(); 
+    
     void set_console_flag(bool console);
     void set_port_no(int port);
     std::string getConfFilePath();
@@ -128,7 +130,7 @@ private:
     int check_done(RTC::CorbaConsumer<DAQService> daqservice);
     int set_sitcp_num(int sitcp_num);
     int set_service_list();
-
+        
     int configure_procedure();
     int unconfigure_procedure();
     int start_procedure();
@@ -138,7 +140,14 @@ private:
     int abort_procedure();
     int putstatus_procedure();
     int log_procedure();
-
+    
+    // New fanctions
+    int comp_stop_procedure(); 
+    int comp_restart_procedure(); 
+    int fix0_unconfigure_procedure();
+    int fix1_configure_procedure();
+    int fix2_restart_procedure(); 
+    
     RTC::ReturnCode_t run_console_mode();
     RTC::ReturnCode_t run_http_mode();
     ///std::string check_fatal(FatalErrorStatus errStatus);
@@ -180,6 +189,10 @@ private:
 
     std::string m_config_file;
     std::string m_config_file_tmp;
+    
+    // New variables
+    bool errFlag;
+    bool moniFlag;
 
     bool m_debug;
 };

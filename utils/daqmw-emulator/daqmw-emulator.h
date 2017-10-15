@@ -29,7 +29,6 @@ extern int debug;
 extern long long so_far_bytes;
 extern int no_random_data;
 
-#define DEFAULT_PORT       2222
 #define DEFAULT_BUFSIZE    1024
 #define DEFAULT_BYTES_RATE 8 * 1024
 #define LISTENQ            10

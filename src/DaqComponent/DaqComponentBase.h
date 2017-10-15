@@ -324,6 +324,8 @@ namespace DAQMW
         virtual int daq_stop()        = 0;
         virtual int daq_pause()       = 0;
         virtual int daq_resume()      = 0;
+        virtual int daq_error()		= 0;
+        virtual int daq_fix()			= 0;
 
         virtual int parse_params( ::NVList* list ) = 0;
 
@@ -340,7 +342,23 @@ namespace DAQMW
             set_status(COMP_FATAL);
             throw DaqCompUserException(type, desc, code);
         }
+        
+		/** set_status(COMP_FIXWAIT) ****************************/
+		void reboot_request(FatalType::Enum type, int code = -1)
+        {
+			m_isOnError = false;
+            set_status(COMP_FIXWAIT);
+            throw DaqCompDefinedException(type, code);
+        }
 
+        void reboot_request(FatalType::Enum type, const char* desc, int code = -1)
+        {
+			m_isOnError = false;
+            set_status(COMP_FIXWAIT);
+            throw DaqCompUserException(type, desc, code);
+        }
+        /********************************************************/
+        
         void init_state_table()
         {
             m_daq_trans_func[CMD_CONFIGURE]   = &DAQMW::DaqComponentBase::daq_base_configure;
@@ -349,11 +367,14 @@ namespace DAQMW
             m_daq_trans_func[CMD_RESUME]      = &DAQMW::DaqComponentBase::daq_resume;
             m_daq_trans_func[CMD_STOP]        = &DAQMW::DaqComponentBase::daq_base_stop;
             m_daq_trans_func[CMD_UNCONFIGURE] = &DAQMW::DaqComponentBase::daq_base_unconfigure;
-
+			m_daq_trans_func[CMD_FIX]			= &DAQMW::DaqComponentBase::daq_base_fix;
+			m_daq_trans_func[CMD_ERROR]		= &DAQMW::DaqComponentBase::daq_base_error;
+			
             m_daq_do_func[LOADED]     = &DAQMW::DaqComponentBase::daq_base_dummy;
             m_daq_do_func[CONFIGURED] = &DAQMW::DaqComponentBase::daq_base_dummy;
             m_daq_do_func[RUNNING]    = &DAQMW::DaqComponentBase::daq_run;
             m_daq_do_func[PAUSED]     = &DAQMW::DaqComponentBase::daq_base_dummy;
+            m_daq_do_func[ERROR]	   = &DAQMW::DaqComponentBase::daq_base_dummy;
         }
 
         int reset_timer()
@@ -386,7 +407,7 @@ namespace DAQMW
             RTC::DataPortStatus::Enum out_status = myOutPort.getStatus(index);
             if(m_debug) {
                 std::cerr << "OutPort status: "
-                          << RTC::DataPortStatus::toString(out_status) 
+                          << RTC::DataPortStatus::toString(out_status)
                           << std::endl;
             }
             switch(out_status) {
@@ -461,7 +482,7 @@ namespace DAQMW
                           << std::endl;
                 ret = BUF_FATAL;
                 break;
-                /*** Could never happen in this case ***/
+            /*** Could never happen in this case ***/
             case RTC::DataPortStatus::BUFFER_FULL:
             case RTC::DataPortStatus::RECV_TIMEOUT:
             case RTC::DataPortStatus::SEND_TIMEOUT:
@@ -733,7 +754,27 @@ namespace DAQMW
             daq_pause();
             return 0;
         }
+		
+		int daq_base_error()
+		{
+			set_status(COMP_FIXWAIT);
+			daq_error();
+			return 0;
+		}
+		
+		int daq_base_fix()
+		{
+			if (m_isOnError) {
+                reset_onError(); /// reset error flag
+            }
 
+            m_err_message = "";
+            set_status(COMP_WORKING);
+            daq_fix();
+
+            return 0;
+		}
+		
         int get_command()
         {
             m_command = m_daq_service0.getCommand();
@@ -817,6 +858,14 @@ namespace DAQMW
                 m_state_prev = RUNNING;
                 m_state = LOADED;
                 break;
+            case CMD_FIX:
+				m_state_prev = ERROR;
+				m_state = RUNNING;
+				break;
+			case CMD_ERROR:
+				m_state_prev = RUNNING;
+				m_state = ERROR;
+				break;
             default:
                 //status = false;
                 ret = false;
