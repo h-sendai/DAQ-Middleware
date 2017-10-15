@@ -490,7 +490,6 @@ RTC::ReturnCode_t DaqOperator::run_console_mode()
                      << check_state(status->state); // state(LOADED,CONFIGURED,RUNNING)
                 
                 if (status->comp_status == COMP_FATAL) {
-                    //Read message
                     cerr << "\033[31m" << setw(14) << right
                          << check_compStatus(status->comp_status) //status(COMP_*)
                          << "\033[39m" << endl;
@@ -634,14 +633,13 @@ int DaqOperator::fix2_restart_procedure()
 			}
         }
 
-        for (int i = 0; i< m_comp_num; i++) {
-            status = m_daqservices[i]->getStatus();
-			if (status->state == CONFIGURED) {
-				set_command(m_daqservices[i], CMD_START);
-				check_done(m_daqservices[i]);
-			}
-        }
-
+      for (int i = 0; i< m_comp_num; i++) {
+        status = m_daqservices[i]->getStatus();
+	  		if (status->state == CONFIGURED) {
+		  		set_command(m_daqservices[i], CMD_START);
+			  	check_done(m_daqservices[i]);
+			  }
+      }
     } catch (...) {
         cerr << "### ERROR: DaqOperator: Failed to start Component.\n";
         return 1;
@@ -670,11 +668,13 @@ int DaqOperator::comp_stop_procedure()
         return 1;
     }
     
+    /* 
     time_t now = time(0);
     m_stop_date = asctime(localtime(&now));
     m_stop_date[m_stop_date.length()-1] = ' ';
     m_stop_date.erase(0, 4);
-
+    */
+    
     m_com_completed = true;  
     return 0;
 }
@@ -753,17 +753,15 @@ int DaqOperator::comp_restart_procedure()
 		}
 	
 		for (int i = (m_comp_num - 1); i >= 0; i--) {
-            if (status->comp_status == COMP_FATAL) {
-                set_command(m_daqservices[i], CMD_START);
-                check_done(m_daqservices[i]);
-            }
-        }
-
+          if (status->comp_status == COMP_FATAL) {
+              set_command(m_daqservices[i], CMD_START);
+              check_done(m_daqservices[i]);
+          }
+      }
     } catch (...) {
         cerr << "### ERROR: DaqOperator: Failed to start Component.\n";
         return 1;
     }
-
     errFlag = false;
     m_com_completed = true;
     return 0;
