@@ -144,7 +144,8 @@ private:
     // New fanctions
     int comp_stop_procedure(); 
     int comp_restart_procedure(); 
-    int fix0_unconfigure_procedure();
+    int fix_machine();
+    //int fix0_unconfigure_procedure();
     int fix1_configure_procedure();
     int fix2_restart_procedure(); 
     
