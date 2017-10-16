@@ -404,10 +404,8 @@ RTC::ReturnCode_t DaqOperator::run_console_mode()
                 break;
             case CMD_FIX:
                 comp_stop_procedure();
-                sleep(1);
-                
-                //fix0_unconfigure_procedure();
                 m_state = STOP;
+                sleep(1);
             
                 fix1_configure_procedure();
                 
@@ -452,49 +450,46 @@ RTC::ReturnCode_t DaqOperator::run_console_mode()
             }
             break;
 
-        while (m_state == STOP){
-            cerr << "\033[0;13H\033[0J"
+        case STOP:
+        cerr << "\033[0;13H\033[0J"
             << "\033[34m"
             << " ### Daq system stopping #Comand 1>reboot 2>stop"
             << "\033[39m"  << endl;
-
-            case STOP:
-            switch ((DAQCommand)command) {
-                case CMD_STOP:
-                    stop_procedure();
-                    m_state = CONFIGURED;///
+        switch ((DAQCommand)command) {
+        case CMD_STOP:
+            stop_procedure();
+            m_state = CONFIGURED;///
+            break;
+        case CMD_START:
+            cerr << "\033[4;20H"; // default=3;20H
+            cerr << "input RUN NO(same run no is prohibited):   ";
+            cerr << "\033[4;62H";
+            cin >> srunNo;
+            m_runNumber = atoi(srunNo.c_str());
+            fix2_restart_procedure();
+            for (int i = (m_comp_num - 1); i >= 0; i--) {
+                chkStatus = m_daqservices[i]->getStatus();
+                if(chkStatus->state == CONFIGURED ||
+                    chkStatus->comp_status == COMP_FATAL) {
+                    cerr << "\033[0;13H\033[0J"
+                        << "\033[34m"
+                        << "Comp broken" 
+                        << "\033[39m" << endl;
+                    errFlag = true;
                     break;
-                case CMD_START:
-                    cerr << "\033[4;20H"; // default=3;20H
-                    cerr << "input RUN NO(same run no is prohibited):   ";
-                    cerr << "\033[4;62H";
-                    cin >> srunNo;
-                    m_runNumber = atoi(srunNo.c_str());
-                    fix2_restart_procedure();
-                    for (int i = (m_comp_num - 1); i >= 0; i--) {
-                        chkStatus = m_daqservices[i]->getStatus();
-                        if(chkStatus->state == CONFIGURED ||
-                            chkStatus->comp_status == COMP_FATAL) {
-                            cerr << "\033[0;13H\033[0J"
-                                << "\033[34m"
-                                << "Comp broken" 
-                                << "\033[39m" << endl;
-                            errFlag = true;
-                            break;
-                        }
-                    }
-                    if (errFlag == false) {
-                        m_state = RUNNING;
-                    } else {
-                        m_state = STOP;
-                    }
-                    break;
-                default:
-                    cerr << " Bad Command:" << endl;
-                    break;
+                }
             }
-            break;  
-        }/// while       
+            if (errFlag == false) {
+                m_state = RUNNING;
+            } else {
+                m_state = STOP;
+            }
+            break;
+        default:
+            cerr << " Bad Command:" << endl;
+            break;
+            }
+            break;     
         }/// switch (m_state) 
     }
     else {
@@ -600,27 +595,22 @@ int DaqOperator::fix0_unconfigure_procedure()
 
 int DaqOperator::fix1_configure_procedure()
 {
-
-    {
-        m_com_completed = false;
-        try {
-            Status_var status;
-            for (int i = 0; i< m_comp_num; i++) {
-                status = m_daqservices[i]->getStatus();
-                if (status->state == ERROR) {
-                    set_command(m_daqservices[i], CMD_CONFIGURE);
-                    check_done(m_daqservices[i]);
-                }
+    m_com_completed = false;
+    
+    try {
+        Status_var status;
+        for (int i = 0; i< m_comp_num; i++) {
+            status = m_daqservices[i]->getStatus();
+            if (status->state == STOP) {
+                set_command(m_daqservices[i], CMD_UNCONFIGURE);
+                check_done(m_daqservices[i]);
             }
-        } catch(...) {
-            cerr << "### ERROR: DaqOperator: Failed to unconfigure Component.\n";
-            return 1;
         }
-        m_com_completed = true;
-        return 0;
+    } catch(...) {
+        cerr << "### ERROR: DaqOperator: Failed to unconfigure Component.\n";
+        return 1;
     }
 
-    m_com_completed = false;
     ConfFileParser MyParser;
     ParamList paramList;
     CompGroupList groupList;
