@@ -65,6 +65,7 @@ namespace DAQMW
               m_isOnError(false),
               m_isTimerAlarm(false),
               m_has_printed_error_log(false),
+              m_error_flag(false),
               m_debug(false)
         {
             mytimer = new Timer(STATUS_CYCLE_SEC);
@@ -332,6 +333,7 @@ namespace DAQMW
         void fatal_error_report(FatalType::Enum type, int code = -1)
         {
             m_isOnError = true;
+            m_error_flag = true;
             set_status(COMP_FATAL);
             throw DaqCompDefinedException(type, code);
         }
@@ -339,23 +341,20 @@ namespace DAQMW
         void fatal_error_report(FatalType::Enum type, const char* desc, int code = -1)
         {
             m_isOnError = true;
+            m_error_flag = true;
             set_status(COMP_FATAL);
             throw DaqCompUserException(type, desc, code);
         }
         
-		/** set_status(COMP_FIXWAIT) ****************************/
+		/********************************************************/
 		void reboot_request(FatalType::Enum type, int code = -1)
         {
-			m_isOnError = false;
             set_status(COMP_FIXWAIT);
-            throw DaqCompDefinedException(type, code);
         }
 
         void reboot_request(FatalType::Enum type, const char* desc, int code = -1)
         {
-			m_isOnError = false;
             set_status(COMP_FIXWAIT);
-            throw DaqCompUserException(type, desc, code);
         }
         /********************************************************/
         
@@ -367,14 +366,14 @@ namespace DAQMW
             m_daq_trans_func[CMD_RESUME]      = &DAQMW::DaqComponentBase::daq_resume;
             m_daq_trans_func[CMD_STOP]        = &DAQMW::DaqComponentBase::daq_base_stop;
             m_daq_trans_func[CMD_UNCONFIGURE] = &DAQMW::DaqComponentBase::daq_base_unconfigure;
-			m_daq_trans_func[CMD_FIX]			= &DAQMW::DaqComponentBase::daq_base_fix;
+			m_daq_trans_func[CMD_FIX]		= &DAQMW::DaqComponentBase::daq_base_fix;
 			m_daq_trans_func[CMD_ERROR]		= &DAQMW::DaqComponentBase::daq_base_error;
 			
             m_daq_do_func[LOADED]     = &DAQMW::DaqComponentBase::daq_base_dummy;
             m_daq_do_func[CONFIGURED] = &DAQMW::DaqComponentBase::daq_base_dummy;
             m_daq_do_func[RUNNING]    = &DAQMW::DaqComponentBase::daq_run;
             m_daq_do_func[PAUSED]     = &DAQMW::DaqComponentBase::daq_base_dummy;
-            m_daq_do_func[ERROR]	   = &DAQMW::DaqComponentBase::daq_base_dummy;
+            m_daq_do_func[ERROR]	  = &DAQMW::DaqComponentBase::daq_base_dummy;
         }
 
         int reset_timer()
@@ -754,7 +753,8 @@ namespace DAQMW
             daq_pause();
             return 0;
         }
-		
+        
+        /******************************************************/
 		int daq_base_error()
 		{
 			set_status(COMP_FIXWAIT);
@@ -767,14 +767,14 @@ namespace DAQMW
 			if (m_isOnError) {
                 reset_onError(); /// reset error flag
             }
-
             m_err_message = "";
             set_status(COMP_WORKING);
             daq_fix();
-
+            m_error_flag = false;
             return 0;
 		}
-		
+        /*******************************************************/
+        
         int get_command()
         {
             m_command = m_daq_service0.getCommand();
@@ -858,14 +858,16 @@ namespace DAQMW
                 m_state_prev = RUNNING;
                 m_state = LOADED;
                 break;
+            /* ***************************** */
+            case CMD_ERROR:
+                m_state_prev = RUNNING;
+                m_state = ERROR;
+                break;
             case CMD_FIX:
 				m_state_prev = ERROR;
 				m_state = RUNNING;
 				break;
-			case CMD_ERROR:
-				m_state_prev = RUNNING;
-				m_state = ERROR;
-				break;
+            /* ***************************** */
             default:
                 //status = false;
                 ret = false;
@@ -873,7 +875,6 @@ namespace DAQMW
             }
             return ret;
         }
-
     }; /// class
 } /// namespace
 

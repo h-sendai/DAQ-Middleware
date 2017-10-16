@@ -543,8 +543,9 @@ RTC::ReturnCode_t DaqOperator::run_console_mode()
                 } ///else = white word descript
                 
             } catch(...) {
-                cerr << " ### ERROR: " << compname << " : cannot connect" << endl;                    
-                sleep(1);
+                cerr << " ### ERROR: " << compname 
+                    << " : cannot connect" << endl;
+                usleep(100);               
             }
         }
     }
