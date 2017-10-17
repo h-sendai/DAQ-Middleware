@@ -318,7 +318,7 @@ RTC::ReturnCode_t DaqOperator::run_console_mode()
             << CMD_UNCONFIGURE	<< ":unconfigure  "
             << CMD_PAUSE       	<< ":pause  "
             << CMD_RESUME      	<< ":resume  " 
-            << CMD_FIX          << ":fix" << endl;
+            << CMD_FIX          << ":fix"   << endl;
                         
     cerr    << endl << " RUN NO: " << m_runNumber; //endl = "input..."
     cerr    << endl << " start at: " << m_start_date
@@ -336,6 +336,7 @@ RTC::ReturnCode_t DaqOperator::run_console_mode()
         if ( read(0, comm, sizeof(comm)) == -1) { //read(0:stdin))
             return RTC::RTC_OK;
         }
+
         command = (int)(comm[0] - '0');
         
         switch (m_state) {	// m_state init (LOADED)
@@ -432,7 +433,7 @@ RTC::ReturnCode_t DaqOperator::run_console_mode()
                         break;
                     }
                 }
-            
+
                 if (errFlag == false) {
                     m_state = RUNNING;
                 }
@@ -451,45 +452,45 @@ RTC::ReturnCode_t DaqOperator::run_console_mode()
             break;
 
         case STOP:
-        cerr << "\033[0;13H\033[0J"
-            << "\033[34m"
-            << " ### Daq system stopping #Comand 1>reboot 2>stop"
-            << "\033[39m"  << endl;
-        switch ((DAQCommand)command) {
-        case CMD_STOP:
-            stop_procedure();
-            m_state = CONFIGURED;///
-            break;
-        case CMD_START:
-            cerr << "\033[4;20H"; // default=3;20H
-            cerr << "input RUN NO(same run no is prohibited):   ";
-            cerr << "\033[4;62H";
-            cin >> srunNo;
-            m_runNumber = atoi(srunNo.c_str());
-            fix2_restart_procedure();
-            for (int i = (m_comp_num - 1); i >= 0; i--) {
-                chkStatus = m_daqservices[i]->getStatus();
-                if(chkStatus->state == CONFIGURED ||
-                    chkStatus->comp_status == COMP_FATAL) {
-                    cerr << "\033[0;13H\033[0J"
-                        << "\033[34m"
-                        << "Comp broken" 
-                        << "\033[39m" << endl;
-                    errFlag = true;
-                    break;
+            cerr << "\033[0;13H\033[0J"
+                << "\033[34m"
+                << " ### Daq system stopping #Comand 1>reboot 2>stop"
+                << "\033[39m"  << endl;
+            switch ((DAQCommand)command) {
+            case CMD_STOP:
+                stop_procedure();
+                m_state = CONFIGURED;///
+                break;
+            case CMD_START:
+                cerr << "\033[4;20H"; // default=3;20H
+                cerr << "input RUN NO(same run no is prohibited):   ";
+                cerr << "\033[4;62H";
+                cin >> srunNo;
+                m_runNumber = atoi(srunNo.c_str());
+                fix2_restart_procedure();
+                for (int i = (m_comp_num - 1); i >= 0; i--) {
+                    chkStatus = m_daqservices[i]->getStatus();
+                    if(chkStatus->state == CONFIGURED ||
+                        chkStatus->comp_status == COMP_FATAL) {
+                        cerr << "\033[0;13H\033[0J"
+                            << "\033[34m"
+                            << "Comp broken" 
+                            << "\033[39m" << endl;
+                        errFlag = true;
+                        break;
+                    }
                 }
-            }
-            if (errFlag == false) {
-                m_state = RUNNING;
-            } else {
-                m_state = STOP;
-            }
-            break;
-        default:
-            cerr << " Bad Command:" << endl;
-            break;
-            }
-            break;     
+                if (errFlag == false) {
+                    m_state = RUNNING;
+                } else {
+                    m_state = STOP;
+                }
+                break;
+            default:
+                cerr << " Bad Command:" << endl;
+                break;
+                }
+                break;
         }/// switch (m_state) 
     }
     else {
@@ -703,107 +704,15 @@ int DaqOperator::comp_stop_procedure()
         return 1;
     }
     
-    /* 
     time_t now = time(0);
     m_stop_date = asctime(localtime(&now));
     m_stop_date[m_stop_date.length()-1] = ' ';
     m_stop_date.erase(0, 4);
-    */
     
     m_com_completed = true;  
     return 0;
 }
 
-/*
-int DaqOperator::comp_restart_procedure()
-{
-    m_com_completed = false;
-    Status_var status;
-
-    ConfFileParser MyParser;
-    ParamList paramList;
-    ::NVList systemParamList;
-    ::NVList groupParamList;
-
-    try
-    {
-        paramList  = MyParser.getParamList();
-
-        for (int index = 0; index < (int)paramList.size(); index++) {
-            if (m_debug) {
-                cerr << "ID:" << paramList[index].getId() << endl;
-            }
-            ::NVList mylist = paramList[index].getList();
-        }
-    } catch (...) {
-        cerr << "### ERROR: DaqOperator: Failed to read the Configuration file\n";
-        cerr << "### Check the Configuration file\n";
-        return 1;
-    }
-
-    try {
-        for (int i = 0; i < (int)m_daqservices.size(); i++) {
-            RTC::ConnectorProfileList_var myprof
-                = m_DaqServicePorts[i]->get_connector_profiles();
-
-            char * id = CORBA::string_dup(myprof[0].name);
-
-            for (int j = 0; j < (int)paramList.size(); j++) {
-                if (paramList[j].getId() == id) {
-                    int len = paramList[j].getList().length();
-                    ::NVList mylist(len);
-                    mylist = paramList[j].getList();
-
-                    m_daqservices[i]->setCompParams( paramList[j].getList() );
-                }
-            }
-            CORBA::string_free(id);
-        }
-
-        for (int i = (m_comp_num - 1); i >= 0; i--) {
-            status = m_daqservices[i]->getStatus();
-            if (status->comp_status == COMP_FATAL) {
-                set_command(m_daqservices[i], CMD_CONFIGURE);
-                check_done(m_daqservices[i]);
-            }
-        }
-
-    } catch (...) {
-        cerr << "### ERROR: DaqOperator: Failed to stop Component.\n";
-        return 1;
-    }
- 
-    time_t now = time(0);
-    m_start_date = asctime(localtime(&now));
-    m_start_date[m_start_date.length()-1] = ' ';
-    m_start_date.erase(0, 4);
-    m_stop_date = "";
-
-    try {
-        for (int i = (m_comp_num - 1); i >= 0; i--) {
-            if (status->comp_status == COMP_FATAL) {
-                set_runno(m_daqservices[i], m_runNumber);
-                check_done(m_daqservices[i]);
-            }
-		}
-	
-		for (int i = (m_comp_num - 1); i >= 0; i--) {
-          if (status->comp_status == COMP_FATAL) {
-              set_command(m_daqservices[i], CMD_START);
-              check_done(m_daqservices[i]);
-          }
-      }
-    } catch (...) {
-        cerr << "### ERROR: DaqOperator: Failed to start Component.\n";
-        return 1;
-    }
-    errFlag = false;
-    m_com_completed = true;
-    return 0;
-}
-*/
-
-/*
 int DaqOperator::command_fix()
 {
     if (m_state != ERROR) {
@@ -829,7 +738,7 @@ int DaqOperator::command_fix()
     createDom_ok("Begin");
     return 0;
 }
-*/
+
 bool DaqOperator::parse_body(const char* buf, const string tagname)
 {
     XercesDOMParser* parser = new XercesDOMParser;

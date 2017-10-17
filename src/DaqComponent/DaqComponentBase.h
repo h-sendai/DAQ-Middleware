@@ -65,6 +65,7 @@ namespace DAQMW
               m_isOnError(false),
               m_isTimerAlarm(false),
               m_has_printed_error_log(false),
+              // New variable
               m_error_flag(false),
               m_debug(false)
         {
@@ -325,8 +326,8 @@ namespace DAQMW
         virtual int daq_stop()        = 0;
         virtual int daq_pause()       = 0;
         virtual int daq_resume()      = 0;
-        virtual int daq_error()		= 0;
-        virtual int daq_fix()			= 0;
+        virtual int daq_error()		  = 0;
+        virtual int daq_fix()	      = 0;
 
         virtual int parse_params( ::NVList* list ) = 0;
 
@@ -366,8 +367,8 @@ namespace DAQMW
             m_daq_trans_func[CMD_RESUME]      = &DAQMW::DaqComponentBase::daq_resume;
             m_daq_trans_func[CMD_STOP]        = &DAQMW::DaqComponentBase::daq_base_stop;
             m_daq_trans_func[CMD_UNCONFIGURE] = &DAQMW::DaqComponentBase::daq_base_unconfigure;
-			m_daq_trans_func[CMD_FIX]		= &DAQMW::DaqComponentBase::daq_base_fix;
-			m_daq_trans_func[CMD_ERROR]		= &DAQMW::DaqComponentBase::daq_base_error;
+			m_daq_trans_func[CMD_FIX]		  = &DAQMW::DaqComponentBase::daq_base_fix;
+			m_daq_trans_func[CMD_ERROR]	      = &DAQMW::DaqComponentBase::daq_base_error;
 			
             m_daq_do_func[LOADED]     = &DAQMW::DaqComponentBase::daq_base_dummy;
             m_daq_do_func[CONFIGURED] = &DAQMW::DaqComponentBase::daq_base_dummy;
