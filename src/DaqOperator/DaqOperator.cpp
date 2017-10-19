@@ -14,8 +14,6 @@
 
 #include "DaqOperator.h"
 
-using namespace std;
-
 static const char* daqserviceconsumer_spec[] =
 {
     "implementation_id", "DaqOperator",

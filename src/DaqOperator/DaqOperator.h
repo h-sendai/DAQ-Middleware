@@ -42,6 +42,7 @@
 #include "CreateDom.h"
 #include "ParameterServer.h"
 
+using namespace std;
 using namespace RTC;
 
 // error code for dom
