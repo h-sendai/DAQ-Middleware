@@ -104,6 +104,7 @@ namespace DAQMW
             USER_DEFINED_ERROR20,
             
             ///reboot_message
+            REBOOT,
             REBOOT_REQUEST,
 
             ///unknown error
@@ -165,6 +166,7 @@ namespace DAQMW
                 "USER_DEFINED_ERROR19",
                 "USER_DEFINED_ERROR20",
 
+                "REBOOT",
                 "REBOOT_REQUEST",
 
                 "UNKNOWN_FATAL_ERROR",

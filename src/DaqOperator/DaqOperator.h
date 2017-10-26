@@ -108,7 +108,7 @@ public:
     int command_confirmconnection();
     int command_dummy();
     // New command(fix)
-    int command_fix(); 
+    //int command_fix(); 
     
     void set_console_flag(bool console);
     void set_port_no(int port);
@@ -148,7 +148,7 @@ private:
     //int fix0_unconfigure_procedure();
     int fix1_configure_procedure();
     int fix2_restart_procedure(); 
-    
+
     RTC::ReturnCode_t run_console_mode();
     RTC::ReturnCode_t run_http_mode();
     ///std::string check_fatal(FatalErrorStatus errStatus);

@@ -137,6 +137,13 @@ int SkeletonSource::daq_resume()
     return 0;
 }
 
+int Skeleton::daq_errored()
+{
+    std::cerr << "*** SkeletonSource::errored" << std::endl;
+
+    return 0;
+}
+
 int SkeletonSource::read_data_from_detectors()
 {
     int received_data_size = 0;
