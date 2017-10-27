@@ -673,6 +673,7 @@ namespace DAQMW
         bool m_isOnError;
         bool m_isTimerAlarm;
         bool m_has_printed_error_log;
+
         bool m_debug;
 
         typedef int (DAQMW::DaqComponentBase::*DAQFunc)();
@@ -740,12 +741,13 @@ namespace DAQMW
         }
 
         /******************************************************/
+
 		int daq_base_errored()
 		{
-			set_status(COMP_FIXWAIT);
 			daq_errored();
 			return 0;
-		}
+        }
+        
         /*******************************************************/
 
         int daq_base_pause()
@@ -837,6 +839,10 @@ namespace DAQMW
             case CMD_UNCONFIGURE:
                 m_state_prev = RUNNING;
                 m_state = LOADED;
+                break;
+            case CMD_ERRORED:
+                m_state_prev = RUNNING;
+                m_state = ERRORED;
                 break;
             default:
                 //status = false;

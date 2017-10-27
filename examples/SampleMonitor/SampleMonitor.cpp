@@ -201,6 +201,13 @@ int SampleMonitor::daq_resume()
     return 0;
 }
 
+int SampleMonitor::daq_errored()
+{
+    std::cerr << "*** SampleMonitor::errored" << std::endl;
+    
+    return 0;
+}
+
 int SampleMonitor::reset_InPort()
 {
     int ret = true;

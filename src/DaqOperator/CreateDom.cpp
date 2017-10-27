@@ -186,9 +186,6 @@ std::string CreateDom::getState(DAQLifeCycleState state, bool flag)
 	case(ERRORED):
 		idx = 5;
 		break;
-	case(STOPPED):
-		idx = 6;
-		break;
 	default:
 		idx = 0;
 		break;
@@ -396,7 +393,7 @@ void CreateDom::makeLog(groupStatus status)
 	  comp_status = "FATAL";
 	  break;
 	case COMP_FIXWAIT:
-	  comp_status = "ERROR";
+	  comp_status = "ERRORED";
 	  break;
 	}
 

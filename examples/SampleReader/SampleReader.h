@@ -44,6 +44,7 @@ private:
     int daq_stop();
     int daq_pause();
     int daq_resume();
+    int daq_errored();
 
     int parse_params(::NVList* list);
     int read_data_from_detectors();
@@ -62,6 +63,7 @@ private:
     int m_srcPort;                        /// Port No. of data server
     std::string m_srcAddr;                /// IP addr. of data server
 
+    bool error_flag;
     bool m_debug;
 };
 

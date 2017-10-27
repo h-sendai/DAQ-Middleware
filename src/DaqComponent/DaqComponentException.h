@@ -60,7 +60,7 @@ namespace DAQMW
 	    time_t now = time(0);
 	    tm* local = localtime(&now);
 	    m_date = asctime(local);
-	    m_date.replace(m_date.find('\n'),1,"");
+		m_date.replace(m_date.find('\n'),1,"");
 	}
 
 	virtual ~DaqComponentException() throw()

@@ -248,6 +248,12 @@ int SampleLogger::daq_resume()
     return 0;
 }
 
+int SampleLogger::daq_erroed()
+{
+    std::cerr << "*** SampleLogger::errored" << std::endl;
+    return 0;
+}
+
 int SampleLogger::reset_InPort()
 {
     bool ret = true;

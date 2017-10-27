@@ -192,6 +192,13 @@ int SampleReader::daq_resume()
     return 0;
 }
 
+int SampleReader::daq_errored()
+{
+    std::cerr << "*** SampleReader::errored" << std::endl;
+    
+    return 0;
+}
+
 int SampleReader::read_data_from_detectors()
 {
     int received_data_size = 0;
