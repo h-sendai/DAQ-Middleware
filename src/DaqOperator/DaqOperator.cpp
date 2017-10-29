@@ -244,7 +244,7 @@ string DaqOperator::check_compStatus(CompStatus compStatus)
         comp_status = "WORNING";
         break;
     case COMP_FATAL:
-        comp_status = "### ERROR";
+        comp_status = "ERROR";
         break;
     case COMP_FIXWAIT:
         comp_status = "ERRORED";
@@ -405,11 +405,11 @@ RTC::ReturnCode_t DaqOperator::run_console_mode()
                 comp_stop_procedure();
                 sleep(1);
                 fix1_configure_procedure();
-                // cerr << "\033[4;20H"; // default=3;20H
-                // cerr << "input RUN NO(same run no is prohibited):   ";
-                // cerr << "\033[4;62H";
-                // cin >> srunNo;
-                // m_runNumber = atoi(srunNo.c_str());
+                cerr << "\033[4;20H"; // default=3;20H
+                cerr << "input RUN NO(same run no is prohibited):   ";
+                cerr << "\033[4;62H";
+                cin >> srunNo;
+                m_runNumber = atoi(srunNo.c_str());
                 fix2_restart_procedure();
                 sleep(1);
                 cerr << "\033[0;13H"          
@@ -463,6 +463,9 @@ RTC::ReturnCode_t DaqOperator::run_console_mode()
                 
                 Status_var status;
                 status = m_daqservices[i]->getStatus();
+                
+                FatalErrorStatus_var errStatus;
+                errStatus = m_daqservices[i]->getFatalStatus();
 
                 cerr << " "  << setw(22) << left
                      << myprof[0].name //group:comp_name
@@ -475,16 +478,14 @@ RTC::ReturnCode_t DaqOperator::run_console_mode()
                 if (status->comp_status == COMP_FATAL) {
                     cerr << "\033[31m" << setw(14) << right
                          << check_compStatus(status->comp_status) //status(COMP_*)
-                         << "\033[39m" << endl;
-                    FatalErrorStatus_var errStatus;
-                    errStatus = m_daqservices[i]->getFatalStatus();                    
-                    /** Use error console display **/                    
+                         << "\033[39m" << endl;                   
+                    /** Use error console display **/  
                     d_compname[i] = compname;
                     d_message[i] = errStatus;
                     m_state = ERRORED;
-                    moniFlag = true;
                 }
-                else if (status->comp_status == COMP_FIXWAIT) {
+                else if (status->comp_status == COMP_FIXWAIT 
+                    || errStatus->description == "REBOOT") {
                     fix1_configure_procedure();
                     cerr << "\033[4;20H"; // default=3;20H
                     cerr << "input RUN NO(same run no is prohibited):   ";
@@ -493,14 +494,12 @@ RTC::ReturnCode_t DaqOperator::run_console_mode()
                     m_runNumber = atoi(srunNo.c_str());
                     fix2_restart_procedure();
                     m_state = RUNNING;
-                    moniFlag = false;
                 }
                 else {
                     cerr << setw(14) << right
                          << check_compStatus(status->comp_status) 
-                         << endl;
+                         << endl;   
                 }
-                
             } catch(...) {
                 cerr << " ### ERROR: " << compname 
                     << " : cannot connect" << endl;
@@ -512,7 +511,7 @@ RTC::ReturnCode_t DaqOperator::run_console_mode()
 
     /* Display Error Console */
     int count = 0;
-    if (moniFlag == true) {
+    if (m_state == ERRORED) {
         for (int i = (m_comp_num - 1); i >= 0; i--) {
             ++count;
             if (d_compname[i].length() != 0) {
@@ -521,9 +520,7 @@ RTC::ReturnCode_t DaqOperator::run_console_mode()
                      << "\033[39m"  
                      << "] "
                      << d_compname[i] << '\t' << "\033[4D" << "<= "
-                     << "\033[31m" << d_message[i]->description 
-                     << "\033[39m"
-                     << endl;
+                     << d_message[i]->description << endl;
             }
         }///for
     }

@@ -346,6 +346,7 @@ namespace DAQMW
 
         void reboot_request(FatalType::Enum type, const char* desc, int code = -1)
         {
+            m_isOnError = true;
             set_status(COMP_FIXWAIT);
             throw DaqCompUserException(type, desc, code);
         }

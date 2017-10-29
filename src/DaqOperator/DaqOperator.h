@@ -193,7 +193,6 @@ private:
     
     // New variables
     bool errFlag;
-    bool moniFlag;
 
     bool m_debug;
 };
