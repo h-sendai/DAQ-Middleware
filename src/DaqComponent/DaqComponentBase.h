@@ -336,7 +336,6 @@ namespace DAQMW
         void fatal_error_report(FatalType::Enum type, int code = -1)
         {
             m_isOnError = true;
-            m_error_flag = true;
             set_status(COMP_FATAL);
             throw DaqCompDefinedException(type, code);
         }
@@ -344,7 +343,6 @@ namespace DAQMW
         void fatal_error_report(FatalType::Enum type, const char* desc, int code = -1)
         {
             m_isOnError = true;
-            m_error_flag = true;
             set_status(COMP_FATAL);
             throw DaqCompUserException(type, desc, code);
         }
@@ -868,14 +866,14 @@ namespace DAQMW
                 m_state = LOADED;
                 break;
             /* ***************************** */
+            case CMD_FIX:
+				m_state_prev = ERROR;
+				m_state = RUNNING;
+                break;
             case CMD_ERROR:
                 m_state_prev = RUNNING;
                 m_state = ERROR;
                 break;
-            case CMD_FIX:
-				m_state_prev = ERROR;
-				m_state = RUNNING;
-				break;
             /* ***************************** */
             default:
                 //status = false;
