@@ -1,0 +1,105 @@
+<?xml version="1.0"?>
+<!-- DON'T REMOVE THE ABOVE LINE.                                     -->
+<!-- DON'T PUT ANY LINES ABOVE THE 1ST LINE.                          -->
+<!-- Sample config.xml to run SampleReader and SampleLogger.         -->
+<!-- Please rewrite execPath (2 places), confFile (2 places) suitable -->
+<!-- for your directory structure.                                    -->
+<!-- run.py will create rtc.conf in /tmp/daqmw/rtc.conf               -->
+<!-- If you use run.py, set confFile as /tmp/daqmw/rtc.conf           -->
+<configInfo>
+    <daqOperator>
+        <hostAddr>127.0.0.1</hostAddr>
+    </daqOperator>
+    <daqGroups>
+        <daqGroup gid="group0">
+            <components>
+                <component cid="SampleReader0">
+                    <hostAddr>127.0.0.1</hostAddr>
+                    <hostPort>50000</hostPort>
+                    <instName>SampleReader0.rtc</instName>
+                    <execPath>/home/sai/MyDaq/SampleReader/SampleReaderComp</execPath>
+                    <confFile>/tmp/daqmw/rtc.conf</confFile>
+                    <startOrd>5</startOrd>
+                    <inPorts>
+                    </inPorts>
+                    <outPorts>
+                        <outPort>samplereader_out</outPort>
+                    </outPorts>
+                    <params>
+                        <param pid="srcAddr">127.0.0.1</param>
+                        <param pid="srcPort">2220</param>
+                    </params>
+                </component>
+                <component cid="SampleReader20">
+                    <hostAddr>127.0.0.1</hostAddr>
+                    <hostPort>50000</hostPort>
+                    <instName>SampleReader20.rtc</instName>
+                    <execPath>/home/sai/MyDaq/SampleReader2/SampleReader2Comp</execPath>
+                    <confFile>/tmp/daqmw/rtc.conf</confFile>
+                    <startOrd>4</startOrd>
+                    <inPorts>
+                    </inPorts>
+                    <outPorts>
+                        <outPort>samplereader_out2</outPort>
+                    </outPorts>
+                    <params>
+                        <param pid="srcAddr">127.0.0.1</param>
+                        <param pid="srcPort">2221</param>
+                    </params>
+                </component>
+                <component cid="SampleReader30">
+                    <hostAddr>127.0.0.1</hostAddr>
+                    <hostPort>50000</hostPort>
+                    <instName>SampleReader30.rtc</instName>
+                    <execPath>/home/sai/MyDaq/SampleReader3/SampleReader3Comp</execPath>
+                    <confFile>/tmp/daqmw/rtc.conf</confFile>
+                    <startOrd>3</startOrd>
+                    <inPorts>
+                    </inPorts>
+                    <outPorts>
+                        <outPort>samplereader_out3</outPort>
+                    </outPorts>
+                    <params>
+                        <param pid="srcAddr">127.0.0.1</param>
+                        <param pid="srcPort">2222</param>
+                    </params>
+                </component>
+                <component cid="Merger0">
+                    <hostAddr>127.0.0.1</hostAddr>
+                    <hostPort>50000</hostPort>
+                    <instName>Merger0.rtc</instName>
+                    <execPath>/home/sai/MyDaq/Merger/MergerComp</execPath>
+                    <confFile>/tmp/daqmw/rtc.conf</confFile>
+                    <startOrd>2</startOrd>
+                    <inPorts>
+                        <inPort from="SampleReader0:samplereader_out" >collector_in0</inPort>
+                        <inPort from="SampleReader20:samplereader_out2">collector_in1</inPort>
+                        <inPort from="SampleReader30:samplereader_out3">collector_in2</inPort>
+                    </inPorts>
+                    <outPorts>
+                        <outPort>e16merger_out</outPort>
+                    </outPorts>
+                    <params>
+                        <param pid="separate_flag">0</param>
+                    </params>
+                </component>
+                <component cid="SampleLogger0">
+                    <hostAddr>127.0.0.1</hostAddr>
+                    <hostPort>50000</hostPort>
+                    <instName>SampleLogger0.rtc</instName>
+                    <execPath>/home/sai/MyDaq/SampleLogger/SampleLoggerComp</execPath>
+                    <confFile>/tmp/daqmw/rtc.conf</confFile>
+                    <startOrd>1</startOrd>
+                    <inPorts>
+                        <inPort from="Merger0:e16merger_out">samplelogger_in</inPort>
+                    </inPorts>
+                    <outPorts>
+                    </outPorts>
+                    <params>
+                        <param pid="LoggerUpdateRate">20</param>
+                    </params>
+                </component>
+            </components>
+        </daqGroup>
+    </daqGroups>
+</configInfo>

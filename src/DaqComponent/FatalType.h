@@ -105,10 +105,7 @@ namespace DAQMW
             
             ///reboot_message
             REBOOT,
-<<<<<<< HEAD
-=======
             REBOOT_REQUEST,
->>>>>>> bd64ce92b8ed6136615bbd3eaa28c13d351e635c
 
             ///unknown error
             UNKNOWN_FATAL_ERROR,
