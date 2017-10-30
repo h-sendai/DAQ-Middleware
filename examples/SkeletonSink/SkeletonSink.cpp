@@ -140,6 +140,13 @@ int SkeletonSink::daq_resume()
     return 0;
 }
 
+int Skeleton::daq_errored()
+{
+    std::cerr << "*** SkeletonSink::errored" << std::endl;
+    
+    return 0;
+}
+
 int SkeletonSink::reset_InPort()
 {
     int ret = true;

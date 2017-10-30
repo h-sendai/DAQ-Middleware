@@ -128,6 +128,12 @@ int Skeleton::daq_stop()
     return 0;
 }
 
+int Skeleton::daq_errored()
+{
+    std::cerr << "*** Skeleton::errored" << std::endl;
+    return 0;
+}
+
 int Skeleton::daq_pause()
 {
     std::cerr << "*** Skeleton::pause" << std::endl;
