@@ -343,18 +343,7 @@ namespace DAQMW
             set_status(COMP_FATAL);
             throw DaqCompUserException(type, desc, code);
         }
-        
-		/********************************************************/
 
-        void reboot_request(FatalType::Enum type, const char* desc, int code = -1)
-        {
-            m_isOnError = true;
-            set_status(COMP_FIXWAIT);
-            throw DaqCompUserException(type, desc, code);
-        }
-
-        /********************************************************/
-        
         void init_state_table()
         {
             m_daq_trans_func[CMD_CONFIGURE]   = &DAQMW::DaqComponentBase::daq_base_configure;
@@ -369,6 +358,7 @@ namespace DAQMW
             m_daq_do_func[CONFIGURED] = &DAQMW::DaqComponentBase::daq_base_dummy;
             m_daq_do_func[RUNNING]    = &DAQMW::DaqComponentBase::daq_run;
             m_daq_do_func[PAUSED]     = &DAQMW::DaqComponentBase::daq_base_dummy;
+            m_daq_do_func[ERRORED]     = &DAQMW::DaqComponentBase::daq_base_dummy;
         }
 
         int reset_timer()
@@ -487,8 +477,8 @@ namespace DAQMW
             case RTC::DataPortStatus::CONNECTION_LOST:
             case RTC::DataPortStatus::UNKNOWN_ERROR:
                 cerr << "Impossible InPort status: " 
-                          << RTC::DataPortStatus::toString(in_status) 
-                          << endl;
+                    << RTC::DataPortStatus::toString(in_status) 
+                    << endl;
                 ret = BUF_FATAL;
                 break;
             }
@@ -743,15 +733,12 @@ namespace DAQMW
             return 0;
         }
 
-        /******************************************************/
-
+        // Errored
 		int daq_base_errored()
 		{
 			daq_errored();
 			return 0;
         }
-        
-        /*******************************************************/
 
         int daq_base_pause()
         {
