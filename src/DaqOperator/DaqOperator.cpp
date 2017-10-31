@@ -299,6 +299,7 @@ RTC::ReturnCode_t DaqOperator::run_console_mode()
 
     errFlag = false;
 
+    /* Error Display */
     string d_compname[m_comp_num];
     FatalErrorStatus_var d_message[m_comp_num];
 
@@ -320,7 +321,7 @@ RTC::ReturnCode_t DaqOperator::run_console_mode()
             << CMD_ERRORED      << ":errored"   
             << endl;
                         
-    cerr    << endl << " RUN NO: " << m_runNumber; //endl = "input..."
+    cerr    << endl << " RUN NO: " << m_runNumber;
     cerr    << endl << " start at: " << m_start_date
                     << "  stop at: " << m_stop_date << endl;
     cerr << "\033[1;11H"; // command input
@@ -406,7 +407,7 @@ RTC::ReturnCode_t DaqOperator::run_console_mode()
             case CMD_ERRORED:
                 comp_stop_procedure();
                 fix1_configure_procedure();
-                cerr << "\033[4;20H"; // default=3;20H
+                cerr << "\033[4;20H"; // default:3;20H
                 cerr << "input RUN NO: ";
                 cerr << "\033[4;62H";
                 cin >> srunNo;
@@ -468,7 +469,7 @@ RTC::ReturnCode_t DaqOperator::run_console_mode()
 
                 if (status->comp_status == COMP_FATAL) {
                     cerr << "\033[31m" << setw(14) << right
-                         << check_compStatus(status->comp_status)//WORKING
+                         << check_compStatus(status->comp_status)//FATAL
                          << "\033[39m" << endl;
 
                     /** Use error console display **/
@@ -480,8 +481,9 @@ RTC::ReturnCode_t DaqOperator::run_console_mode()
                 }
                 else if (status->comp_status == COMP_ERRORED) {
                     cerr << "\033[35m" << setw(14) << right
-                        << check_compStatus(status->comp_status)//WORKING
+                        << check_compStatus(status->comp_status)//ERRORED
                         << "\033[39m" << endl;
+
                     /** Use error console display **/
                     d_compname[i] = compname;
                     d_message[i] = errStatus;
@@ -489,7 +491,7 @@ RTC::ReturnCode_t DaqOperator::run_console_mode()
                 }
                 else if (status->comp_status == COMP_FIXWAIT) {
                     cerr << "\033[34m" << setw(14) << right
-                         << check_compStatus(status->comp_status)//WORKING
+                         << check_compStatus(status->comp_status)//FIXWAIT
                          << "\033[39m" << endl;
 
                     /** Use error console display **/
@@ -537,8 +539,8 @@ RTC::ReturnCode_t DaqOperator::run_console_mode()
             cerr << "\033[4;13H" << "Send reboot command" << endl;
             for (int i = (m_comp_num - 1); i >= 0; i--) {
                 status = m_daqservices[i]->getStatus();
-                
-                if(status->comp_status == COMP_FIXWAIT) {
+                if(status->comp_status == COMP_FIXWAIT 
+                    || status->comp_status == COMP_ERRORED) {
                     // error still remain
                     errFlag = true;
                 }
@@ -548,9 +550,11 @@ RTC::ReturnCode_t DaqOperator::run_console_mode()
                     check_done(m_daqservices[i]);
                 }
             }
+            // Error check
             for (int i = (m_comp_num - 1); i >= 0; i--) {
                 status = m_daqservices[i]->getStatus();
-                if(status->comp_status == COMP_FIXWAIT) {
+                if(status->comp_status == COMP_FIXWAIT 
+                    || status->comp_status == COMP_ERRORED) {
                     errFlag = true;
                     break;
                 }
