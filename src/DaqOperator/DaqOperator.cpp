@@ -298,6 +298,7 @@ RTC::ReturnCode_t DaqOperator::run_console_mode()
     Status_var status;
 
     errFlag = false;
+    rebFlag = false;
 
     /* Error Display */
     string d_compname[m_comp_num];
@@ -408,7 +409,7 @@ RTC::ReturnCode_t DaqOperator::run_console_mode()
                 comp_stop_procedure();
                 fix1_configure_procedure();
                 cerr << "\033[4;20H"; // default:3;20H
-                cerr << "input RUN NO: ";
+                cerr << "input RUN NO(same run no is prohibited):   ";
                 cerr << "\033[4;62H";
                 cin >> srunNo;
                 m_runNumber = atoi(srunNo.c_str());
@@ -473,8 +474,8 @@ RTC::ReturnCode_t DaqOperator::run_console_mode()
                          << "\033[39m" << endl;
 
                     /** Use error console display **/
-                    d_compname[i] = compname;
-                    d_message[i] = errStatus;
+                    // d_compname[i] = compname;
+                    // d_message[i] = errStatus;
                     m_state = ERRORED;
                     set_command(m_daqservices[i], CMD_ERRORED);
                     check_done(m_daqservices[i]);

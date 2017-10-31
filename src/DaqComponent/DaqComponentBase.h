@@ -352,13 +352,13 @@ namespace DAQMW
             m_daq_trans_func[CMD_RESUME]      = &DAQMW::DaqComponentBase::daq_resume;
             m_daq_trans_func[CMD_STOP]        = &DAQMW::DaqComponentBase::daq_base_stop;
             m_daq_trans_func[CMD_UNCONFIGURE] = &DAQMW::DaqComponentBase::daq_base_unconfigure;
-			m_daq_trans_func[CMD_ERRORED]	  = &DAQMW::DaqComponentBase::daq_base_errored;
+            m_daq_trans_func[CMD_ERRORED]	  = &DAQMW::DaqComponentBase::daq_base_errored;
 			
             m_daq_do_func[LOADED]     = &DAQMW::DaqComponentBase::daq_base_dummy;
             m_daq_do_func[CONFIGURED] = &DAQMW::DaqComponentBase::daq_base_dummy;
             m_daq_do_func[RUNNING]    = &DAQMW::DaqComponentBase::daq_run;
             m_daq_do_func[PAUSED]     = &DAQMW::DaqComponentBase::daq_base_dummy;
-            m_daq_do_func[ERRORED]    = &DAQMW::DaqComponentBase::daq_base_dummy;
+            m_daq_do_func[ERRORED]    = &DAQMW::DaqComponentBase::daq_base_errored;
         }
 
         int reset_timer()
@@ -733,15 +733,6 @@ namespace DAQMW
             return 0;
         }
 
-        // Errored
-		int daq_base_errored()
-		{
-            set_status(COMP_ERRORED);
-            daq_errored();
-            set_status(COMP_FIXWAIT);
-			return 0;
-        }
-
         int daq_base_pause()
         {
             set_status(COMP_WORKING);
@@ -749,6 +740,20 @@ namespace DAQMW
             return 0;
         }
         
+        // Errored
+		int daq_base_errored()
+		{
+            int ret;
+
+            set_status(COMP_ERRORED);
+            ret = daq_errored();
+            
+            // if (!ret)
+            //     set_status(COMP_FIXWAIT);
+            
+            return 0;
+        }
+
         int get_command()
         {
             m_command = m_daq_service0.getCommand();
