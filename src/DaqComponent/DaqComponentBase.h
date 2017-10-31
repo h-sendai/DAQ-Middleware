@@ -358,7 +358,7 @@ namespace DAQMW
             m_daq_do_func[CONFIGURED] = &DAQMW::DaqComponentBase::daq_base_dummy;
             m_daq_do_func[RUNNING]    = &DAQMW::DaqComponentBase::daq_run;
             m_daq_do_func[PAUSED]     = &DAQMW::DaqComponentBase::daq_base_dummy;
-            m_daq_do_func[ERRORED]     = &DAQMW::DaqComponentBase::daq_base_dummy;
+            m_daq_do_func[ERRORED]    = &DAQMW::DaqComponentBase::daq_base_dummy;
         }
 
         int reset_timer()
@@ -409,8 +409,8 @@ namespace DAQMW
             case RTC::DataPortStatus::PRECONDITION_NOT_MET:
             case RTC::DataPortStatus::CONNECTION_LOST:
                 cerr << "OutPort status: "
-                          << RTC::DataPortStatus::toString(out_status) 
-                          << endl;
+                     << RTC::DataPortStatus::toString(out_status) 
+                     << endl;
                 ret = BUF_FATAL;
                 break;
                 /*** Could never happen in this case ***/
@@ -422,8 +422,8 @@ namespace DAQMW
             case RTC::DataPortStatus::BUFFER_ERROR:
             case RTC::DataPortStatus::INVALID_ARGS:
                 cerr << "Impossible OutPort status: "
-                          << RTC::DataPortStatus::toString(out_status) 
-                          << endl;
+                     << RTC::DataPortStatus::toString(out_status) 
+                     << endl;
                 ret = BUF_FATAL;
                 break;
             }
@@ -736,7 +736,9 @@ namespace DAQMW
         // Errored
 		int daq_base_errored()
 		{
-			daq_errored();
+            set_status(COMP_ERRORED);
+            daq_errored();
+            set_status(COMP_FIXWAIT);
 			return 0;
         }
 
@@ -833,6 +835,10 @@ namespace DAQMW
             case CMD_ERRORED:
                 m_state_prev = RUNNING;
                 m_state = ERRORED;
+                break;
+            case CMD_RUNNINGBACK:
+                m_state_prev = ERRORED;
+                m_state = RUNNING;
                 break;
             default:
                 //status = false;

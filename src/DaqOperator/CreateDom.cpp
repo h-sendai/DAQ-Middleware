@@ -381,20 +381,23 @@ void CreateDom::makeLog(groupStatus status)
 	    //comp_status = "OK";
 	    //break;
 	case COMP_WORKING:
-	  comp_status = "WORKING";
-	  break;
+		comp_status = "WORKING";
+		break;
 	case COMP_FINISHED:
-	  comp_status = "FINISHED";
-	  break;
+		comp_status = "FINISHED";
+		break;
 	case COMP_WARNING:
-	  comp_status = "WARNING";
-	  break;
+		comp_status = "WARNING";
+		break;
 	case COMP_FATAL:
-	  comp_status = "FATAL";
-	  break;
+		comp_status = "FATAL ERROR";
+		break;
+	case COMP_ERRORED:
+		comp_status = "ERRORED";
+		break;
 	case COMP_FIXWAIT:
-	  comp_status = "ERRORED";
-	  break;
+		comp_status = "FIXWAIT";
+		break;
 	}
 
 	make(m_logElem, "compStatus", comp_status);
@@ -472,7 +475,7 @@ bool CreateDom::check(std::string name, int *cnt, int *type, int *index)
 
 int CreateDom::checkDigit(std::string name, int index, int cnt)
 {
-	for (int i = index; i <index+cnt; ++i) {
+	for (int i = index; i < index + cnt; ++i) {
 		if (isdigit(name.at(i)) == false) {
 			return (-1);
 		}
