@@ -1,0 +1,14 @@
+src/DaqOperator/ComponentInfoContainer.h:typedef std::vector<ComponentInfoContainer> CompInfoList;
+src/DaqOperator/ComponentInfoContainer.h: *  It includes CompInfoList.
+src/DaqOperator/ComponentInfoContainer.h:    CompInfoList getCompInfoList() {
+src/DaqOperator/ComponentInfoContainer.h:    void setCompInfoList(CompInfoList& compInfoList) {
+src/DaqOperator/ComponentInfoContainer.h:    CompInfoList m_compInfoList;
+src/DaqOperator/ConfFileParser.cpp:            CompInfoList compList;
+src/DaqOperator/ConfFileParser.cpp:            compGroup.setCompInfoList(compList);
+src/DaqOperator/ConfFileParser.cpp:CompInfoList ConfFileParser::getCompList()
+src/DaqOperator/ConfFileParser.h:    CompInfoList  getCompList();
+src/DaqOperator/ConfFileParser.h:    CompInfoList  m_compList;
+src/DaqOperator/DaqOperator.h:    CompInfoList m_compInfoList;
+src/DaqOperator/DaqOperatorComp.cpp:CompInfoList daq_comp_list;
+src/DaqOperator/DaqOperatorComp.cpp:    CompInfoList compInfoList;
+src/DaqOperator/DaqOperatorComp.cpp:        compInfoList = g.getCompInfoList();

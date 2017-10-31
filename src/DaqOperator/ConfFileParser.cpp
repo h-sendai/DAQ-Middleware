@@ -44,6 +44,7 @@ ConfFileParser::ConfFileParser()
      TAG_paramId      = XMLString::transcode("pid");
      TAG_params       = XMLString::transcode("params");
      TAG_param        = XMLString::transcode("param");
+     TAG_select       = XMLString::transcode("errhandling");
 
      m_xercesDomParser = new XercesDOMParser;
 }
@@ -79,6 +80,7 @@ ConfFileParser::~ConfFileParser()
         if (TAG_param) {
             XMLString::release( &TAG_param );
         }
+        XMLString::release( &TAG_select );
    }
    catch( ... )
    {
@@ -147,7 +149,7 @@ int ConfFileParser::readConfFile(const char* xmlFile, bool isConfigure)
             throw(std::runtime_error( "empty XML document" ));
         }
 
-        DOMNodeList*      group = root->getElementsByTagName(TAG_group);
+        DOMNodeList* group = root->getElementsByTagName(TAG_group);
 
         std::string myroot = "root";
 
