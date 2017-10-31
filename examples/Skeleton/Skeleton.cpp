@@ -68,6 +68,11 @@ RTC::ReturnCode_t Skeleton::onExecute(RTC::UniqueId ec_id)
     std::cerr << "*** onExecute\n";
     daq_do();
 
+    // Errored state
+    if (error_flag == true) {
+        daq_errored();
+    }
+
     return RTC::RTC_OK;
 }
 
@@ -103,7 +108,6 @@ int Skeleton::parse_params(::NVList* list)
     return 0;
 }
 
-
 int Skeleton::daq_unconfigure()
 {
     std::cerr << "*** Skeleton::unconfigure" << std::endl;
@@ -131,6 +135,11 @@ int Skeleton::daq_stop()
 int Skeleton::daq_errored()
 {
     std::cerr << "*** Skeleton::errored" << std::endl;
+    /* *********************************** */
+    /* Write recovery identification logic */
+    /* *********************************** */
+    std::cerr << "*** Reboot request => To Operator" << std::endl;
+    error_flag = false;
     return 0;
 }
 
@@ -170,6 +179,11 @@ int Skeleton::daq_run()
     if (check_trans_lock()) {  /// got stop command
         set_trans_unlock();
         return 0;
+    }
+
+    /* Write error determination logic */
+    if (false) {
+        error_flag = true;
     }
 
    return 0;

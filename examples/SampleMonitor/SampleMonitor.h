@@ -76,6 +76,7 @@ private:
     unsigned int  m_event_byte_size;
     struct sampleData m_sampleData;
 
+    bool error_flag;
     bool m_debug;
 };
 

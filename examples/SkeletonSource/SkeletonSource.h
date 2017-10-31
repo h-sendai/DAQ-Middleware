@@ -54,6 +54,8 @@ private:
     unsigned int m_recv_byte_size;
 
     BufferStatus m_out_status;
+
+    bool error_flag;
     bool m_debug;
 };
 

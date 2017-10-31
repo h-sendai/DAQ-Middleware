@@ -53,6 +53,7 @@ private:
     BufferStatus m_in_status;
     BufferStatus m_out_status;
 
+    bool error_flag;
     bool m_debug;
 };
 

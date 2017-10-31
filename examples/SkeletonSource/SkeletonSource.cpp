@@ -65,6 +65,11 @@ RTC::ReturnCode_t SkeletonSource::onExecute(RTC::UniqueId ec_id)
 {
     daq_do();
 
+    // Errored state
+    if (error_flag == true) {
+        daq_errored();
+    }
+
     return RTC::RTC_OK;
 }
 
@@ -139,8 +144,12 @@ int SkeletonSource::daq_resume()
 
 int Skeleton::daq_errored()
 {
-    std::cerr << "*** SkeletonSource::errored" << std::endl;
-
+    std::cerr << "*** Skeleton::errored" << std::endl;
+    /* *********************************** */
+    /* Write recovery identification logic */
+    /* *********************************** */
+    std::cerr << "*** Reboot request => To Operator" << std::endl;
+    error_flag = false;
     return 0;
 }
 
@@ -148,6 +157,11 @@ int SkeletonSource::read_data_from_detectors()
 {
     int received_data_size = 0;
     /// write your logic here
+
+    /* Write error determination logic */
+    if (false) {
+        error_flag = true;
+    }
     return received_data_size;
 }
 
