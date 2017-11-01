@@ -78,6 +78,11 @@ int SkeletonSource::daq_dummy()
     return 0;
 }
 
+int SkeletonSource::daq_errored()
+{
+    return 0;
+}
+
 int SkeletonSource::daq_configure()
 {
     std::cerr << "*** SkeletonSource::configure" << std::endl;
@@ -142,9 +147,9 @@ int SkeletonSource::daq_resume()
     return 0;
 }
 
-int Skeleton::daq_errored()
+int Skeleton::daq_reboot()
 {
-    std::cerr << "*** Skeleton::errored" << std::endl;
+    std::cerr << "*** Skeleton::reboot" << std::endl;
     /* *********************************** */
     /* Write recovery identification logic */
     /* *********************************** */

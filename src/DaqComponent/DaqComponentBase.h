@@ -319,6 +319,7 @@ namespace DAQMW
         }
 
         virtual int daq_dummy()       = 0;
+        virtual int daq_errored()       = 0;
         virtual int daq_configure()   = 0;
         virtual int daq_unconfigure() = 0;
         virtual int daq_start()       = 0;
@@ -326,7 +327,7 @@ namespace DAQMW
         virtual int daq_stop()        = 0;
         virtual int daq_pause()       = 0;
         virtual int daq_resume()      = 0;
-        virtual int daq_errored()     = 0;
+        virtual int daq_reboot()     = 0;
 
         virtual int parse_params( ::NVList* list ) = 0;
 
@@ -352,7 +353,7 @@ namespace DAQMW
             m_daq_trans_func[CMD_RESUME]      = &DAQMW::DaqComponentBase::daq_resume;
             m_daq_trans_func[CMD_STOP]        = &DAQMW::DaqComponentBase::daq_base_stop;
             m_daq_trans_func[CMD_UNCONFIGURE] = &DAQMW::DaqComponentBase::daq_base_unconfigure;
-            m_daq_trans_func[CMD_ERRORED]	  = &DAQMW::DaqComponentBase::daq_base_errored;
+            m_daq_trans_func[CMD_ERRORED]	  = &DAQMW::DaqComponentBase::daq_base_reboot;
 			
             m_daq_do_func[LOADED]     = &DAQMW::DaqComponentBase::daq_base_dummy;
             m_daq_do_func[CONFIGURED] = &DAQMW::DaqComponentBase::daq_base_dummy;
@@ -690,6 +691,14 @@ namespace DAQMW
             return 0;
         }
 
+        int daq_base_errored()
+        {
+            daq_errored();
+            set_status(COMP_ERRORED);
+            usleep(DAQ_IDLE_TIME_USEC);
+            return 0;
+        }
+
         int daq_base_configure()
         {
             set_status(COMP_WORKING);
@@ -741,12 +750,12 @@ namespace DAQMW
         }
         
         // Errored
-		int daq_base_errored()
+		int daq_base_reboot()
 		{
-            int ret;
+            int ret = 0;
 
             set_status(COMP_ERRORED);
-            ret = daq_errored();
+            ret = daq_reboot();
             
             // if (!ret)
             //     set_status(COMP_FIXWAIT);

@@ -472,13 +472,17 @@ RTC::ReturnCode_t DaqOperator::run_console_mode()
                     cerr << "\033[31m" << setw(14) << right
                          << check_compStatus(status->comp_status)//FATAL
                          << "\033[39m" << endl;
+                    
+                    /* ERRORED STATE!!  */
+                    for (int j = (m_comp_num - 1); j >= 0; j--) {
+                        set_command(m_daqservices[j], CMD_ERRORED);
+                        check_done(m_daqservices[j]);
+                    }
 
                     /** Use error console display **/
-                    // d_compname[i] = compname;
-                    // d_message[i] = errStatus;
+                    d_compname[i] = compname;
+                    d_message[i] = errStatus;
                     m_state = ERRORED;
-                    set_command(m_daqservices[i], CMD_ERRORED);
-                    check_done(m_daqservices[i]);
                 }
                 else if (status->comp_status == COMP_ERRORED) {
                     cerr << "\033[35m" << setw(14) << right
@@ -509,7 +513,7 @@ RTC::ReturnCode_t DaqOperator::run_console_mode()
             } catch(...) {
                 cerr << " ### ERROR: " << compname 
                     << " : cannot connect" << endl;
-                usleep(1000);               
+                usleep(1000);      
             }
         }
     }
@@ -647,7 +651,11 @@ int DaqOperator::fix1_configure_procedure()
 			if (status->state == LOADED) {
 				set_command(m_daqservices[i], CMD_CONFIGURE);
 				check_done(m_daqservices[i]);
-			}
+            }
+            else {
+                set_command(m_daqservices[i], CMD_STOP);
+				check_done(m_daqservices[i]);
+            }
         }
     } catch (...) {
         cerr << "### ERROR: DaqOperator: Failed to configure Components.\n";

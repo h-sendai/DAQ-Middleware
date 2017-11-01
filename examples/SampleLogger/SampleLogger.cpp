@@ -77,6 +77,11 @@ int SampleLogger::daq_dummy()
     return 0;
 }
 
+int SampleLogger::daq_errored()
+{
+    return 0;
+}
+
 int SampleLogger::daq_configure()
 {
     std::cerr << "*** SampleLogger::configure" << std::endl;
@@ -248,9 +253,9 @@ int SampleLogger::daq_resume()
     return 0;
 }
 
-int SampleLogger::daq_erroed()
+int SampleLogger::reboot()
 {
-    std::cerr << "*** SampleLogger::errored" << std::endl;
+    std::cerr << "*** SampleLogger::reboot" << std::endl;
     return 0;
 }
 
