@@ -300,7 +300,9 @@ RTC::ReturnCode_t DaqOperator::run_console_mode()
     errFlag = false;
     rebFlag = false;
 
-    /* Error Display */
+    /* Display Error Console */
+    int cnt = 0;
+    string lenstr;
     string d_compname[m_comp_num];
     FatalErrorStatus_var d_message[m_comp_num];
 
@@ -515,60 +517,62 @@ RTC::ReturnCode_t DaqOperator::run_console_mode()
                     << " : cannot connect" << endl;
                 usleep(1000);      
             }
-        }
-    }
-    cerr << endl;
+        }//for
+
+        /* Display Error Console */
+        if (m_state == ERRORED) {
+            for (int i = (m_comp_num - 1); i >= 0; i--) {
+                lenstr = d_message[i]->description;
+                if (lenstr.length() != 0) {
+                    ++cnt;
+                    cerr << endl << " [ERROR" << cnt << "] "
+                        << d_compname[i] << '\t' << "<= "
+                        << "\033[31m" << d_message[i]->description
+                        << "\033[39m" << endl;
+                }
+            }///for
+        } //if
+    }//if...else
     
-    /* Display Error Console */
-    int cnt = 0;
-    if (m_state == ERRORED) {
+    if (rebFlag == true) {
+        comp_stop_procedure();
+        sleep(1);
+        fix1_configure_procedure();
+        cerr << "\033[4;0H" << " RUN NO: ";
+        cerr << "\033[4;20H";
+        cerr << "input RUN NO(same run no is prohibited):   ";
+        cerr << "\033[4;62H";
+        cin >> srunNo;
+        m_runNumber = atoi(srunNo.c_str());
+        fix2_restart_procedure();
+        sleep(1);
+        cerr << "\033[4;13H" << "Send reboot command" << endl;
         for (int i = (m_comp_num - 1); i >= 0; i--) {
-            if (d_compname[i].length() != 0) {
-                ++cnt;
-                cerr << " [ERROR" << cnt << "] "
-                     << d_compname[i] << '\t' << "<= "
-                     << "\033[31m" << d_message[i]->description
-                     << "\033[39m" << endl;;
+            status = m_daqservices[i]->getStatus();
+            if(status->comp_status == COMP_FIXWAIT 
+                || status->comp_status == COMP_ERRORED) {
+                // error still remain
+                errFlag = true;
             }
-        }///for
-        if (rebFlag == true) {
-            comp_stop_procedure();
-            fix1_configure_procedure();
-            cerr << "\033[4;0H" << " RUN NO: ";
-            cerr << "\033[4;20H";
-            cerr << "input RUN NO(same run no is prohibited):   ";
-            cerr << "\033[4;62H";
-            cin >> srunNo;
-            m_runNumber = atoi(srunNo.c_str());
-            fix2_restart_procedure();
-            cerr << "\033[4;13H" << "Send reboot command" << endl;
-            for (int i = (m_comp_num - 1); i >= 0; i--) {
-                status = m_daqservices[i]->getStatus();
-                if(status->comp_status == COMP_FIXWAIT 
-                    || status->comp_status == COMP_ERRORED) {
-                    // error still remain
-                    errFlag = true;
-                }
-                // reback errored
-                if (errFlag == false && status->state == ERRORED) {
-                    set_command(m_daqservices[i], CMD_RUNNINGBACK);
-                    check_done(m_daqservices[i]);
-                }
+            // reback errored
+            if (errFlag == false && status->state == ERRORED) {
+                set_command(m_daqservices[i], CMD_RUNNINGBACK);
+                check_done(m_daqservices[i]);
             }
-            // Error check
-            for (int i = (m_comp_num - 1); i >= 0; i--) {
-                status = m_daqservices[i]->getStatus();
-                if(status->comp_status == COMP_FIXWAIT 
-                    || status->comp_status == COMP_ERRORED) {
-                    errFlag = true;
-                    break;
-                }
+        }
+        // Error check
+        for (int i = (m_comp_num - 1); i >= 0; i--) {
+            status = m_daqservices[i]->getStatus();
+            if(status->comp_status == COMP_FIXWAIT 
+                || status->comp_status == COMP_ERRORED) {
+                errFlag = true;
+                break;
             }
-            if (errFlag == false) 
-                m_state = RUNNING;
-            else 
-                m_state = ERRORED;
-        }        
+        }
+        if (errFlag == false) 
+            m_state = RUNNING;
+        else 
+            m_state = ERRORED;
     }
     return RTC::RTC_OK;
 }
