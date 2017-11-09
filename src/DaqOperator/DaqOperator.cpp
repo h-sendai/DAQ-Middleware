@@ -242,7 +242,7 @@ string DaqOperator::check_compStatus(CompStatus compStatus)
         comp_status = "WORNING";
         break;
     case COMP_FATAL:
-        comp_status = "FATAL ERROR";
+        comp_status = "FATAL_ERROR";
         break;
     case COMP_ERRORED:
         comp_status = "ERRORED";
@@ -298,7 +298,7 @@ RTC::ReturnCode_t DaqOperator::run_console_mode()
     Status_var status;
 
     errFlag = false;
-    rebFlag = false;
+    resFlag = false;
 
     /* Display Error Console */
     int cnt = 0;
@@ -449,6 +449,7 @@ RTC::ReturnCode_t DaqOperator::run_console_mode()
              << setw(14) << right << "COMP_STATUS" << endl;
     
         string compname;
+        FatalErrorStatus_var errStatus;
         for (int i = (m_comp_num - 1); i >= 0; i--) {
             try {
                 RTC::ConnectorProfileList_var myprof
@@ -456,13 +457,10 @@ RTC::ReturnCode_t DaqOperator::run_console_mode()
                 
                 compname = myprof[0].name; //compname = "group*:*"
                 //cerr << "COMPNAME: " << compname << endl;                
-                
                 status = m_daqservices[i]->getStatus();
-                
-                FatalErrorStatus_var errStatus;
                 errStatus = m_daqservices[i]->getFatalStatus();
 
-                cerr << " "  << setw(22) << left
+                cerr << " " << setw(22) << left
                      << myprof[0].name //group:comp_name
                      << '\t'
                      << setw(14) << right
@@ -485,8 +483,8 @@ RTC::ReturnCode_t DaqOperator::run_console_mode()
                 }
                 else if (status->comp_status == COMP_ERRORED) {
                     cerr << "\033[35m" << setw(14) << right
-                        << check_compStatus(status->comp_status)//ERRORED
-                        << "\033[39m" << endl;
+                         << check_compStatus(status->comp_status)//ERRORED
+                         << "\033[39m" << endl;
 
                     /** Use error console display **/
                     d_compname[i] = compname;
@@ -502,7 +500,7 @@ RTC::ReturnCode_t DaqOperator::run_console_mode()
                     d_compname[i] = compname;
                     d_message[i] = errStatus;
                     m_state = ERRORED; ///
-                    rebFlag = true;
+                    resFlag = true;
                 }
                 else {
                     cerr << "\033[32m" << setw(14) << right
@@ -525,14 +523,15 @@ RTC::ReturnCode_t DaqOperator::run_console_mode()
             lenstr = d_message[i]->description;
             if ((len = lenstr.length()) > 0) {
                 ++cnt;
-                cerr  << " [ERROR" << cnt << "] "
-                    << d_compname[i] << '\t' << "<= "
-                    << "\033[31m" << d_message[i]->description
-                    << "\033[39m" << endl;
+                cerr << " [ERROR" << cnt << "] "
+                     << d_compname[i] << '\t' << "<= "
+                     << "\033[31m" << d_message[i]->description
+                     << "\033[39m" << endl;
             }
         }///for
     } //if
-    if (rebFlag == true) {
+
+    if (resFlag == true) {
         comp_stop_procedure();
         sleep(1);
         fix1_configure_procedure();
@@ -542,26 +541,18 @@ RTC::ReturnCode_t DaqOperator::run_console_mode()
         cerr << "\033[4;62H";
         cin >> srunNo;
         m_runNumber = atoi(srunNo.c_str());
-        fix2_restart_procedure();
-        sleep(1);
         cerr << "\033[4;13H" << "Send reboot command" << endl;
+        fix2_restart_procedure();
+        
         for (int i = (m_comp_num - 1); i >= 0; i--) {
             status = m_daqservices[i]->getStatus();
-            if(status->comp_status == COMP_FIXWAIT 
-                || status->comp_status == COMP_ERRORED) {
-                errFlag = true;
-            }
-            if (errFlag == false && status->state == ERRORED) {
-                runningback_procedure(i);
-            }
-        }
-        for (int i = (m_comp_num - 1); i >= 0; i--) {
-            status = m_daqservices[i]->getStatus();
-            if(status->comp_status == COMP_FIXWAIT 
-                || status->comp_status == COMP_ERRORED) {
+            if(status->comp_status != COMP_WORKING) {
                 errFlag = true;
                 break;
             }
+            // if (errFlag == false && status->state == ERRORED) {
+            //     runningback_procedure(i);
+            // }
         }
         if (errFlag == false) {
             m_state = RUNNING;
@@ -570,6 +561,7 @@ RTC::ReturnCode_t DaqOperator::run_console_mode()
             m_state = ERRORED;
         }
     }
+
     return RTC::RTC_OK;
 }
 

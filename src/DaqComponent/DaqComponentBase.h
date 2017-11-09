@@ -319,7 +319,7 @@ namespace DAQMW
         }
 
         virtual int daq_dummy()       = 0;
-        virtual int daq_errored()       = 0;
+        virtual int daq_errored()     = 0;
         virtual int daq_configure()   = 0;
         virtual int daq_unconfigure() = 0;
         virtual int daq_start()       = 0;
@@ -359,7 +359,7 @@ namespace DAQMW
             m_daq_do_func[CONFIGURED] = &DAQMW::DaqComponentBase::daq_base_dummy;
             m_daq_do_func[RUNNING]    = &DAQMW::DaqComponentBase::daq_run;
             m_daq_do_func[PAUSED]     = &DAQMW::DaqComponentBase::daq_base_dummy;
-            m_daq_do_func[ERRORED]    = &DAQMW::DaqComponentBase::daq_dummy;
+            m_daq_do_func[ERRORED]    = &DAQMW::DaqComponentBase::daq_base_dummy;
         }
 
         int reset_timer()
@@ -752,16 +752,12 @@ namespace DAQMW
         // Errored
 		int daq_base_restart()
 		{
-            int ret = 0;
+            // int ret = 0
+            // ret = daq_restart();
+            // if (ret) 
+                // set_status(COMP_FIXWAIT);
+                // sleep(2);
 
-            set_status(COMP_ERRORED);
-            ret = daq_restart();
-            
-            // if (!ret)
-                set_status(COMP_FIXWAIT);
-            
-            
-            sleep(2);
             return 0;
         }
 
@@ -854,7 +850,7 @@ namespace DAQMW
                 break;
             case CMD_RUNNINGBACK:
                 m_state_prev = ERRORED;
-                m_state = CONFIGURED;
+                m_state = RUNNING;
                 break;
             default:
                 //status = false;

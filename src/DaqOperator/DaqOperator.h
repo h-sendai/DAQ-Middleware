@@ -196,7 +196,7 @@ private:
     
     // New variables
     bool errFlag;
-    bool rebFlag;
+    bool resFlag;
     
     bool m_debug;
 };
