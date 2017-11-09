@@ -327,7 +327,7 @@ namespace DAQMW
         virtual int daq_stop()        = 0;
         virtual int daq_pause()       = 0;
         virtual int daq_resume()      = 0;
-        virtual int daq_reboot()     = 0;
+        virtual int daq_restart()     = 0;
 
         virtual int parse_params( ::NVList* list ) = 0;
 
@@ -353,13 +353,13 @@ namespace DAQMW
             m_daq_trans_func[CMD_RESUME]      = &DAQMW::DaqComponentBase::daq_resume;
             m_daq_trans_func[CMD_STOP]        = &DAQMW::DaqComponentBase::daq_base_stop;
             m_daq_trans_func[CMD_UNCONFIGURE] = &DAQMW::DaqComponentBase::daq_base_unconfigure;
-            m_daq_trans_func[CMD_ERRORED]	  = &DAQMW::DaqComponentBase::daq_base_reboot;
+            m_daq_trans_func[CMD_ERRORED]	  = &DAQMW::DaqComponentBase::daq_base_restart;
 			
             m_daq_do_func[LOADED]     = &DAQMW::DaqComponentBase::daq_base_dummy;
             m_daq_do_func[CONFIGURED] = &DAQMW::DaqComponentBase::daq_base_dummy;
             m_daq_do_func[RUNNING]    = &DAQMW::DaqComponentBase::daq_run;
             m_daq_do_func[PAUSED]     = &DAQMW::DaqComponentBase::daq_base_dummy;
-            m_daq_do_func[ERRORED]    = &DAQMW::DaqComponentBase::daq_base_errored;
+            m_daq_do_func[ERRORED]    = &DAQMW::DaqComponentBase::daq_dummy;
         }
 
         int reset_timer()
@@ -750,16 +750,18 @@ namespace DAQMW
         }
         
         // Errored
-		int daq_base_reboot()
+		int daq_base_restart()
 		{
             int ret = 0;
 
             set_status(COMP_ERRORED);
-            ret = daq_reboot();
+            ret = daq_restart();
             
             // if (!ret)
-            //     set_status(COMP_FIXWAIT);
+                set_status(COMP_FIXWAIT);
             
+            
+            sleep(2);
             return 0;
         }
 
@@ -852,7 +854,7 @@ namespace DAQMW
                 break;
             case CMD_RUNNINGBACK:
                 m_state_prev = ERRORED;
-                m_state = RUNNING;
+                m_state = CONFIGURED;
                 break;
             default:
                 //status = false;

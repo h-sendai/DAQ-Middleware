@@ -302,7 +302,7 @@ RTC::ReturnCode_t DaqOperator::run_console_mode()
 
     /* Display Error Console */
     int cnt = 0;
-    string lenstr;
+    string lenstr = "";
     string d_compname[m_comp_num];
     FatalErrorStatus_var d_message[m_comp_num];
 
@@ -476,10 +476,7 @@ RTC::ReturnCode_t DaqOperator::run_console_mode()
                          << "\033[39m" << endl;
                     
                     /* ERRORED STATE!!  */
-                    for (int j = (m_comp_num - 1); j >= 0; j--) {
-                        set_command(m_daqservices[j], CMD_ERRORED);
-                        check_done(m_daqservices[j]);
-                    }
+                    errored_procedure();
 
                     /** Use error console display **/
                     d_compname[i] = compname;
@@ -518,22 +515,23 @@ RTC::ReturnCode_t DaqOperator::run_console_mode()
                 usleep(1000);      
             }
         }//for
-
-        /* Display Error Console */
-        if (m_state == ERRORED) {
-            for (int i = (m_comp_num - 1); i >= 0; i--) {
-                lenstr = d_message[i]->description;
-                if (lenstr.length() != 0) {
-                    ++cnt;
-                    cerr << endl << " [ERROR" << cnt << "] "
-                        << d_compname[i] << '\t' << "<= "
-                        << "\033[31m" << d_message[i]->description
-                        << "\033[39m" << endl;
-                }
-            }///for
-        } //if
     }//if...else
+    cerr << endl;
     
+    /* Display Error Console */
+    int len;
+    if (m_state == ERRORED) {
+        for (int i = (m_comp_num - 1); i >= 0; i--) {
+            lenstr = d_message[i]->description;
+            if ((len = lenstr.length()) > 0) {
+                ++cnt;
+                cerr  << " [ERROR" << cnt << "] "
+                    << d_compname[i] << '\t' << "<= "
+                    << "\033[31m" << d_message[i]->description
+                    << "\033[39m" << endl;
+            }
+        }///for
+    } //if
     if (rebFlag == true) {
         comp_stop_procedure();
         sleep(1);
@@ -551,16 +549,12 @@ RTC::ReturnCode_t DaqOperator::run_console_mode()
             status = m_daqservices[i]->getStatus();
             if(status->comp_status == COMP_FIXWAIT 
                 || status->comp_status == COMP_ERRORED) {
-                // error still remain
                 errFlag = true;
             }
-            // reback errored
             if (errFlag == false && status->state == ERRORED) {
-                set_command(m_daqservices[i], CMD_RUNNINGBACK);
-                check_done(m_daqservices[i]);
+                runningback_procedure(i);
             }
         }
-        // Error check
         for (int i = (m_comp_num - 1); i >= 0; i--) {
             status = m_daqservices[i]->getStatus();
             if(status->comp_status == COMP_FIXWAIT 
@@ -569,10 +563,12 @@ RTC::ReturnCode_t DaqOperator::run_console_mode()
                 break;
             }
         }
-        if (errFlag == false) 
+        if (errFlag == false) {
             m_state = RUNNING;
-        else 
+        }
+        else {
             m_state = ERRORED;
+        }
     }
     return RTC::RTC_OK;
 }
@@ -613,7 +609,7 @@ int DaqOperator::fix1_configure_procedure()
         Status_var status;
         for (int i = 0; i< m_comp_num; i++) {
             status = m_daqservices[i]->getStatus();
-            if (status->state == ERRORED) {
+            if (status->state == CONFIGURED) {
                 set_command(m_daqservices[i], CMD_UNCONFIGURE);
                 check_done(m_daqservices[i]);
             }
@@ -656,7 +652,7 @@ int DaqOperator::fix1_configure_procedure()
 				set_command(m_daqservices[i], CMD_CONFIGURE);
 				check_done(m_daqservices[i]);
             }
-            else {
+            else if (status->state == RUNNING){
                 set_command(m_daqservices[i], CMD_STOP);
 				check_done(m_daqservices[i]);
             }
@@ -681,21 +677,21 @@ int DaqOperator::fix2_restart_procedure()
     m_stop_date = "";
 
     try {
-		Status_var status;
+		// Status_var status;
 		for (int i = 0; i< m_comp_num; i++) {
-            status = m_daqservices[i]->getStatus();
-            if (status->state == CONFIGURED) {
-				set_runno(m_daqservices[i], m_runNumber);
-				check_done(m_daqservices[i]);
-			}
+            // status = m_daqservices[i]->getStatus();
+            // if (status->state == CONFIGURED) {
+            set_runno(m_daqservices[i], m_runNumber);
+            check_done(m_daqservices[i]);
+			// }
         }
 
         for (int i = 0; i< m_comp_num; i++) {
-            status = m_daqservices[i]->getStatus();
-            if (status->state == CONFIGURED) {
-                set_command(m_daqservices[i], CMD_START);
-                check_done(m_daqservices[i]);
-            }
+            // status = m_daqservices[i]->getStatus();
+            // if (status->state == CONFIGURED) {
+            set_command(m_daqservices[i], CMD_START);
+            check_done(m_daqservices[i]);
+            // }
         }
     } catch (...) {
         cerr << "### ERROR: DaqOperator: Failed to start Component.\n";
@@ -1063,6 +1059,36 @@ int DaqOperator::resume_procedure()
 
     } catch(...) {
         cerr << "### ERROR: DaqOperator: Failed to resume Component.\n";
+        return 1;
+    }
+    m_com_completed = true;
+    return 0;
+}
+
+int DaqOperator::errored_procedure()
+{
+    m_com_completed = false;
+    try {
+        for (int i = 0; i< m_comp_num; i++) {
+            set_command(m_daqservices[i], CMD_ERRORED);
+            check_done(m_daqservices[i]);
+        }
+    } catch(...) {
+        cerr << "### ERROR: DaqOperator: Failed to errored Component.\n";
+        return 1;
+    }
+    m_com_completed = true;
+    return 0;
+}
+
+int DaqOperator::runningback_procedure(int i)
+{
+    m_com_completed = false;
+    try {
+        set_command(m_daqservices[i], CMD_RUNNINGBACK);
+        check_done(m_daqservices[i]);
+    } catch(...) {
+        cerr << "### ERROR: DaqOperator: Failed to runningback Component.\n";
         return 1;
     }
     m_com_completed = true;

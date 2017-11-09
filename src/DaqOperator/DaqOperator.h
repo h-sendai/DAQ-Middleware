@@ -138,6 +138,8 @@ private:
     int stop_procedure();
     int pause_procedure();
     int resume_procedure();
+    int errored_procedure();
+    int runningback_procedure(int comp_num);
     int abort_procedure();
     int putstatus_procedure();
     int log_procedure();
