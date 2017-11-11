@@ -31,8 +31,6 @@
 #include "DaqComponentException.h"
 #include "Timer.h"
 
-using namespace std;
-
 /*!
  * @namespace DAQMW
  * @brief common namespace of DAQ-Middleware
@@ -144,17 +142,17 @@ namespace DAQMW
                     ret = true;
                 }
                 else {
-                    cerr << "### ERROR: Event byte size missmatch" << endl;
-                    cerr << "event_size in header: " << event_size
-                              << "  received data size: " << received_byte << endl;
+                    std::cerr << "### ERROR: Event byte size missmatch" << std::endl;
+                    std::cerr << "event_size in header: " << event_size
+                              << "  received data size: " << received_byte << std::endl;
                 }
             }
             else {
-                cerr << "### ERROR: Bad Magic Num:"
+                std::cerr << "### ERROR: Bad Magic Num:"
                           << hex << (unsigned)header[0] << " " << (unsigned)header[1]
-                          << endl;
+                          << std::endl;
             }
-            cerr << dec;
+            std::cerr << dec;
             return ret;
         }
 
@@ -170,9 +168,9 @@ namespace DAQMW
                     ret = true;
                 }
                 else {
-                    cerr << "### ERROR: Sequence No. missmatch"  << endl;
-                    cerr << "sequece no. in footer :" << seq_num << endl;
-                    cerr << "loop cnts at component:" << m_loop  << endl;
+                    std::cerr << "### ERROR: Sequence No. missmatch"  << std::endl;
+                    std::cerr << "sequece no. in footer :" << seq_num << std::endl;
+                    std::cerr << "loop cnts at component:" << m_loop  << std::endl;
                 }
             }
             return ret;
@@ -183,7 +181,7 @@ namespace DAQMW
             unsigned int event_byte_size =
             block_byte_size - HEADER_BYTE_SIZE - FOOTER_BYTE_SIZE;
             if (m_debug) {
-                cerr << "event_byte_size: " << event_byte_size << endl;
+                std::cerr << "event_byte_size: " << event_byte_size << std::endl;
             }
 
             ////////// Check Header and Footer in received data /////////
@@ -194,8 +192,8 @@ namespace DAQMW
                 header[i] = in_data.data[i];
             }
             if (check_header(header, event_byte_size) == false) {
-                cerr << "### ERROR: header invalid in loop" << m_loop
-                          << endl;
+                std::cerr << "### ERROR: header invalid in loop" << m_loop
+                          << std::endl;
                 fatal_error_report(FatalType::HEADER_DATA_MISMATCH);
             }
 
@@ -203,7 +201,7 @@ namespace DAQMW
                 footer[i] = in_data.data[block_byte_size - FOOTER_BYTE_SIZE + i];
             }
             if (check_footer(footer) == false) {
-                cerr << "### ERROR: footer invalid" << endl;
+                std::cerr << "### ERROR: footer invalid" << std::endl;
                 fatal_error_report(FatalType::FOOTER_DATA_MISMATCH);
             }
             return true;
@@ -238,9 +236,9 @@ namespace DAQMW
 
         int set_run_number()
         {
-            cerr << "set_run_number" << endl;
+            std::cerr << "set_run_number" << std::endl;
             m_runNumber = m_daq_service0.getRunNo();
-            cerr << "m_runNumber: " << m_runNumber << endl;
+            std::cerr << "m_runNumber: " << m_runNumber << std::endl;
             return 0;
         }
 
@@ -391,9 +389,9 @@ namespace DAQMW
             int index = 0;
             RTC::DataPortStatus::Enum out_status = myOutPort.getStatus(index);
             if(m_debug) {
-                cerr << "OutPort status: "
+                std::cerr << "OutPort status: "
                           << RTC::DataPortStatus::toString(out_status)
-                          << endl;
+                          << std::endl;
             }
             switch(out_status) {
             case RTC::DataPortStatus::PORT_OK:
@@ -409,9 +407,9 @@ namespace DAQMW
             case RTC::DataPortStatus::UNKNOWN_ERROR:
             case RTC::DataPortStatus::PRECONDITION_NOT_MET:
             case RTC::DataPortStatus::CONNECTION_LOST:
-                cerr << "OutPort status: "
+                std::cerr << "OutPort status: "
                      << RTC::DataPortStatus::toString(out_status) 
-                     << endl;
+                     << std::endl;
                 ret = BUF_FATAL;
                 break;
                 /*** Could never happen in this case ***/
@@ -422,9 +420,9 @@ namespace DAQMW
             case RTC::DataPortStatus::RECV_EMPTY:
             case RTC::DataPortStatus::BUFFER_ERROR:
             case RTC::DataPortStatus::INVALID_ARGS:
-                cerr << "Impossible OutPort status: "
+                std::cerr << "Impossible OutPort status: "
                      << RTC::DataPortStatus::toString(out_status) 
-                     << endl;
+                     << std::endl;
                 ret = BUF_FATAL;
                 break;
             }
@@ -446,9 +444,9 @@ namespace DAQMW
             int index = 0;
             RTC::DataPortStatus::Enum in_status = myInPort.getStatus(index);
             if(m_debug) {
-                cerr << "InPort status: "
+                std::cerr << "InPort status: "
                           << RTC::DataPortStatus::toString(in_status)
-                          << endl;
+                          << std::endl;
             }
             switch(in_status) {
             case RTC::DataPortStatus::PORT_OK:
@@ -462,9 +460,9 @@ namespace DAQMW
                 break;
             case RTC::DataPortStatus::PORT_ERROR:
             case RTC::DataPortStatus::PRECONDITION_NOT_MET:
-                cerr << "InPort status: "
+                std::cerr << "InPort status: "
                           << RTC::DataPortStatus::toString(in_status)
-                          << endl;
+                          << std::endl;
                 ret = BUF_FATAL;
                 break;
             /*** Could never happen in this case ***/
@@ -477,9 +475,9 @@ namespace DAQMW
             case RTC::DataPortStatus::INVALID_ARGS:
             case RTC::DataPortStatus::CONNECTION_LOST:
             case RTC::DataPortStatus::UNKNOWN_ERROR:
-                cerr << "Impossible InPort status: " 
+                std::cerr << "Impossible InPort status: " 
                     << RTC::DataPortStatus::toString(in_status) 
-                    << endl;
+                    << std::endl;
                 ret = BUF_FATAL;
                 break;
             }
@@ -519,7 +517,7 @@ namespace DAQMW
                 if (status) {
                     while (check_trans_lock()) { // check if transition is locked
                         if (m_debug) {
-                            cerr << "### trans locked" << endl;
+                            std::cerr << "### trans locked" << std::endl;
                         }
                         usleep(0);
                         if ( !m_isOnError ) {
@@ -527,21 +525,21 @@ namespace DAQMW
                                 doAction(m_state_prev);
                             }
                             catch(DaqCompDefinedException& e ) {
-                                cerr << mytimer->getDate() << " ";
+                                std::cerr << mytimer->getDate() << " ";
                                 FatalType::Enum mytype = e.type();
                                 int mycode             = e.reason();
                                 const char* mydesc     = e.what();
                                 fatal_report_to_operator(mytype, mydesc, mycode);
                             }
                             catch(DaqCompUserException& e) {
-                                cerr << mytimer->getDate() << " ";
+                                std::cerr << mytimer->getDate() << " ";
                                 FatalType::Enum mytype = e.type();
                                 int mycode             = e.reason();
                                 const char* mydesc     = e.what();
                                 fatal_report_to_operator(mytype, mydesc, mycode);
                             }
                             catch(...) {
-                                cerr << "### got unknown exception at transition\n";
+                                std::cerr << "### got unknown exception at transition\n";
                             }
                         }
                         else {
@@ -554,27 +552,27 @@ namespace DAQMW
                         ret = transAction(m_command);
                     }
                     catch(DaqCompDefinedException& e ) {
-                        cerr << mytimer->getDate() << " ";
+                        std::cerr << mytimer->getDate() << " ";
                         FatalType::Enum mytype = e.type();
                         int mycode             = e.reason();
                         const char* mydesc     = e.what();
                         fatal_report_to_operator(mytype, mydesc, mycode);
                     }
                     catch(DaqCompUserException& e) {
-                        cerr << mytimer->getDate() << " ";
+                        std::cerr << mytimer->getDate() << " ";
                         FatalType::Enum mytype = e.type();
                         int mycode             = e.reason();
                         const char* mydesc     = e.what();
                         fatal_report_to_operator(mytype, mydesc, mycode);
                     }
                     catch(...) {
-                        cerr << "### got unknown exception at transition\n";
+                        std::cerr << "### got unknown exception at transition\n";
                     }
                     set_status(COMP_WORKING);
                 }
                 else {
-                    cerr << "daq_do: transAction call: illegal command"
-                              << endl;
+                    std::cerr << "daq_do: transAction call: illegal command"
+                              << std::endl;
                 }
                 set_done();
             }
@@ -585,21 +583,21 @@ namespace DAQMW
                         doAction(m_state);
                     }
                     catch(DaqCompDefinedException& e ) {
-                        cerr << mytimer->getDate() << " ";
+                        std::cerr << mytimer->getDate() << " ";
                         FatalType::Enum mytype = e.type();
                         int mycode             = e.reason();
                         const char* mydesc     = e.what();
                         fatal_report_to_operator(mytype, mydesc, mycode);
                     }
                     catch(DaqCompUserException& e) {
-                        cerr << mytimer->getDate() << " ";
+                        std::cerr << mytimer->getDate() << " ";
                         FatalType::Enum mytype = e.type();
                         int mycode             = e.reason();
                         const char* mydesc     = e.what();
                         fatal_report_to_operator(mytype, mydesc, mycode);
                     }
                     catch(...) {
-                        cerr << "### caught unknown exception on DaqComponentBase\n";
+                        std::cerr << "### caught unknown exception on DaqComponentBase\n";
                         return ret;
                     }
                     clockwork_status_report();
@@ -645,7 +643,7 @@ namespace DAQMW
         static const int DAQ_IDLE_TIME_USEC =  10000; // 10 m sec
         static const int STATUS_CYCLE_SEC   =  2;
 
-        string m_comp_name;
+        std::string m_comp_name;
         unsigned int m_runNumber;
         unsigned int m_eventByteSize;
         unsigned long long m_loop;
@@ -662,7 +660,7 @@ namespace DAQMW
         DAQLifeCycleState m_state;
         DAQLifeCycleState m_state_prev;
 
-        string m_err_message;
+        std::string m_err_message;
 
         bool m_isOnError;
         bool m_isTimerAlarm;
@@ -738,7 +736,7 @@ namespace DAQMW
             set_status(COMP_WORKING);
             daq_stop();
 
-            cerr << "event byte size = " << m_totalDataSize << endl;
+            std::cerr << "event byte size = " << m_totalDataSize << std::endl;
             return 0;
         }
 
@@ -765,7 +763,7 @@ namespace DAQMW
         {
             m_command = m_daq_service0.getCommand();
             if (m_debug) {
-                cerr << "m_command=" << m_command << endl;
+                std::cerr << "m_command=" << m_command << std::endl;
             }
             return 0;
         }
@@ -774,7 +772,7 @@ namespace DAQMW
         {
             m_daq_service0.setDone();
             if (m_debug) {
-                cerr << "set_done()\n";
+                std::cerr << "set_done()\n";
             }
             return 0;
         }
@@ -785,8 +783,8 @@ namespace DAQMW
                 set_trans_unlock();
             }
             if (! m_has_printed_error_log) {
-                cerr << "### daq_onError(): ERROR Occured\n";
-                // cerr << m_err_message << endl;
+                std::cerr << "### daq_onError(): ERROR Occured\n";
+                // std::cerr << m_err_message << std::endl;
                 set_status(COMP_FATAL);
                 m_has_printed_error_log = true;
             }
