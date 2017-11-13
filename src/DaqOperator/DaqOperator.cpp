@@ -472,7 +472,6 @@ RTC::ReturnCode_t DaqOperator::run_console_mode()
                     
                     /* ERRORED STATE!!  */
                     set_command(m_daqservices[i], CMD_ERRORED);
-                    check_done(m_daqservices[i]);
 
                     /** Use error console display **/
                     d_compname[i] = compname;
@@ -560,7 +559,8 @@ int DaqOperator::comp_stop_procedure()
         Status_var status;
         for (int i = (m_comp_num - 1); i >= 0; i--) {
             status = m_daqservices[i]->getStatus();
-            if (status->comp_status == COMP_RESTART) {
+            if (status->state == ERRORED || status->comp_status == COMP_RESTART) 
+            {
                 set_command(m_daqservices[i], CMD_STOP);
                 check_done(m_daqservices[i]);
             }
@@ -655,21 +655,21 @@ int DaqOperator::fix2_restart_procedure()
     m_stop_date = "";
 
     try {
-		// Status_var status;
+		Status_var status;
 		for (int i = 0; i < m_comp_num; i++) {
-            // status = m_daqservices[i]->getStatus();
-            // if (status->state == CONFIGURED) {
+            status = m_daqservices[i]->getStatus();
+            if (status->state == CONFIGURED) {
             set_runno(m_daqservices[i], m_runNumber);
             check_done(m_daqservices[i]);
-			// }
+			}
         }
 
         for (int i = 0; i < m_comp_num; i++) {
-            // status = m_daqservices[i]->getStatus();
-            // if (status->state == CONFIGURED) {
+            status = m_daqservices[i]->getStatus();
+            if (status->state == CONFIGURED) {
             set_command(m_daqservices[i], CMD_START);
             check_done(m_daqservices[i]);
-            // }
+            }
         }
     } catch (...) {
         std::cerr << "### ERROR: DaqOperator: Failed to start Component.\n";

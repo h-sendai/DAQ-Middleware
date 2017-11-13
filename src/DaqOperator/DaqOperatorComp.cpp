@@ -231,7 +231,8 @@ int find_comps(CorbaNaming* naming, CompGroupList* daq_group_list)
 
                 for (CORBA::ULong i(0), n(iflist.length()); i < n; ++i)
                 {
-                    const char* pol = iflist[i].polarity == 0 ? "PROVIDED" : "REQUIRED";
+                    const char* pol;
+                    pol = iflist[i].polarity == 0 ? "PROVIDED" : "REQUIRED";
                 }
 
                 std::string port_type = NVUtil::toString(port->get_port_profile()->properties,

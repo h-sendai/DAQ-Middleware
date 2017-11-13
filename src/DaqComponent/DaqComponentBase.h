@@ -317,7 +317,6 @@ namespace DAQMW
         }
 
         virtual int daq_dummy()       = 0;
-        virtual int daq_errored()     = 0;
         virtual int daq_configure()   = 0;
         virtual int daq_unconfigure() = 0;
         virtual int daq_start()       = 0;
@@ -326,6 +325,7 @@ namespace DAQMW
         virtual int daq_pause()       = 0;
         virtual int daq_resume()      = 0;
         virtual int daq_restart()     = 0;
+        virtual int daq_suspend()     = 0;
 
         virtual int parse_params( ::NVList* list ) = 0;
 
@@ -352,6 +352,7 @@ namespace DAQMW
             m_daq_trans_func[CMD_STOP]        = &DAQMW::DaqComponentBase::daq_base_stop;
             m_daq_trans_func[CMD_UNCONFIGURE] = &DAQMW::DaqComponentBase::daq_base_unconfigure;
             m_daq_trans_func[CMD_ERRORED]	  = &DAQMW::DaqComponentBase::daq_base_restart;
+            m_daq_trans_func[CMD_SUSPEND]     = &DAQMW::DaqComponentBase::daq_base_suspend;
 			
             m_daq_do_func[LOADED]     = &DAQMW::DaqComponentBase::daq_base_dummy;
             m_daq_do_func[CONFIGURED] = &DAQMW::DaqComponentBase::daq_base_dummy;
@@ -689,14 +690,6 @@ namespace DAQMW
             return 0;
         }
 
-        int daq_base_errored()
-        {
-            daq_errored();
-            set_status(COMP_WORKING);
-            usleep(DAQ_IDLE_TIME_USEC);
-            return 0;
-        }
-
         int daq_base_configure()
         {
             set_status(COMP_WORKING);
@@ -726,6 +719,17 @@ namespace DAQMW
             return 0;
         }
 
+        int daq_base_suspend()
+        {
+            if (m_isOnError) {
+                reset_onError(); /// reset error flag
+            }
+            set_status(COMP_WORKING);
+            daq_suspend();
+
+            return 0;
+        }
+
         int daq_base_stop()
         {
             if (m_isOnError) {
@@ -750,9 +754,7 @@ namespace DAQMW
         // Errored
 		int daq_base_restart()
 		{
-            // int ret = 0
-            // ret = daq_restart();
-            // if (ret) 
+            daq_restart();
             set_status(COMP_RESTART);
             sleep(2);
 
@@ -845,6 +847,11 @@ namespace DAQMW
             case CMD_ERRORED:
                 m_state_prev = RUNNING;
                 m_state = ERRORED;
+                break;
+            case CMD_SUSPEND:
+                m_state_prev = ERRORED;
+                m_state_prev = CONFIGURED;
+                set_trans_lock();
                 break;
             default:
                 //status = false;

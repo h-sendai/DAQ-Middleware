@@ -40,6 +40,7 @@ enum DAQCommand
     CMD_PAUSE,
     CMD_RESUME,
     CMD_ERRORED,
+    CMD_SUSPEND,
     CMD_NOP
 };
 

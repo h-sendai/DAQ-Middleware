@@ -469,7 +469,6 @@ bool CreateDom::check(std::string name, int *cnt, int *type, int *index)
 	return true;
 }
 
-
 int CreateDom::checkDigit(std::string name, int index, int cnt)
 {
 	for (int i = index; i < index + cnt; ++i) {
