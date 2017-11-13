@@ -40,7 +40,6 @@ enum DAQCommand
     CMD_PAUSE,
     CMD_RESUME,
     CMD_ERRORED,
-    CMD_RUNNINGBACK,
     CMD_NOP
 };
 
@@ -56,8 +55,7 @@ enum CompStatus
     COMP_FINISHED,
     COMP_WARNING,
     COMP_FATAL,
-    COMP_ERRORED,
-    COMP_FIXWAIT
+    COMP_RESTART
 };
 
 struct FatalErrorStatus

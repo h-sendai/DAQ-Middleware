@@ -392,11 +392,8 @@ void CreateDom::makeLog(groupStatus status)
 	case COMP_FATAL:
 		comp_status = "FATAL ERROR";
 		break;
-	case COMP_ERRORED:
-		comp_status = "ERRORED";
-		break;
-	case COMP_FIXWAIT:
-		comp_status = "FIXWAIT";
+	case COMP_RESTART:
+		comp_status = "RESTART";
 		break;
 	}
 

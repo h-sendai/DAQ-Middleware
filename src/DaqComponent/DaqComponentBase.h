@@ -149,10 +149,10 @@ namespace DAQMW
             }
             else {
                 std::cerr << "### ERROR: Bad Magic Num:"
-                          << hex << (unsigned)header[0] << " " << (unsigned)header[1]
-                          << std::endl;
+                    << std::hex << (unsigned)header[0] << " " << (unsigned)header[1]
+                    << std::endl;
             }
-            std::cerr << dec;
+            std::cerr << std::dec;
             return ret;
         }
 
@@ -692,7 +692,7 @@ namespace DAQMW
         int daq_base_errored()
         {
             daq_errored();
-            set_status(COMP_ERRORED);
+            set_status(COMP_WORKING);
             usleep(DAQ_IDLE_TIME_USEC);
             return 0;
         }
@@ -753,8 +753,8 @@ namespace DAQMW
             // int ret = 0
             // ret = daq_restart();
             // if (ret) 
-                // set_status(COMP_FIXWAIT);
-                // sleep(2);
+            set_status(COMP_RESTART);
+            sleep(2);
 
             return 0;
         }
@@ -845,10 +845,6 @@ namespace DAQMW
             case CMD_ERRORED:
                 m_state_prev = RUNNING;
                 m_state = ERRORED;
-                break;
-            case CMD_RUNNINGBACK:
-                m_state_prev = ERRORED;
-                m_state = RUNNING;
                 break;
             default:
                 //status = false;
