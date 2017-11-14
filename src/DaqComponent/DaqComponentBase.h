@@ -324,9 +324,6 @@ namespace DAQMW
         virtual int daq_stop()        = 0;
         virtual int daq_pause()       = 0;
         virtual int daq_resume()      = 0;
-        virtual int daq_restart()     = 0;
-        virtual int daq_suspend()     = 0;
-
         virtual int parse_params( ::NVList* list ) = 0;
 
         void fatal_error_report(FatalType::Enum type, int code = -1)
@@ -351,14 +348,11 @@ namespace DAQMW
             m_daq_trans_func[CMD_RESUME]      = &DAQMW::DaqComponentBase::daq_resume;
             m_daq_trans_func[CMD_STOP]        = &DAQMW::DaqComponentBase::daq_base_stop;
             m_daq_trans_func[CMD_UNCONFIGURE] = &DAQMW::DaqComponentBase::daq_base_unconfigure;
-            m_daq_trans_func[CMD_ERRORED]	  = &DAQMW::DaqComponentBase::daq_base_restart;
-            m_daq_trans_func[CMD_SUSPEND]     = &DAQMW::DaqComponentBase::daq_base_suspend;
 			
             m_daq_do_func[LOADED]     = &DAQMW::DaqComponentBase::daq_base_dummy;
             m_daq_do_func[CONFIGURED] = &DAQMW::DaqComponentBase::daq_base_dummy;
             m_daq_do_func[RUNNING]    = &DAQMW::DaqComponentBase::daq_run;
             m_daq_do_func[PAUSED]     = &DAQMW::DaqComponentBase::daq_base_dummy;
-            m_daq_do_func[ERRORED]    = &DAQMW::DaqComponentBase::daq_base_dummy;
         }
 
         int reset_timer()
@@ -719,17 +713,6 @@ namespace DAQMW
             return 0;
         }
 
-        int daq_base_suspend()
-        {
-            if (m_isOnError) {
-                reset_onError(); /// reset error flag
-            }
-            set_status(COMP_WORKING);
-            daq_suspend();
-
-            return 0;
-        }
-
         int daq_base_stop()
         {
             if (m_isOnError) {
@@ -751,16 +734,6 @@ namespace DAQMW
             return 0;
         }
         
-        // Errored
-		int daq_base_restart()
-		{
-            daq_restart();
-            set_status(COMP_RESTART);
-            sleep(2);
-
-            return 0;
-        }
-
         int get_command()
         {
             m_command = m_daq_service0.getCommand();
@@ -844,18 +817,7 @@ namespace DAQMW
                 m_state_prev = RUNNING;
                 m_state = LOADED;
                 break;
-<<<<<<< HEAD
-            case CMD_ERRORED:
-                m_state_prev = RUNNING;
-                m_state = ERRORED;
-                break;
-            case CMD_SUSPEND:
-                m_state_prev = ERRORED;
-                m_state_prev = CONFIGURED;
-                set_trans_lock();
-=======
             case CMD_RESTART:
->>>>>>> e7f765cc20295b0eb3ff15db37d95c3aa7d99d4d
                 break;
             default:
                 //status = false;
