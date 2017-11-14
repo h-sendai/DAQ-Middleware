@@ -310,18 +310,18 @@ RTC::ReturnCode_t DaqOperator::run_console_mode()
 
     std::cerr << "\033[0;0H" << " Command:    " << std::endl;
     std::cerr << " " 
-              << CMD_CONFIGURE   << ":configure "
-              << CMD_START       << ":start "
-              << CMD_STOP        << ":stop "
-              << CMD_UNCONFIGURE << ":unconfigure "
-              << CMD_PAUSE       << ":pause "
-              << CMD_RESUME      << ":resume "
+              << CMD_CONFIGURE   << ":configure\t"
+              << CMD_START       << ":start   "
+              << CMD_STOP        << ":stop" << std::endl << " "
+              << CMD_UNCONFIGURE << ":unconfigure\t"
+              << CMD_PAUSE       << ":pause   "
+              << CMD_RESUME      << ":resume   "
               << CMD_RESTART     << ":restart"
               << std::endl;
 
     std::cerr << "\n" << " RUN NO: " << m_runNumber;
     std::cerr << "\n" << " start at: "  << m_start_date
-              << "    stop at: "   << m_stop_date << std::endl;
+              << "\tstop at: "   << m_stop_date << std::endl;
     std::cerr << "\033[1;11H";
 
     select(1, &m_rset, NULL, NULL, &m_tout);
@@ -364,9 +364,9 @@ RTC::ReturnCode_t DaqOperator::run_console_mode()
         case CONFIGURED:
             switch ((DAQCommand)command) {
             case CMD_START:
-                std::cerr << "\033[4;20H"; // default=3;20H
+                std::cerr << "\033[5;20H"; // default=3;20H
                 std::cerr << "input RUN NO(same run no is prohibited):   ";
-                std::cerr << "\033[4;62H";
+                std::cerr << "\033[5;62H";
                 std::cin >> srunNo;
                 m_runNumber = atoi(srunNo.c_str());
                 start_procedure();
@@ -407,9 +407,9 @@ RTC::ReturnCode_t DaqOperator::run_console_mode()
                 sleep(1);
                 fix1_configure_procedure();
                 sleep(2);
-                std::cerr << "\033[4;20H"; // default:3;20H
+                std::cerr << "\033[5;20H"; // default:3;20H
                 std::cerr << "input RUN NO(same run no is prohibited):   ";
-                std::cerr << "\033[4;62H";
+                std::cerr << "\033[5;62H";
                 std::cin >> srunNo;
                 m_runNumber = atoi(srunNo.c_str());
                 fix2_restart_procedure();
@@ -516,33 +516,7 @@ RTC::ReturnCode_t DaqOperator::run_console_mode()
     }///if
     return RTC::RTC_OK;
 }
-/* 
-int DaqOperator::command_fix()
-{
-    if (m_state != ERROR) {
-        createDom_ng("Params");
-        std::cerr << "   Bad Command\n";
-        return 1;
-    }
 
-    m_config_file = m_config_file_tmp;
-    if (configure_procedure() == 1) {
-        char str_e[128];
-        sprintf(str_e, FORMAT_IO_ERR_E, m_config_file.c_str());
-
-        char str_j[128];
-        sprintf(str_j, FORMAT_IO_ERR_J, m_config_file.c_str());
-
-        createDom_ng("Params", RET_CODE_IO_ERR, str_e, str_j);
-		return 1;
-    }
-    
-    start_procedure();
-    m_state = RUNNING;
-    createDom_ok("Begin");
-    return 0;
-}
-*/
 bool DaqOperator::parse_body(const char* buf, const std::string tagname)
 {
     XercesDOMParser* parser = new XercesDOMParser;
