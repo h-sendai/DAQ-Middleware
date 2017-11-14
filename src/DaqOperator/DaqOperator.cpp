@@ -247,7 +247,7 @@ std::string DaqOperator::check_compStatus(CompStatus compStatus)
         comp_status = "WORNING";
         break;
     case COMP_FATAL:
-        comp_status = "### ";//"ERROR";
+        comp_status = "ERROR";//"ERROR";
         break;
     case COMP_RESTART:
         comp_status = "input 6";
@@ -314,14 +314,14 @@ RTC::ReturnCode_t DaqOperator::run_console_mode()
     FD_ZERO(&m_rset);
     FD_SET(0, &m_rset);
 
-    std::cerr << "\033[0;0H";
-    std::cerr << " Command:    "
-              << CMD_CONFIGURE   << ":configure  "
-              << CMD_START       << ":start  "
-              << CMD_STOP        << ":stop  "
-              << CMD_UNCONFIGURE << ":unconfigure  "
-              << CMD_PAUSE       << ":pause  "
-              << CMD_RESUME      << ":resume   "
+    std::cerr << "\033[0;0H" << " Command:    " << std::endl;
+    std::cerr << " " 
+              << CMD_CONFIGURE   << ":configure "
+              << CMD_START       << ":start "
+              << CMD_STOP        << ":stop "
+              << CMD_UNCONFIGURE << ":unconfigure "
+              << CMD_PAUSE       << ":pause "
+              << CMD_RESUME      << ":resume "
               << CMD_RESTART     << ":restart"
               << std::endl;
 
@@ -481,6 +481,7 @@ RTC::ReturnCode_t DaqOperator::run_console_mode()
                     /** Use error console display **/
                     d_compname[i] = compname;
                     d_message[i] = errStatus;
+                    m_state = ERRORED;
                 }///if Fatal
                 else if (status->comp_status == COMP_RESTART) {
                     std::cerr << "\033[34m" << std::setw(14) << std::right
@@ -507,14 +508,12 @@ RTC::ReturnCode_t DaqOperator::run_console_mode()
         /* Display Error Console */
         if (m_state == ERRORED) {
             int cnt = 0;
-            std::string strTemp;
             for (int i = (m_comp_num - 1); i >= 0; i--) {
-                strTemp = d_message[i]->description;
-                if (strTemp.length() != 0) {
-                    std::cerr << " [ERROR" << ++cnt << "] "
-                              << d_compname[i] << '\t' << "<= "
-                              << "\033[31m" << d_message[i]->description
-                              << "\033[39m" << std::endl;
+                if (d_compname[i].length() != 0) {
+                    std::cerr << " [ERROR" << ++cnt  << "] ";
+                    std::cerr << d_compname[i] << '\t' << "<= " << "\033[31m"
+                              << d_message[i]->description << "\033[39m"
+                              << std::endl;
                 }
             }///for
         }///if
