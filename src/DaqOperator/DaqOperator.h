@@ -42,7 +42,6 @@
 #include "CreateDom.h"
 #include "ParameterServer.h"
 
-using namespace std;
 using namespace RTC;
 
 // error code for dom
@@ -131,25 +130,21 @@ private:
     int check_done(RTC::CorbaConsumer<DAQService> daqservice);
     int set_sitcp_num(int sitcp_num);
     int set_service_list();
-        
+
+    int fix0_comp_stop_procedure();
+    int fix1_configure_procedure();
+    int fix2_restart_procedure();
     int configure_procedure();
     int unconfigure_procedure();
     int start_procedure();
     int stop_procedure();
     int pause_procedure();
     int resume_procedure();
+    int errored_procedure(int comp_num);
     int abort_procedure();
     int putstatus_procedure();
     int log_procedure();
     
-    // New fanctions
-    int comp_stop_procedure(); 
-    int comp_restart_procedure(); 
-    int fix_machine();
-    //int fix0_unconfigure_procedure();
-    int fix1_configure_procedure();
-    int fix2_restart_procedure(); 
-
     RTC::ReturnCode_t run_console_mode();
     RTC::ReturnCode_t run_http_mode();
     ///std::string check_fatal(FatalErrorStatus errStatus);
@@ -194,7 +189,7 @@ private:
     
     // New variables
     bool errFlag;
-    bool rebFlag;
+    bool resFlag;
     
     bool m_debug;
 };

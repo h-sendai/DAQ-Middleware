@@ -79,6 +79,11 @@ int SkeletonSink::daq_dummy()
     return 0;
 }
 
+int SkeletonSink::daq_errored()
+{
+    return 0;
+}
+
 int SkeletonSink::daq_configure()
 {
     std::cerr << "*** SkeletonSink::configure" << std::endl;
@@ -145,9 +150,9 @@ int SkeletonSink::daq_resume()
     return 0;
 }
 
-int Skeleton::daq_errored()
+int Skeleton::daq_reboot()
 {
-    std::cerr << "*** Skeleton::errored" << std::endl;
+    std::cerr << "*** Skeleton::reboot" << std::endl;
     /* *********************************** */
     /* Write recovery identification logic */
     /* *********************************** */

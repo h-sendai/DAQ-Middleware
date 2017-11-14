@@ -92,6 +92,11 @@ int SampleMonitor::daq_dummy()
     return 0;
 }
 
+int SampleMonitor::daq_errored()
+{
+    return 0;
+}
+
 int SampleMonitor::daq_configure()
 {
     std::cerr << "*** SampleMonitor::configure" << std::endl;
@@ -206,7 +211,7 @@ int SampleMonitor::daq_resume()
     return 0;
 }
 
-int Skeleton::daq_errored()
+int Skeleton::daq_reboot()
 {
     std::cerr << "*** Skeleton::errored" << std::endl;
     /* *********************************** */

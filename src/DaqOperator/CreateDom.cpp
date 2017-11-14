@@ -390,13 +390,10 @@ void CreateDom::makeLog(groupStatus status)
 		comp_status = "WARNING";
 		break;
 	case COMP_FATAL:
-		comp_status = "FATAL ERROR";
+		comp_status = "FATAL";
 		break;
-	case COMP_ERRORED:
-		comp_status = "ERRORED";
-		break;
-	case COMP_FIXWAIT:
-		comp_status = "FIXWAIT";
+	case COMP_RESTART:
+		comp_status = "RESTART";
 		break;
 	}
 
@@ -471,7 +468,6 @@ bool CreateDom::check(std::string name, int *cnt, int *type, int *index)
 
 	return true;
 }
-
 
 int CreateDom::checkDigit(std::string name, int index, int cnt)
 {
