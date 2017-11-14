@@ -39,8 +39,12 @@ enum DAQCommand
     CMD_UNCONFIGURE,
     CMD_PAUSE,
     CMD_RESUME,
+<<<<<<< HEAD
     CMD_ERRORED,
     CMD_SUSPEND,
+=======
+    CMD_RESTART,
+>>>>>>> e7f765cc20295b0eb3ff15db37d95c3aa7d99d4d
     CMD_NOP
 };
 

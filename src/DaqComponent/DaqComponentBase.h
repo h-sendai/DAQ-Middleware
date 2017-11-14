@@ -844,6 +844,7 @@ namespace DAQMW
                 m_state_prev = RUNNING;
                 m_state = LOADED;
                 break;
+<<<<<<< HEAD
             case CMD_ERRORED:
                 m_state_prev = RUNNING;
                 m_state = ERRORED;
@@ -852,6 +853,9 @@ namespace DAQMW
                 m_state_prev = ERRORED;
                 m_state_prev = CONFIGURED;
                 set_trans_lock();
+=======
+            case CMD_RESTART:
+>>>>>>> e7f765cc20295b0eb3ff15db37d95c3aa7d99d4d
                 break;
             default:
                 //status = false;

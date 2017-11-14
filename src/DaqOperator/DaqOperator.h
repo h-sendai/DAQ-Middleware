@@ -130,7 +130,14 @@ private:
     int check_done(RTC::CorbaConsumer<DAQService> daqservice);
     int set_sitcp_num(int sitcp_num);
     int set_service_list();
+<<<<<<< HEAD
         
+=======
+
+    int fix0_comp_stop_procedure();
+    int fix1_configure_procedure();
+    int fix2_restart_procedure();
+>>>>>>> e7f765cc20295b0eb3ff15db37d95c3aa7d99d4d
     int configure_procedure();
     int unconfigure_procedure();
     int start_procedure();

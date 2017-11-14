@@ -390,7 +390,11 @@ void CreateDom::makeLog(groupStatus status)
 		comp_status = "WARNING";
 		break;
 	case COMP_FATAL:
+<<<<<<< HEAD
 		comp_status = "FATAL ERROR";
+=======
+		comp_status = "FATAL";
+>>>>>>> e7f765cc20295b0eb3ff15db37d95c3aa7d99d4d
 		break;
 	case COMP_RESTART:
 		comp_status = "RESTART";
