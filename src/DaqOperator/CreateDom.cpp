@@ -378,17 +378,20 @@ void CreateDom::makeLog(groupStatus status)
 	    //comp_status = "OK";
 	    //break;
 	case COMP_WORKING:
-	  comp_status = "WORKING";
-	  break;
+		comp_status = "WORKING";
+		break;
 	case COMP_FINISHED:
-	  comp_status = "FINISHED";
-	  break;
+		comp_status = "FINISHED";
+		break;
 	case COMP_WARNING:
-	  comp_status = "WARNING";
-	  break;
+		comp_status = "WARNING";
+		break;
 	case COMP_FATAL:
-	  comp_status = "FATAL";
-	  break;
+		comp_status = "FATAL";
+		break;
+	case COMP_RESTART:
+		comp_status = "RESTART";
+		break;
 	}
 
 	make(m_logElem, "compStatus", comp_status);
