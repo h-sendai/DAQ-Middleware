@@ -77,6 +77,11 @@ int SampleFilter::daq_dummy()
     return 0;
 }
 
+int SampleFilter::daq_errored()
+{
+    return 0;
+}
+
 int SampleFilter::daq_configure()
 {
     std::cerr << "*** SampleFilter::configure" << std::endl;
@@ -139,6 +144,13 @@ int SampleFilter::daq_resume()
 {
     std::cerr << "*** SampleFilter::resume" << std::endl;
 
+    return 0;
+}
+
+int SampleFilter::daq_reboot()
+{
+    std::cerr << "*** SampleFilter::reboot" << std::endl;
+    
     return 0;
 }
 

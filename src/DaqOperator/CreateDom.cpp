@@ -166,7 +166,7 @@ std::string CreateDom::getLog(std::string command, groupStatusList status_list,
 
 std::string CreateDom::getState(DAQLifeCycleState state, bool flag)
 {
-    const char *str1[] = {"", "LOADED", "CONFIGURED",    "RUNNING",   "PAUSED"};
+    const char *str1[] = {"", "LOADED", "CONFIGURED", "RUNNING", "PAUSED", "ERRORED"};
     const char *str2[] = {"", "Ready",  "Parameter Set", "Acquiring", "Paused"};
 
 	int idx = 0;
@@ -182,6 +182,9 @@ std::string CreateDom::getState(DAQLifeCycleState state, bool flag)
 		break;
 	case(PAUSED):
 		idx = 4;
+		break;
+	case(ERRORED):
+		idx = 5;
 		break;
 	default:
 		idx = 0;
@@ -378,17 +381,20 @@ void CreateDom::makeLog(groupStatus status)
 	    //comp_status = "OK";
 	    //break;
 	case COMP_WORKING:
-	  comp_status = "WORKING";
-	  break;
+		comp_status = "WORKING";
+		break;
 	case COMP_FINISHED:
-	  comp_status = "FINISHED";
-	  break;
+		comp_status = "FINISHED";
+		break;
 	case COMP_WARNING:
-	  comp_status = "WARNING";
-	  break;
+		comp_status = "WARNING";
+		break;
 	case COMP_FATAL:
-	  comp_status = "FATAL";
-	  break;
+		comp_status = "FATAL";
+		break;
+	case COMP_RESTART:
+		comp_status = "RESTART";
+		break;
 	}
 
 	make(m_logElem, "compStatus", comp_status);
@@ -463,10 +469,9 @@ bool CreateDom::check(std::string name, int *cnt, int *type, int *index)
 	return true;
 }
 
-
 int CreateDom::checkDigit(std::string name, int index, int cnt)
 {
-	for (int i = index; i <index+cnt; ++i) {
+	for (int i = index; i < index + cnt; ++i) {
 		if (isdigit(name.at(i)) == false) {
 			return (-1);
 		}

@@ -27,7 +27,8 @@ enum DAQLifeCycleState
     LOADED,
     CONFIGURED,
     RUNNING,
-    PAUSED
+    PAUSED,
+    ERRORED
 };
 
 enum DAQCommand
@@ -38,6 +39,7 @@ enum DAQCommand
     CMD_UNCONFIGURE,
     CMD_PAUSE,
     CMD_RESUME,
+    CMD_RESTART,
     CMD_NOP
 };
 
@@ -52,7 +54,8 @@ enum CompStatus
     COMP_WORKING,
     COMP_FINISHED,
     COMP_WARNING,
-    COMP_FATAL
+    COMP_FATAL,
+    COMP_RESTART
 };
 
 struct FatalErrorStatus

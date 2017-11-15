@@ -149,8 +149,8 @@ namespace DAQMW
             }
             else {
                 std::cerr << "### ERROR: Bad Magic Num:"
-                          << std::hex << (unsigned)header[0] << " " << (unsigned)header[1]
-                          << std::endl;
+                    << std::hex << (unsigned)header[0] << " " << (unsigned)header[1]
+                    << std::endl;
             }
             std::cerr << std::dec;
             return ret;
@@ -324,7 +324,6 @@ namespace DAQMW
         virtual int daq_stop()        = 0;
         virtual int daq_pause()       = 0;
         virtual int daq_resume()      = 0;
-
         virtual int parse_params( ::NVList* list ) = 0;
 
         void fatal_error_report(FatalType::Enum type, int code = -1)
@@ -349,7 +348,7 @@ namespace DAQMW
             m_daq_trans_func[CMD_RESUME]      = &DAQMW::DaqComponentBase::daq_resume;
             m_daq_trans_func[CMD_STOP]        = &DAQMW::DaqComponentBase::daq_base_stop;
             m_daq_trans_func[CMD_UNCONFIGURE] = &DAQMW::DaqComponentBase::daq_base_unconfigure;
-
+			
             m_daq_do_func[LOADED]     = &DAQMW::DaqComponentBase::daq_base_dummy;
             m_daq_do_func[CONFIGURED] = &DAQMW::DaqComponentBase::daq_base_dummy;
             m_daq_do_func[RUNNING]    = &DAQMW::DaqComponentBase::daq_run;
@@ -386,7 +385,7 @@ namespace DAQMW
             RTC::DataPortStatus::Enum out_status = myOutPort.getStatus(index);
             if(m_debug) {
                 std::cerr << "OutPort status: "
-                          << RTC::DataPortStatus::toString(out_status) 
+                          << RTC::DataPortStatus::toString(out_status)
                           << std::endl;
             }
             switch(out_status) {
@@ -404,8 +403,8 @@ namespace DAQMW
             case RTC::DataPortStatus::PRECONDITION_NOT_MET:
             case RTC::DataPortStatus::CONNECTION_LOST:
                 std::cerr << "OutPort status: "
-                          << RTC::DataPortStatus::toString(out_status) 
-                          << std::endl;
+                     << RTC::DataPortStatus::toString(out_status) 
+                     << std::endl;
                 ret = BUF_FATAL;
                 break;
                 /*** Could never happen in this case ***/
@@ -417,8 +416,8 @@ namespace DAQMW
             case RTC::DataPortStatus::BUFFER_ERROR:
             case RTC::DataPortStatus::INVALID_ARGS:
                 std::cerr << "Impossible OutPort status: "
-                          << RTC::DataPortStatus::toString(out_status) 
-                          << std::endl;
+                     << RTC::DataPortStatus::toString(out_status) 
+                     << std::endl;
                 ret = BUF_FATAL;
                 break;
             }
@@ -461,7 +460,7 @@ namespace DAQMW
                           << std::endl;
                 ret = BUF_FATAL;
                 break;
-                /*** Could never happen in this case ***/
+            /*** Could never happen in this case ***/
             case RTC::DataPortStatus::BUFFER_FULL:
             case RTC::DataPortStatus::RECV_TIMEOUT:
             case RTC::DataPortStatus::SEND_TIMEOUT:
@@ -472,8 +471,8 @@ namespace DAQMW
             case RTC::DataPortStatus::CONNECTION_LOST:
             case RTC::DataPortStatus::UNKNOWN_ERROR:
                 std::cerr << "Impossible InPort status: " 
-                          << RTC::DataPortStatus::toString(in_status) 
-                          << std::endl;
+                    << RTC::DataPortStatus::toString(in_status) 
+                    << std::endl;
                 ret = BUF_FATAL;
                 break;
             }
@@ -661,6 +660,7 @@ namespace DAQMW
         bool m_isOnError;
         bool m_isTimerAlarm;
         bool m_has_printed_error_log;
+
         bool m_debug;
 
         typedef int (DAQMW::DaqComponentBase::*DAQFunc)();
@@ -733,7 +733,7 @@ namespace DAQMW
             daq_pause();
             return 0;
         }
-
+        
         int get_command()
         {
             m_command = m_daq_service0.getCommand();
@@ -824,7 +824,6 @@ namespace DAQMW
             }
             return ret;
         }
-
     }; /// class
 } /// namespace
 

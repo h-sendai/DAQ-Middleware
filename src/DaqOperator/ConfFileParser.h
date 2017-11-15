@@ -128,5 +128,6 @@ private:
     XMLCh* TAG_paramId;
     XMLCh* TAG_params;
     XMLCh* TAG_param;
+    XMLCh* TAG_select;
 }; 
 #endif

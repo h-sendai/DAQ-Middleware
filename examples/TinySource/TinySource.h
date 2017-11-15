@@ -35,6 +35,7 @@ private:
 
 private:
     int daq_dummy();
+    int daq_errored();
     int daq_configure();
     int daq_unconfigure();
     int daq_start();
@@ -42,6 +43,7 @@ private:
     int daq_stop();
     int daq_pause();
     int daq_resume();
+    int daq_reboot();    
 
     int parse_params(::NVList* list);
     int read_data_from_detectors();
@@ -53,6 +55,8 @@ private:
     unsigned int m_recv_byte_size;
 
     BufferStatus m_out_status;
+
+    bool error_flag;
     bool m_debug;
 };
 

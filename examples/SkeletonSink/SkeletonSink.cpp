@@ -58,7 +58,7 @@ RTC::ReturnCode_t SkeletonSink::onInitialize()
     if (m_debug) {
         std::cerr << "SkeletonSink::onInitialize()" << std::endl;
     }
-
+    
     return RTC::RTC_OK;
 }
 
@@ -66,10 +66,20 @@ RTC::ReturnCode_t SkeletonSink::onExecute(RTC::UniqueId ec_id)
 {
     daq_do();
 
+    // Errored state
+    if (error_flag == true) {
+        daq_errored();
+    }
+
     return RTC::RTC_OK;
 }
 
 int SkeletonSink::daq_dummy()
+{
+    return 0;
+}
+
+int SkeletonSink::daq_errored()
 {
     return 0;
 }
@@ -140,6 +150,17 @@ int SkeletonSink::daq_resume()
     return 0;
 }
 
+int Skeleton::daq_reboot()
+{
+    std::cerr << "*** Skeleton::reboot" << std::endl;
+    /* *********************************** */
+    /* Write recovery identification logic */
+    /* *********************************** */
+    std::cerr << "*** Reboot request => To Operator" << std::endl;
+    error_flag = false;
+    return 0;
+}
+
 int SkeletonSink::reset_InPort()
 {
     int ret = true;
@@ -198,6 +219,11 @@ int SkeletonSink::daq_run()
     // online_analyze();
     /////////////////////////////////////////////////////////////
 
+    /* Write error determination logic */
+    if (false) {
+        error_flag = true;
+    }
+    
     inc_sequence_num();                       // increase sequence num.
     inc_total_data_size(event_byte_size);     // increase total data byte size
 

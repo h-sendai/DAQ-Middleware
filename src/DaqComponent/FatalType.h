@@ -104,7 +104,7 @@ namespace DAQMW
             USER_DEFINED_ERROR20,
 
             ///unknown error
-            UNKNOWN_FATAL_ERROR
+            UNKNOWN_FATAL_ERROR,
         };
 
         static const char* toString(Enum fatalTypes)
@@ -162,7 +162,7 @@ namespace DAQMW
                 "USER_DEFINED_ERROR19",
                 "USER_DEFINED_ERROR20",
 
-                "UNKNOWN_FATAL_ERROR"
+                "UNKNOWN_FATAL_ERROR",
             };
             return strType[fatalTypes];
         }

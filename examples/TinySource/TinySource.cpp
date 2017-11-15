@@ -65,10 +65,20 @@ RTC::ReturnCode_t TinySource::onExecute(RTC::UniqueId ec_id)
 {
     daq_do();
 
+    // Errored state
+    if (error_flag == true) {
+        daq_errored();
+    }
+
     return RTC::RTC_OK;
 }
 
 int TinySource::daq_dummy()
+{
+    return 0;
+}
+
+int TinySource::daq_errored()
 {
     return 0;
 }
@@ -137,6 +147,17 @@ int TinySource::daq_resume()
     return 0;
 }
 
+int Skeleton::daq_reboot()
+{
+    std::cerr << "*** Skeleton::reboot" << std::endl;
+    /* *********************************** */
+    /* Write recovery identification logic */
+    /* *********************************** */
+    std::cerr << "*** Reboot request => To Operator" << std::endl;
+    error_flag = false;
+    return 0;
+}
+
 int TinySource::read_data_from_detectors()
 {
     int received_data_size = 0;
@@ -147,6 +168,11 @@ int TinySource::read_data_from_detectors()
     }
     received_data_size = SEND_BUFFER_SIZE;
     /// end of my tiny logic
+
+    /* Write error determination logic */
+    if (false) {
+        error_flag = true;
+    }
 
     return received_data_size;
 }
