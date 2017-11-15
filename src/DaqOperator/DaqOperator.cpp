@@ -245,7 +245,7 @@ std::string DaqOperator::check_compStatus(CompStatus compStatus)
         comp_status = "ERROR";//"ERROR";
         break;
     case COMP_RESTART:
-        comp_status = "input 6";
+        comp_status = "input 2:stop or 6:restart";
         break;
     }
     return comp_status;
@@ -289,13 +289,11 @@ void DaqOperator::run_data()
 }
 
 RTC::ReturnCode_t DaqOperator::run_console_mode()
-{   
+{ 
+    ///char* state[] = {"LOADED", "CONFIGURED", "RUNNING", "PAUSED"};
     std::string srunNo = "0";
-    int command;
-    Status_var status;
 
-    errFlag = false;
-    resFlag = false;
+    int command;
 
     /* Console error display */
     std::string d_compname[m_comp_num];
@@ -308,7 +306,7 @@ RTC::ReturnCode_t DaqOperator::run_console_mode()
     FD_ZERO(&m_rset);
     FD_SET(0, &m_rset);
 
-    std::cerr << "\033[0;0H" << " Command:    " << std::endl;
+    std::cerr << "\033[;0H" << " Command:\t" << std::endl;
     std::cerr << " " 
               << CMD_CONFIGURE   << ":configure\t"
               << CMD_START       << ":start   "
@@ -319,10 +317,10 @@ RTC::ReturnCode_t DaqOperator::run_console_mode()
               << CMD_RESTART     << ":restart"
               << std::endl;
 
-    std::cerr << "\n" << " RUN NO: " << m_runNumber;
-    std::cerr << "\n" << " start at: "  << m_start_date
-              << "\tstop at: "   << m_stop_date << std::endl;
-    std::cerr << "\033[1;11H";
+    std::cerr << std::endl << " RUN NO: " << m_runNumber;
+    std::cerr << std::endl << " start at: "  << m_start_date
+              << "\tstop at: " << m_stop_date << std::endl;
+    std::cerr << "\033[;11H";
 
     select(1, &m_rset, NULL, NULL, &m_tout);
     if (m_com_completed == false) {
@@ -337,7 +335,7 @@ RTC::ReturnCode_t DaqOperator::run_console_mode()
         }
 
         command = (int)(comm[0] - '0');
-        
+
         switch (m_state) {	// m_state init (LOADED)
         case PAUSED:
             switch ((DAQCommand)command) {
@@ -346,7 +344,8 @@ RTC::ReturnCode_t DaqOperator::run_console_mode()
                 m_state = RUNNING;
                 break;
             default:
-                std::cerr << "   Bad Command:" << command << std::endl;
+                std::cerr << "\033[;13H" 
+                          << "   Bad Command:" << command << std::endl;
                 break;
             }
             break;
@@ -357,7 +356,8 @@ RTC::ReturnCode_t DaqOperator::run_console_mode()
                 m_state = CONFIGURED;
                 break;
             default:
-                std::cerr << " Bad Command:" << std::endl;
+                std::cerr << "\033[;13H"
+                          << " Bad Command:" << std::endl;
                 break;
             }
             break;
@@ -377,7 +377,8 @@ RTC::ReturnCode_t DaqOperator::run_console_mode()
                 m_state = LOADED;
                 break;
             default:
-                std::cerr << "   Bad Command:" << command << std::endl;
+                std::cerr << "\033[;13H" 
+                          << "   Bad Command:" << command << std::endl;
                 break;
             }
             break;
@@ -392,7 +393,8 @@ RTC::ReturnCode_t DaqOperator::run_console_mode()
                 m_state = PAUSED;
                 break;
             default:
-                std::cerr << "   Bad Command: " << command << std::endl;
+                std::cerr << "\033[;13H"
+                          << "   Bad Command: " << command << std::endl;
                 break;
             }
             break;
@@ -429,7 +431,8 @@ RTC::ReturnCode_t DaqOperator::run_console_mode()
                 }
                 break;
             default:
-                std::cerr << " 2:stop or 6:reboot" << std::endl;
+                std::cerr << "\033[;13H" 
+                          << " 2:stop or 6:reboot" << std::endl;
                 break;
             }
             break;
@@ -447,6 +450,7 @@ RTC::ReturnCode_t DaqOperator::run_console_mode()
         ///std::cerr << "RUN NO: " << m_runNumber << std::endl;
 
         std::string compname;
+        Status_var status;
         FatalErrorStatus_var errStatus;
         for (int i = (m_comp_num - 1); i >= 0; i--) {
             try {
@@ -496,7 +500,7 @@ RTC::ReturnCode_t DaqOperator::run_console_mode()
             } catch(...) {
                 std::cerr << " ### ERROR: " << compname
                           << " : cannot connect" << std::endl;
-                usleep(10000);
+                usleep(1000);
             }
         }//for
         std::cerr << std::endl;

@@ -817,8 +817,6 @@ namespace DAQMW
                 m_state_prev = RUNNING;
                 m_state = LOADED;
                 break;
-            case CMD_RESTART:
-                break;
             default:
                 //status = false;
                 ret = false;
