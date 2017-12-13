@@ -1,3 +1,23 @@
+1.4.2 2017-01-16 Hiroshi Sendai
+
+Summary
+
+- Fix a bug -d option of run.py
+- Fix imcomplete support in daqmw-rpm script for SL 7
+- Support Raspbian in source code
+- Add SampleReader2
+
+Datails
+
+BUGFIX: Fix a bug -d option for remote boot.  It did not work
+        correctly.
+BUGFIX: Fix daqmw-rpm script to setup in Scienfitic Linux 7.
+FEATURE: Support Rasibian OS in source code.  We do not provide
+         binary packages.
+FEATURE: Add SampleReader2.  We consider in SampleReader it is a
+         fatal error when socket read timeout occure.  SampleReader2
+         does not treat socket read timeout as an fatal error.
+
 1.4.1 2015-07-22 Hiroshi Sendai
 
 Summary

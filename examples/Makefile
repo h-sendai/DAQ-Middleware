@@ -7,6 +7,7 @@ INSTALL_DIR = $(DESTDIR)$(prefix)/share/daqmw/examples
 SRC_DIRS += SampleLogger
 SRC_DIRS += SampleMonitor
 SRC_DIRS += SampleReader
+SRC_DIRS += SampleReader2
 SRC_DIRS += SampleFilter
 SRC_DIRS += Skeleton
 SRC_DIRS += SkeletonSink
