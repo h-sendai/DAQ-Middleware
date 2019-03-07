@@ -10,7 +10,7 @@ LIBRARY_SO_API_PATCHLEVEL = $(LIBRARY_SO).$(API_VERSION).$(PATCHLEVEL)
 
 CFLAGS   = -g -pipe -O2 -Wall
 CXXFLAGS = $(CFLAGS)
-CPPFLAGS = $(addprefix -I, $(INC_DIRS))
+CPPFLAGS += $(addprefix -I, $(INC_DIRS))
 ARFLAGS  = r
 PIC_OPT  = -fPIC
 

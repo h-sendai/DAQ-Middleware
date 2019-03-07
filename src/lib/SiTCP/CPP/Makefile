@@ -2,6 +2,7 @@ DESTDIR =
 prefix  = /usr
 
 SUBDIRS += Sock
+SUBDIRS += SitcpRbcp
 
 .PHONY: $(SUBDIRS)
 
