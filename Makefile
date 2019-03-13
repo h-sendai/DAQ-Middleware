@@ -29,4 +29,4 @@ uninstall:
 	rm -f $(DESTDIR)/etc/ld.so.conf.d/daqmw.conf
 
 dist:
-	hg archive -t tgz ~/rpm/SOURCES/DAQ-Middleware-$(VERSION).tar.gz
+	@git archive HEAD --format=tar.gz --prefix=DAQ-Middleware-$(VERSION)/ > ~/rpm/SOURCES/DAQ-Middleware-$(VERSION).tar.gz
