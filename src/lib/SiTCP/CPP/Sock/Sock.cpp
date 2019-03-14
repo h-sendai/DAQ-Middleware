@@ -779,14 +779,11 @@ namespace DAQMW {
   }
 
   int Sock::float2timeval(float sec, struct timeval *tv) const {
-    unsigned int i;
     unsigned long tv_sec;
     unsigned long tv_usec;
     
-    /* round to mili sec */
-    i = static_cast<int>(sec) * 1000;
-    tv_sec  = i / 1000;
-    tv_usec = (static_cast<int>(sec) - tv_sec) * 1000000;
+    tv_sec = static_cast<int>(sec);
+    tv_usec = sec*1000000 - static_cast<int>(sec)*1000000;
     
     tv->tv_sec  = tv_sec;
     tv->tv_usec = tv_usec;
