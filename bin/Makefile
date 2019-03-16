@@ -8,7 +8,8 @@ FILES += condition_xml2json
 FILES += condition_xml2json.py
 FILES += xml2json-with-attribute.xslt
 FILES += run.py
-FILES += daqmw-rpm 
+FILES += run3.py
+FILES += daqmw-rpm
 
 all:
 
