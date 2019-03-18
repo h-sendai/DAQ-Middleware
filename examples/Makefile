@@ -18,6 +18,7 @@ SRC_DIRS += TinySource
 SRC_DIRS += Dispatcher
 SRC_DIRS += BestEffortDispatcher
 SRC_DIRS += change-SampleComp-name
+SRC_DIRS += SitcpRbcp
 
 all:
 
