@@ -5,16 +5,3 @@ This is DAQ-Middleware 1.4.3 (not yet)
 URL: http://daqmw.kek.jp/
 
 LICENSE: GNU LGPL
-
-Notice:
-According to "How to use GNU licenses for your own software"
-<https://www.gnu.org/licenses/gpl-howto.html.en>
-
-    If you are releasing your program under the Lesser GPL, you should also
-    include the text version of the LGPL, usually in a file called
-    COPYING.LESSER. Please note that, since the LGPL is a set of additional
-    permissions on top of the GPL, it's crucial to include both licenses so
-    users have all the materials they need to understand their rights.
-
-So we include both files (COPYING and COPYING.LESSER).
-The License of DAQ-Middleware is GNU LGPL.
