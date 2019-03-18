@@ -4,6 +4,7 @@ Summary
 
 - Fix a Sock library bug in timeout setting method.
 - Add C++ library for SiTCP RBCP.
+- License: GNU LGPL
 
 Details
 
