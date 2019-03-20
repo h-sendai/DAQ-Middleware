@@ -49,6 +49,7 @@ ifeq ($(strip $(MAJOR_VERSION)),6)
 USE_MOD_WSGI      = 1
 endif
 endif
+# CERN CentOS 7 is like a CentOS 7
 
 ########## CentOS ##########
 ifeq ($(strip $(OS)),CentOS)
@@ -58,6 +59,9 @@ ifeq ($(strip $(MAJOR_VERSION)),5)
 USE_MOD_PYTHON    = 1
 endif
 ifeq ($(strip $(MAJOR_VERSION)),6)
+USE_MOD_WSGI      = 1
+endif
+ifeq ($(strip $(MAJOR_VERSION)),7)
 USE_MOD_WSGI      = 1
 endif
 endif
