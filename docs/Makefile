@@ -5,6 +5,7 @@ DIR = $(DESTDIR)$(prefix)/share/daqmw/docs
 MODE = 0644
 
 FILES += README
+FILES += README.json_spirit_v2.06
 FILES += DAQ-Middleware-1.1.0-Tech.pdf
 FILES += DAQ-Middleware-1.4.3-DevManual.pdf
 FILES += Changes
