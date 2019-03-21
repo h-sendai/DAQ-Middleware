@@ -672,6 +672,7 @@ def remove_omni_logs(omni_log_dir=''):
         omni_log_dir = '.'
     omni_log_path = '%s/omninames-%s.log' % (omni_log_dir, my_hostname)
     omni_log_backup_path = '%s/omninames-%s.bak' % (omni_log_dir, my_hostname)
+    omni_log_data = '%s/omninames-%s.dat' % (omni_log_dir, my_hostname)
 
     if os.path.isfile(omni_log_path):
         try:
@@ -685,6 +686,12 @@ def remove_omni_logs(omni_log_dir=''):
         except OSError as e:
             sys.exit('%s: cannot remove %s: %s' %
                      progname, omni_log_backup_path, e.strerror)
+    if os.path.isfile(omni_log_data):
+        try:
+            os.remove(omni_log_data)
+        except OSError as e:
+            sys.exit('%s: cannot remove %s: %s' %
+                     progname, omni_log_data, e.strerror)
 
 
 def run_omniNames(operatorAddr, omni_log_dir='', omni_port=nsport):
