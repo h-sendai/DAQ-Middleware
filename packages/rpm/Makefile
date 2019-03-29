@@ -14,7 +14,6 @@ clean:
 install:
 	@mkdir -p $(DIR)
 	@install -m $(MODE)      $(FILES)      $(DIR)
-	@install -m $(EXEC_MODE) $(EXEC_FILES) $(DIR)
 
 uninstall:
 	@echo "---> uninstalling conf files."
