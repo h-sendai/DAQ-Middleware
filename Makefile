@@ -11,6 +11,7 @@ SUBDIRS += etc
 SUBDIRS += examples
 SUBDIRS += utils
 SUBDIRS += www
+SUBDIRS += packages
 
 .PHONY: $(SUBDIRS)
 
