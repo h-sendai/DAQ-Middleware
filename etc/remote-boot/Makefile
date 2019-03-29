@@ -21,4 +21,5 @@ install:
 uninstall:
 	@echo "---> uninstalling conf files."
 	@for file in $(FILES); do rm -f $(DIR)/$${file}; done
+	@for file in $(EXEC_FILES); do rm -f $(DIR)/$${file}; done
 	@echo "---> done"
