@@ -8,6 +8,7 @@ __author__   = 'Yoshiji Yasu (yoshiji.yasu@kek.jp)'
 __version__  = '0.96'
 __date__     = '11-April-2012'
 
+import os
 import sys
 import cgi
 import ParameterClient
@@ -141,6 +142,7 @@ def application(environ, start_response):
 	req = environ['REQUEST_METHOD']
 	path = environ['PATH_INFO']
 	method = path[1:]  # extract '/'
+	os.environ['PARAMETER_CLIENT_TIMEOUT'] = environ.get('PARAMETER_CLIENT_TIMEOUT', '20')
 	# print >>  sys.stderr, "request = ", req, "  method = ", method
 	if req == "GET":
 		params = cgi.parse_qsl(environ['QUERY_STRING'])

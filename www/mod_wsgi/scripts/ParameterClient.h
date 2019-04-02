@@ -24,6 +24,7 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <netdb.h>
+#include <stdlib.h>
 #include <unistd.h>
 #include <string>
 #include <arpa/inet.h>
@@ -66,7 +67,15 @@ namespace DAQMW {
       } catch (...) {
 	std::cerr << "ParameterClient(string,int)::constructor Exception was caught at connection" << endl;
       }
-      m_clientSock.setOptRecvTimeOut(20.0);
+      char *timeout_p = getenv("PARAMETER_CLIENT_TIMEOUT");
+      float timeout;
+      if (timeout_p == NULL) {
+        timeout = 20;
+      }
+      else {
+        timeout = strtol(timeout_p, NULL, 0);
+      }
+      m_clientSock.setOptRecvTimeOut(timeout);
     };
     ParameterClient() {
       // cout << "ParameterClient()::constructor host = " << m_host <<  "   port = " << m_port << "   delimitor = " << m_delimitor << endl;
