@@ -4,6 +4,7 @@ Summary
 
 - Fix a Sock library bug in timeout setting method.
 - Add C++ library for SiTCP RBCP.
+- Add configurable ParameterClient timeout value.
 - License: GNU LGPL
 
 Details
@@ -12,6 +13,9 @@ BUGFIX:  Fix a Sock library bug.  If we specify less than 1 seconds
          for the timeout value, timeout value was set as 0 seconds.
          Timeout default value is 2 seconds.  We did not hit the bug
          if we did not specify timeout.
+FEATURE: Timeout value of ParameterClient was fixed (20 seconds).
+         Add configurable method via PARAMETER_CLIENT_TIMEOUT
+         /etc/httpd/conf.d/daq.conf.  Default value is 20 seconds.
 FEATURE: Add C++ library for SiTCP RBCP.  Usage is described in the
          Developer's Manual Appendix J.
 
