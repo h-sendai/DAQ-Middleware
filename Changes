@@ -2,10 +2,11 @@
 
 Summary
 
+- License: GNU LGPL
 - Fix a Sock library bug in timeout setting method.
 - Add C++ library for SiTCP RBCP.
 - Add configurable ParameterClient timeout value.
-- License: GNU LGPL
+- Add DAQ-Middlweware.spec in source tarball.
 
 Details
 
@@ -18,6 +19,10 @@ FEATURE: Timeout value of ParameterClient was fixed (20 seconds).
          /etc/httpd/conf.d/daq.conf.  Default value is 20 seconds.
 FEATURE: Add C++ library for SiTCP RBCP.  Usage is described in the
          Developer's Manual Appendix J.
+BUILD:   Add packages/rpm/DAQ-Middleware.spec.  We now build rpm packages
+         using
+         rpmbuild -tb DAQ-Middleware-1.4.3.tar.gz
+         without any preparations.
 
 1.4.2 2017-01-16 Hiroshi Sendai
 

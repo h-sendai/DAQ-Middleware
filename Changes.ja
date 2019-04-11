@@ -2,10 +2,12 @@
 
 サマリー
 
+- ライセンスをGNU LGPLに定めました。
 - Sockライブラリタイムアウトバグの修正
 - SiTCP RBCP用C++ライブラリの追加
 - ParameterClientのタイムアウト値を設定可能にしました。
-- ライセンスをGNU LGPLに定めました。
+- ソースtarballにDAQ-Middleware.specを追加しました。
+
 詳細
 BUGFIX:  Sockライブラリ内のタイムアウトを設定するコードに
          バグがあり、1.0秒未満を設定するとタイムアウトが0に
@@ -15,13 +17,17 @@ BUGFIX:  Sockライブラリ内のタイムアウトを設定するコードに
          しました。
 FEATURE: ParameterClientのタイムアウト値は20秒に固定されていました。
          場合により(たとえば読み出しハードウェアの不良など)より長い
-	 タイムアウト値としたいという要望を受け、設定可能にしました。
-	 設定は/etc/httpd/conf.d/daq.confファイル内の
-	 PARAMETER_CLIENT_TIMEOUTで行います。設定しなかった場合の
-	 デフォルト値は以前と同様20秒です。
+         タイムアウト値としたいという要望を受け、設定可能にしました。
+         設定は/etc/httpd/conf.d/daq.confファイル内の
+         PARAMETER_CLIENT_TIMEOUTで行います。設定しなかった場合の
+         デフォルト値は以前と同様20秒です。
 FEATURE: SiTCP RBCP用C++ライブラリを追加しました。利用方法は付属の
          開発マニュアル付録Jをご覧ください。
-
+BUILD:   packages/rpm/DAQ-Middleware.specを追加しました。これにより
+         とくに準備することなしに
+         rpmbuild -tb DAQ-Middleware-1.4.3.tar.gz
+         でrpmパッケージを作ることが可能になりました。
+	 
 1.4.2 2017-01-16 Hiroshi Sendai
 
 サマリー
@@ -39,8 +45,8 @@ BUGFIX:  RPMパッケージをセットアップするコマンドdaqmw-rpmがSc
 FEATURE: ソースコードでRaspbianをサポート
 FEATURE: SampleReader2を追加しました。SampleReaderではソケットリードタイム
          アウトが起きると致命的エラーとしていましたが、SampleReader2では
-	 致命的エラーとはしません。読み出し発生イベントレートが小さい
-	 宇宙線実験などでの利用を想定しています。
+         致命的エラーとはしません。読み出し発生イベントレートが小さい
+         宇宙線を使ったテスト実験などでの利用を想定しています。
 
 1.4.1 2015-07-22 Hiroshi Sendai
 
