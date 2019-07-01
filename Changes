@@ -1,3 +1,10 @@
+1.4.4 2019-07-01 Hiroshi Sendai
+
+Summary
+- No new feature
+- Compilation error fix on newer gcc (gcc 6.x or newer) only
+  (occured on src/lib/json_spirit_v2.06/json_spirit/json_spirit_reader.cpp)
+
 1.4.3 2019-04-16 Hiroshi Sendai
 
 Summary
