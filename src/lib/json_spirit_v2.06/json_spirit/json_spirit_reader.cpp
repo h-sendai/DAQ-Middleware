@@ -11,7 +11,11 @@
 //#define BOOST_SPIRIT_THREADSAFE  // uncomment for multithreaded use, requires linking to boost.thead
 
 #include <boost/bind.hpp>
+#if __cplusplus < 201103L
 #include <boost/function.hpp>
+#else
+#include <functional>
+#endif
 #include <boost/version.hpp>
 
 // Refs
