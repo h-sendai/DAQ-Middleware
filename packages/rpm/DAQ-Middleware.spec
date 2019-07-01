@@ -3,7 +3,7 @@
 
 Summary: DAQ Middleware
 Name: DAQ-Middleware
-Version: 1.4.3
+Version: 1.4.4
 Release: 0%{?dist}
 Group: Development/Libraries
 Source: http://daqmw.kek.jp/src/DAQ-Middleware-%{version}.tar.gz
@@ -75,6 +75,9 @@ rm -rf ${RPM_BUILD_ROOT}
 # %%{_mandir}/*/*
 
 %changelog
+* Mon Jul 1 2019 Hiroshi Sendai
+- Prepare for 1.4.4 release
+
 * Thu Mar 14 2019 Hiroshi Sendai
 - Prepare for 1.4.3 release
 
