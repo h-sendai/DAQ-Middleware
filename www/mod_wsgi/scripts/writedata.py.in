@@ -41,4 +41,5 @@ def application(environ, start_response):
        # print >>  sys.stderr, "request = ", req, "  method = ", method
        response_headers, output = SaveRunNumber(req, RunNumber)
        start_response(status, response_headers)
+       output = bytes(output, 'UTF-8')
        return [output]
