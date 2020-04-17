@@ -46,7 +46,7 @@ def getFunc(method):
 			    ('Cache-Control', 'no-cache'),
 			    ('Expires', '-1'),
 			    ('Content-Length', str(len(output)))]
-        return response_headers, output
+	return response_headers, output
 
 def Status(req, cmd=None):
 	"""Status command"""
