@@ -1,4 +1,4 @@
-include ../../www/Distributions.mk
+include ../../Distributions.mk
 
 DESTDIR =
 prefix  = /usr

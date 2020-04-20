@@ -1,4 +1,4 @@
-include ../Distributions.mk
+include ../../Distributions.mk
 
 DESTDIR =
 DAQ_CONF_DIR = $(DESTDIR)$(HTTPD_CONF_DIR)
