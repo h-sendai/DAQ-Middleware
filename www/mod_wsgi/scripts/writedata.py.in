@@ -32,8 +32,8 @@ def application(environ, start_response):
        if params != []:
               for param in params:
                      # print >> sys.stderr, "param[0] ", param[0]
-                     if param[0] == 'RunNumber':
-                            RunNumber = param[1]
+                     if param[0] == b'RunNumber':
+                            RunNumber = str(param[1], 'UTF-8')
                             # print >> sys.stderr,"OK ", RunNumber
        req = environ['REQUEST_METHOD']
        path = environ['PATH_INFO']
