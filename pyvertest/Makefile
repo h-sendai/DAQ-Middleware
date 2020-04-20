@@ -1,4 +1,4 @@
-include ../../Distributions.mk
+include ../Distributions.mk
 
 ifeq ($(strip $(USE_PYTHON3)),1)
 SUBDIRS = python3
