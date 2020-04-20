@@ -93,7 +93,7 @@ endif
 ifeq ($(strip $(MAJOR_VERSION)),8)
 USE_MOD_WSGI      = 1
 USE_PYTHON3       = 1
-PYTHON_EXEC_FILE  = python2
+PYTHON_EXEC_FILE  = python3
 PYTHON_CONFIG     = python3-config
 endif
 endif
