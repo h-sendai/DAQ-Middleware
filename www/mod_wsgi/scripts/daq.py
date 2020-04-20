@@ -157,8 +157,8 @@ def application(environ, start_response):
 	if params != []:
 		for param in params:
 			# print >> sys.stderr, "param[0] ", param[0]
-			if param[0] == 'cmd':
-				cmd = param[1]
+			if param[0] == b'cmd':
+				cmd = str(param[1], 'UTF-8')
 				# print >> sys.stderr,"OK ", cmd
 	response_headers, output =  subroutine[method](req, cmd)
 	start_response(status, response_headers)
