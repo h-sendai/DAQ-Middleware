@@ -1,6 +1,11 @@
-DAQ-Middleware 1.4.4
+# DAQ-Middleware for CentOS 8
 
-This is DAQ-Middleware 1.4.4
+This is DAQ-Middleware for CentOS 8 based on DAQ-Middleware 1.4.4.
+
+## About python version
+
+on CentOS 7, we use python 2
+on CentOS 8, we use python 3
 
 URL: http://daqmw.kek.jp/
 
