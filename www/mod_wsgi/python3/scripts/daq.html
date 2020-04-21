@@ -1,0 +1,71 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><title>Python: module daq</title>
+</head><body bgcolor="#f0f0f8">
+
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="heading">
+<tr bgcolor="#7799ee">
+<td valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong>daq</strong></big></big> (version 0.96, 11-April-2012)</font></td
+><td align=right valign=bottom
+><font color="#ffffff" face="helvetica, arial"><a href=".">index</a><br><a href="file:/home/yasu/Documents/DAQ-Middleware/www/scripts/daq.py">/home/yasu/Documents/DAQ-Middleware/www/scripts/daq.py</a></font></td></tr></table>
+    <p><tt>Server&nbsp;program&nbsp;based&nbsp;on&nbsp;mod_wsgi&nbsp;for&nbsp;DaqOperator<br>
+&nbsp;<br>
+The&nbsp;Server&nbsp;program&nbsp;supports&nbsp;DaqOperator&nbsp;commands&nbsp;with&nbsp;XML/HTTP&nbsp;protocol.</tt></p>
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#aa55cc">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Modules</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#aa55cc"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><table width="100%" summary="list"><tr><td width="25%" valign=top><a href="ParameterClient.html">ParameterClient</a><br>
+</td><td width="25%" valign=top><a href="cgi.html">cgi</a><br>
+</td><td width="25%" valign=top><a href="sys.html">sys</a><br>
+</td><td width="25%" valign=top></td></tr></table></td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#eeaa77">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Functions</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#eeaa77"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><dl><dt><a name="-Abort"><strong>Abort</strong></a>(req, cmd<font color="#909090">=None</font>)</dt><dd><tt>Abort&nbsp;command</tt></dd></dl>
+ <dl><dt><a name="-Begin"><strong>Begin</strong></a>(req, cmd<font color="#909090">=None</font>)</dt><dd><tt>Begin&nbsp;or&nbsp;Start&nbsp;of&nbsp;DAQ&nbsp;command</tt></dd></dl>
+ <dl><dt><a name="-ConfirmConnection"><strong>ConfirmConnection</strong></a>(req, cmd<font color="#909090">=None</font>)</dt><dd><tt>ConfirmConnection&nbsp;command</tt></dd></dl>
+ <dl><dt><a name="-ConfirmEnd"><strong>ConfirmEnd</strong></a>(req, cmd<font color="#909090">=None</font>)</dt><dd><tt>ConfirmEnd&nbsp;command</tt></dd></dl>
+ <dl><dt><a name="-End"><strong>End</strong></a>(req, cmd<font color="#909090">=None</font>)</dt><dd><tt>End&nbsp;or&nbsp;Stop&nbsp;of&nbsp;DAQ&nbsp;command</tt></dd></dl>
+ <dl><dt><a name="-Log"><strong>Log</strong></a>(req, cmd<font color="#909090">=None</font>)</dt><dd><tt>Log&nbsp;command</tt></dd></dl>
+ <dl><dt><a name="-Params"><strong>Params</strong></a>(req, cmd<font color="#909090">=None</font>)</dt><dd><tt>Set&nbsp;Parameter&nbsp;command&nbsp;of&nbsp;HTTP&nbsp;POST<br>
+Get&nbsp;Parametger&nbsp;command&nbsp;of&nbsp;HTTP&nbsp;GET</tt></dd></dl>
+ <dl><dt><a name="-Pause"><strong>Pause</strong></a>(req, cmd<font color="#909090">=None</font>)</dt><dd><tt>Pause&nbsp;of&nbsp;DAQ&nbsp;command</tt></dd></dl>
+ <dl><dt><a name="-Reset"><strong>Reset</strong></a>(req, cmd<font color="#909090">=None</font>)</dt><dd><tt>Reset&nbsp;command</tt></dd></dl>
+ <dl><dt><a name="-ResetParams"><strong>ResetParams</strong></a>(req, cmd<font color="#909090">=None</font>)</dt></dl>
+ <dl><dt><a name="-Restart"><strong>Restart</strong></a>(req, cmd<font color="#909090">=None</font>)</dt><dd><tt>Restart&nbsp;or&nbsp;Resume&nbsp;of&nbsp;DAQ&nbsp;command</tt></dd></dl>
+ <dl><dt><a name="-Save"><strong>Save</strong></a>(req, cmd<font color="#909090">=None</font>)</dt><dd><tt>Save&nbsp;command</tt></dd></dl>
+ <dl><dt><a name="-Status"><strong>Status</strong></a>(req, cmd<font color="#909090">=None</font>)</dt><dd><tt>Status&nbsp;command</tt></dd></dl>
+ <dl><dt><a name="-StopParamsSet"><strong>StopParamsSet</strong></a>(req, cmd<font color="#909090">=None</font>)</dt><dd><tt>StopParameterSet&nbsp;command</tt></dd></dl>
+ <dl><dt><a name="-application"><strong>application</strong></a>(environ, start_response)</dt></dl>
+ <dl><dt><a name="-getFunc"><strong>getFunc</strong></a>(method)</dt><dd><tt>Internal&nbsp;function&nbsp;for&nbsp;HTTP&nbsp;GET</tt></dd></dl>
+ <dl><dt><a name="-putFunc"><strong>putFunc</strong></a>(method, cmd)</dt><dd><tt>Internal&nbsp;function&nbsp;for&nbsp;HTTP&nbsp;POST</tt></dd></dl>
+</td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#55aa55">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Data</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#55aa55"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><strong>__author__</strong> = 'Yoshiji Yasu (yoshiji.yasu@kek.jp)'<br>
+<strong>__date__</strong> = '11-April-2012'<br>
+<strong>__version__</strong> = '0.96'<br>
+<strong>host</strong> = 'localhost'<br>
+<strong>port</strong> = 30000<br>
+<strong>xml_style</strong> = '&lt;?xml-stylesheet href="../../operatorPanel/style.xsl" type="text/xsl" ?&gt;'<br>
+<strong>xml_ver</strong> = '&lt;?xml version="1.0" encoding="UTF-8" ?&gt;'</td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#7799ee">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Author</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#7799ee"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%">Yoshiji&nbsp;Yasu&nbsp;(yoshiji.yasu@kek.jp)</td></tr></table>
+</body></html>

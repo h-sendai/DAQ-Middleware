@@ -1,0 +1,44 @@
+#!/usr/bin/env python
+
+"""Write local data for the server program, daq.py
+"""
+__author__   = 'Yoshiji Yasu'
+__version__  = '0.95'
+__date__     = '11-April-2012'
+
+import sys
+import cgi
+file = "@WWW_DOCUMENT_ROOT@/daqmw/operatorPanel/runNumber.txt"
+xml_ver = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>"
+xml_style = "<?xml-stylesheet href=\"../../operatorPanel/style.xsl\" type=\"text/xsl\" ?>"
+xml_body = "<response><methodName>WriteRunNumber</methodName><returnValue><result><status>OK</status></result></returnValue></response>"
+
+def SaveRunNumber(req, RunNumber):
+       """Save run number into the file."""
+       fileObj = open(file, "w+")
+       fileObj.write(RunNumber)
+       output = xml_ver + xml_style + xml_body
+       response_headers = [('Content-type', 'text/xml'),
+                           ('Content-Length', str(len(output)))]
+       return response_headers, output
+
+def application(environ, start_response):
+       status = '200 OK'
+       wsgi_input     = environ['wsgi.input']
+       content_length = int(environ.get('CONTENT_LENGTH', 0))
+       params = cgi.parse_qsl(wsgi_input.read(content_length))
+       # print >> sys.stderr, "params ", params
+       RunNumber =''
+       if params != []:
+              for param in params:
+                     # print >> sys.stderr, "param[0] ", param[0]
+                     if param[0] == 'RunNumber':
+                            RunNumber = param[1]
+                            # print >> sys.stderr,"OK ", RunNumber
+       req = environ['REQUEST_METHOD']
+       path = environ['PATH_INFO']
+       method = path[1:]  # extract '/'
+       # print >>  sys.stderr, "request = ", req, "  method = ", method
+       response_headers, output = SaveRunNumber(req, RunNumber)
+       start_response(status, response_headers)
+       return [output]
