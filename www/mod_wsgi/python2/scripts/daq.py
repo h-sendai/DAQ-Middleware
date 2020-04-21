@@ -30,7 +30,6 @@ def putFunc(method, cmd):
 	
 	response_headers = [('Content-type', 'text/xml'),
 			    ('Content-Length', str(len(output)))]
-	#output = bytes(output, 'UTF-8')
 	return response_headers, output
 
 def getFunc(method):
@@ -47,8 +46,7 @@ def getFunc(method):
 			    ('Cache-Control', 'no-cache'),
 			    ('Expires', '-1'),
 			    ('Content-Length', str(len(output)))]
-	#output = bytes(output, 'UTF-8')
-	return response_headers, output
+        return response_headers, output
 
 def Status(req, cmd=None):
 	"""Status command"""
@@ -157,12 +155,9 @@ def application(environ, start_response):
 	if params != []:
 		for param in params:
 			# print >> sys.stderr, "param[0] ", param[0]
-			if param[0] == b'cmd':
-				cmd = str(param[1], 'UTF-8')
+			if param[0] == 'cmd':
+				cmd = param[1]
 				# print >> sys.stderr,"OK ", cmd
 	response_headers, output =  subroutine[method](req, cmd)
 	start_response(status, response_headers)
-	sys.stderr.write('len output: %d\n' % len(output))
-	sys.stderr.write('output: %s\n' % output)
-	output = bytes(output, 'UTF-8')
 	return [output]
