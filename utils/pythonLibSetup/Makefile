@@ -3,13 +3,8 @@ include ../../Distributions.mk
 DESTDIR = 
 prefix  = /usr
 
-ifeq ($(strip $(USE_PYTHON2)),1)
-PYTHON_SITELIB=$(shell $(PYTHON_EXEC_FILE) -c "from distutils.sysconfig import get_python_lib; print get_python_lib()")
-endif
-
-ifeq ($(strip $(USE_PYTHON3)),1)
-PYTHON_SITELIB=$(shell $(PYTHON_EXEC_FILE) -c "from distutils.sysconfig import get_python_lib; x = get_python_lib(); print(x)")
-endif
+# We may use "from __future__" on python3
+PYTHON_SITELIB=$(shell $(PYTHON_EXEC_FILE) -c "from __future__ import print_function; from distutils.sysconfig import get_python_lib; print(get_python_lib())")
 
 PYTHON_LIB_DIR        = $(DESTDIR)$(PYTHON_SITELIB)
 PYTHON_LIB_DAQMW_DIR  = $(DESTDIR)$(PYTHON_SITELIB)/daqmw
