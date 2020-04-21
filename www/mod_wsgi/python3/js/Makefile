@@ -1,4 +1,4 @@
-include ../../../Distributions.mk
+include ../../../../Distributions.mk
 
 DESTDIR =
 DAQ_HTML_DIR = $(DESTDIR)$(WWW_DOCUMENT_ROOT)/daqmw
