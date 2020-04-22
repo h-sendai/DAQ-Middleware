@@ -1,3 +1,4 @@
+#!/usr/bin/python3
 #!/usr/bin/env python
 
 """daqmwcom : commnication tool for DAQ Operator

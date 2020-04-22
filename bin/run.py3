@@ -1,3 +1,4 @@
+#!/usr/bin/python3
 #!/usr/bin/env python3
 
 # run.py: Start up script for DAQ-Components.
