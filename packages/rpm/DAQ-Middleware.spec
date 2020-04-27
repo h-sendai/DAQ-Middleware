@@ -1,9 +1,8 @@
 %define daqmw_dir daqmw
-%{!?python_sitelib: %define python_sitelib %(python -c "from distutils.sysconfig import get_python_lib; print get_python_lib()")}
 
 Summary: DAQ Middleware
 Name: DAQ-Middleware
-Version: 1.4.4
+Version: 2.0.0
 Release: 0%{?dist}
 Group: Development/Libraries
 Source: http://daqmw.kek.jp/src/DAQ-Middleware-%{version}.tar.gz
@@ -43,7 +42,7 @@ make install DESTDIR=$RPM_BUILD_ROOT
 
 # make install prefix=$RPM_BUILD_ROOT/usr
 # mkdir -p $RPM_BUILD_ROOT/etc/ld.so.conf.d
-# echo "%{_libdir}/daqmw" > $RPM_BUILD_ROOT/etc/ld.so.conf.d/daqmiddleware-%{_arch}.conf
+# echo "%%{_libdir}/daqmw" > $RPM_BUILD_ROOT/etc/ld.so.conf.d/daqmiddleware-%%{_arch}.conf
 
 %clean
 rm -rf ${RPM_BUILD_ROOT}
@@ -61,8 +60,18 @@ rm -rf ${RPM_BUILD_ROOT}
 %{_datadir}/%{daqmw_dir}/*
 %{_var}/www/html/%{daqmw_dir}/*
 %{_sysconfdir}/httpd/conf.d/daq.conf
+%if "%{?dist}" == ".el8"
+%{python3_sitelib}/%{daqmw_dir}/*
+%{python3_sitelib}/daqmw.pth
+%endif
+%if "%{?dist}" == ".el7"
 %{python_sitelib}/%{daqmw_dir}/*
 %{python_sitelib}/daqmw.pth
+%endif
+%if "%{?dist}" == ".el6"
+%{python_sitelib}/%{daqmw_dir}/*
+%{python_sitelib}/daqmw.pth
+%endif
 
 #%%{_libdir}/%%{daqmw_dir}/*
 #%%{_includedir}/%%{daqmw_dir}/*
@@ -75,6 +84,9 @@ rm -rf ${RPM_BUILD_ROOT}
 # %%{_mandir}/*/*
 
 %changelog
+* Fri Apr 24 2020 Hiroshi Sendai
+- Prepare for 2.0.0 release
+
 * Mon Jul 1 2019 Hiroshi Sendai
 - Prepare for 1.4.4 release
 
