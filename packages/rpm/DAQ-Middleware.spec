@@ -11,6 +11,16 @@ License: Eclipse Public License
 BuildRoot: %{_tmppath}/%{name}-root
 
 BuildRequires: OpenRTM-aist >= 1.0.0-8
+%if 0%{?rhel} == 6
+BuildRequires: python-devel
+%endif
+%if 0%{?rhel} == 7
+BuildRequires: python-devel
+%endif
+%if 0%{?rhel} == 8
+BuildRequires: platform-python-devel
+%endif
+
 %if 0%{?rhel} >= 6
 Requires: OpenRTM-aist >= 1.0.0-8 xalan-c-devel xerces-c-devel /etc/ld.so.conf.d libuuid-devel mod_wsgi tkinter boost-devel
 %else
