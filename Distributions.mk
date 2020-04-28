@@ -39,7 +39,7 @@ ifeq ($(strip $(MAJOR_VERSION)),6)
 USE_MOD_WSGI      = 1
 USE_PYTHON2       = 1
 PYTHON_EXEC_FILE  = python2
-PYTHON_CONFIG     = python2-config
+PYTHON_CONFIG     = python-config
 endif
 ifeq ($(strip $(MAJOR_VERSION)),7)
 USE_MOD_WSGI      = 1
@@ -82,7 +82,7 @@ ifeq ($(strip $(MAJOR_VERSION)),6)
 USE_MOD_WSGI      = 1
 USE_PYTHON2       = 1
 PYTHON_EXEC_FILE  = python2
-PYTHON_CONFIG     = python2-config
+PYTHON_CONFIG     = python-config
 endif
 ifeq ($(strip $(MAJOR_VERSION)),7)
 USE_MOD_WSGI      = 1
