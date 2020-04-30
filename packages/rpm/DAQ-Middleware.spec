@@ -21,13 +21,21 @@ BuildRequires: python-devel
 BuildRequires: platform-python-devel
 %endif
 
-%if 0%{?rhel} >= 6
+%if 0%{?rhel} == 6
 Requires: OpenRTM-aist >= 1.0.0-8 xalan-c-devel xerces-c-devel /etc/ld.so.conf.d libuuid-devel mod_wsgi tkinter boost-devel
-%else
-Requires: OpenRTM-aist >= 1.0.0-8 xalan-c-devel xerces-c-devel /etc/ld.so.conf.d mod_python tkinter boost-devel
 %endif
 
+%if 0%{?rhel} == 7
+Requires: OpenRTM-aist >= 1.0.0-8 xalan-c-devel xerces-c-devel /etc/ld.so.conf.d libuuid-devel mod_wsgi tkinter boost-devel
+%endif
 
+%if 0%{?rhel} == 8
+Requires: OpenRTM-aist >= 1.0.0-8 xalan-c-devel xerces-c-devel /etc/ld.so.conf.d libuuid-devel mod_wsgi python3-tkinter boost-devel
+%endif
+
+#%%else
+#Requires: OpenRTM-aist >= 1.0.0-8 xalan-c-devel xerces-c-devel /etc/ld.so.conf.d mod_python tkinter boost-devel
+#%%endif
 
 #BuildRequires: omniORB, omniORB-devel, python, OpenRTM-aist
 #Requires: omniORB, omniORB-utils, omniORB-devel, omniORB-servers, omniORB-bootscripts, omniORB-doc, python, OpenRTM-aist
