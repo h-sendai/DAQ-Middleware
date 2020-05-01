@@ -29,6 +29,10 @@ if [ $os_major_version -eq 7 ]; then
     repo_rpm_url=http://daqmw.kek.jp/rpm/${el_name}/noarch/kek-daqmiddleware-repo-7-0.${el_name}.noarch.rpm
     repo_rpm_url_testing=http://daqmw.kek.jp/testing/rpm/${el_name}/noarch/kek-daqmiddleware-testing-repo-7-0.${el_name}.noarch.rpm
 fi
+if [ $os_major_version -eq 8 ]; then
+    repo_rpm_url=http://daqmw.kek.jp/rpm/${el_name}/noarch/kek-daqmiddleware-repo-8-0.${el_name}.noarch.rpm
+    repo_rpm_url_testing=http://daqmw.kek.jp/testing/rpm/${el_name}/noarch/kek-daqmiddleware-testing-repo-8-0.${el_name}.noarch.rpm
+fi
 
 repo_name=kek-daqmiddleware
 repo_rpm_name=${repo_name}-repo
@@ -48,7 +52,15 @@ Scientific*)
     esac
     ;;
 Cent*)
-    enable_dist_repo="--enablerepo=base --enablerepo=updates" ;;
+    case $os_major_version in
+        6)
+            enable_dist_repo="--enablerepo=base --enablerepo=updates" ;;
+        7)
+            enable_dist_repo="--enablerepo=base --enablerepo=updates" ;;
+        8)
+            enable_dist_repo="--enablerepo=BaseOS --enablerepo=AppStream --enablerepo=extras --enablerepo=PowerTools" ;;
+    esac
+    ;;
 esac
 
 # echo $enable_dist_repo
@@ -94,7 +106,12 @@ do_installdep()
 
     # second, install repository configuration file and rpms
     rpm -ihv $repo_rpm_url
-    yum -y --disablerepo='*' $enable_dist_repo --enablerepo=$repo_name install OpenRTM-aist xerces-c-devel xalan-c-devel
+    if [ x"$enable_testing" = x"yes" ]; then
+    	rpm -ihv $repo_rpm_url_testing
+        yum -y --disablerepo='*' $enable_dist_repo --enablerepo=$repo_name_testing --enablerepo=$repo_name install OpenRTM-aist xerces-c-devel xalan-c-devel omniORB-devel omniORB-utils
+    else
+    	yum -y --disablerepo='*' $enable_dist_repo --enablerepo=$repo_name install OpenRTM-aist xerces-c-devel xalan-c-devel omniORB-devel omniORB-utils
+    fi
 }
 
 do_uninstall()
@@ -134,6 +151,10 @@ do_distclean()
         done
     elif [ $os_major_version -eq 7 ]; then
         for i in $(find /var/cache/yum -name 'kek-daqmiddleware*' -type d); do
+            rm -fr $i
+        done
+    elif [ $os_major_version -eq 8 ]; then
+        for i in $(find /var/cache/dnf -name 'kek-daqmiddleware*'); do
             rm -fr $i
         done
     else
@@ -182,6 +203,8 @@ exit
 
 __DATA__
 #
+# Following list will be used when uninstall.  When installing, Required tag 
+# in RPM will be used (and list here will not be used)
 DAQ-Middleware
 OpenRTM-aist
 omniORB-bootscripts
