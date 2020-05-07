@@ -7,7 +7,7 @@ Release: 0%{?dist}
 Group: Development/Libraries
 Source: http://daqmw.kek.jp/src/DAQ-Middleware-%{version}.tar.gz
 URL: http://daqmw.kek.jp/
-License: Eclipse Public License
+License: LGPL
 BuildRoot: %{_tmppath}/%{name}-root
 
 BuildRequires: OpenRTM-aist >= 1.0.0-8
@@ -20,6 +20,8 @@ BuildRequires: python-devel
 %if 0%{?rhel} == 8
 BuildRequires: platform-python-devel
 %endif
+
+BuildRequires: swig
 
 %if 0%{?rhel} == 6
 Requires: OpenRTM-aist >= 1.0.0-8 xalan-c-devel xerces-c-devel /etc/ld.so.conf.d libuuid-devel mod_wsgi tkinter boost-devel
