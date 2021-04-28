@@ -32,7 +32,7 @@ Requires: OpenRTM-aist >= 1.0.0-8 xalan-c-devel xerces-c-devel /etc/ld.so.conf.d
 %endif
 
 %if 0%{?rhel} == 8
-Requires: OpenRTM-aist >= 1.0.0-8 xalan-c-devel xerces-c-devel /etc/ld.so.conf.d libuuid-devel mod_wsgi python3-tkinter boost-devel
+Requires: OpenRTM-aist >= 1.0.0-8 xalan-c-devel xerces-c-devel /etc/ld.so.conf.d libuuid-devel python3-mod_wsgi python3-tkinter boost-devel
 %endif
 
 #%%else
@@ -104,6 +104,9 @@ rm -rf ${RPM_BUILD_ROOT}
 # %%{_mandir}/*/*
 
 %changelog
+* Wed Apr 28 2021 Hiroshi Sendai
+- Require package: mod_wsgi -> python3-mod_wsgi for CentOS 8
+
 * Fri Apr 24 2020 Hiroshi Sendai
 - Prepare for 2.0.0 release
 
