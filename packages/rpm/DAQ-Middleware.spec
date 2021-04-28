@@ -3,7 +3,7 @@
 Summary: DAQ Middleware
 Name: DAQ-Middleware
 Version: 2.0.0
-Release: 0%{?dist}
+Release: 1%{?dist}
 Group: Development/Libraries
 Source: http://daqmw.kek.jp/src/DAQ-Middleware-%{version}.tar.gz
 URL: http://daqmw.kek.jp/
@@ -106,6 +106,7 @@ rm -rf ${RPM_BUILD_ROOT}
 %changelog
 * Wed Apr 28 2021 Hiroshi Sendai
 - Require package: mod_wsgi -> python3-mod_wsgi for CentOS 8
+- Package version bump: 2.0.0-0 -> 2.0.0-1
 
 * Fri Apr 24 2020 Hiroshi Sendai
 - Prepare for 2.0.0 release
