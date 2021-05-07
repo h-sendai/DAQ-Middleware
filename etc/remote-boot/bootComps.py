@@ -41,8 +41,15 @@ class MyProcUtil:
             if en == errno.ENOENT:
                 return []
             else:
-                sys.exit(e)
-        rv =  [ x for x in f.read().split('\x00') if x ]
+                raise IOError('pid %s: %s' % (pid, msg))
+        try:
+            rv =  [ x for x in f.read().split('\x00') if x ]
+        except IOError, (en, msg):
+            if en == errno.ESRCH:
+                return []
+            else:
+                raise IOError('remote-boot/bootComps.py: pid %s: %s' % (pid, msg))
+            
         f.close()
 
         return rv
