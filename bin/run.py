@@ -63,19 +63,24 @@ class MyProcUtil:
         filename = '/proc/%s/cmdline' % (pid)
         try:
             f = open(filename, 'r')
-        except IOError, (en, msg):
-            if en == errno.ENOENT:
-                return []
-            else:
-                raise IOError('pid %s: %s' % (pid, msg))
+        except:
+            return []
+        #except IOError, (en, msg):
+        #    if en == errno.ENOENT:
+        #        return []
+        ##    else:
+        #        raise IOError('pid %s: %s' % (pid, msg))
         try:
             rv =  [ x for x in f.read().split('\x00') if x ]
-        except IOError, (en, msg):
-            if en == errno.ESRCH:
-                # the process has gone between open() and read().  No problem.
-                return []
-            else:
-                raise IOError('run.py: pid %s: %s' % (pid, msg))
+        except:
+            return []
+        #except IOError, (en, msg):
+        #    if en == errno.ESRCH:
+        #        # the process has gone between open() and read().  No problem.
+        #        return []
+        #    else:
+        #        raise IOError('run.py: pid %s: %s' % (pid, msg))
+        
         f.close()
 
         return rv
