@@ -237,9 +237,9 @@ def sendData(addr, port, data):
     rdata = ''
     try:
         s.connect((addr, port))
-        s.send(data)
+        s.send(bytes(data,'UTF-8'))
         s.shutdown(socket.SHUT_WR)
-        rdata = s.recv(1024)
+        rdata = s.recv(1024).decode('UTF-8')
         if verbose:
             print("received data:", rdata)
         s.close()
@@ -782,8 +782,8 @@ def send_and_recv_or_die(ip_address, portno, command_line):
     if command_line[len(command_line) - 1] != '\n':
         command_line += '\n'
 
-    so.send(command_line)
-    recvline = so.recv(1024)
+    so.send(bytes(command_line, 'UTF-8'))
+    recvline = so.recv(1024).decode('UTF-8')
     if recvline != '':
         #sys.exit('XXX' + ip_address + recvline)
         print('ERROR: command failed: %s %s' % (ip_address, recvline))
@@ -805,7 +805,7 @@ def send_file_content(ip_address, portno, file_path, content):
     command_line = 'createfile\t%s\n' % (file_path)
 
     try:
-        so.send(command_line)
+        so.send(bytes(command_line, 'UTF-8'))
     except Exception as e:
         # sys.exit(e)
         print('ERROR: Socket send', e)
@@ -813,10 +813,10 @@ def send_file_content(ip_address, portno, file_path, content):
 
     for line in content.split('\n'):
         line = line + '\n'
-        so.send(line)
-    so.send('.\n')
+        so.send(bytes(line, 'UTF-8'))
+    so.send(b'.\n')
 
-    recvline = so.recv(1024)
+    recvline = so.recv(1024).decode('UTF-8')
     if recvline != '':
         print(msg='ERROR: %s: %s' % (ip_address, recvline))
         # sys.exit(msg)
