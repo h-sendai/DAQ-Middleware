@@ -129,19 +129,19 @@ class daqmwcom:
         # print opts, args
         for o, a in opts:
             if o == "--configure" or o == "-c":
-                print(com.configure())
+                print(com.configure().decode('UTF-8'))
             elif o == "--start" or o == "-b":
                 runNo = a
-                print(com.setRunNumber(runNo))
-                print(com.start(runNo))
+                print(com.setRunNumber(runNo).decode('UTF-8'))
+                print(com.start(runNo).decode('UTF-8'))
             elif o == "--stop" or o == "-e":
-                print(com.stop())
+                print(com.stop().decode('UTF-8'))
             elif o == "--unconfigure" or o == "-u":
-                print(com.unconfigure())
+                print(com.unconfigure().decode('UTF-8'))
             elif o == "--pause" or o == "-p":
-                print(com.pause())
+                print(com.pause().decode('UTF-8'))
             elif o == "--resume" or o == "-r":
-                print(com.resume())
+                print(com.resume().decode('UTF-8'))
             elif o == "--getLog" or o == "-g":
                 tag = a
                 print(com.getLog(tag))
