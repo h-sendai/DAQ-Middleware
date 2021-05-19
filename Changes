@@ -1,3 +1,18 @@
+1.4.5 2021-05-25 Hiroshi Sendai
+
+Summary
+- No new feature
+- Fix incorrect routine in run.py and bootComps.py process lookup function
+
+Details
+
+BUGFIX: run.py and bootComps.py (for remote booting) look up all process names
+        to stop DAQ-Component process at the startup.  Process name lookup fuction
+        read /proc/<PID>/cmd_line.  Execptions for reading cmd_line was not
+        correct.  This version fix this programming error.
+BUILD:  add debuginfo rpm package at https://daqmw.kek.jp/rpm/el7 .
+BUILD:  We don't create packages for EL 6 from now on.
+
 1.4.4 2019-07-01 Hiroshi Sendai
 
 Summary
