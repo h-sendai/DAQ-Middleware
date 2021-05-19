@@ -3,19 +3,19 @@
 
 Summary: DAQ Middleware
 Name: DAQ-Middleware
-Version: 1.4.4
-Release: 0%{?dist}
+Version: 1.4.5
+Release: 3%{?dist}
 Group: Development/Libraries
 Source: http://daqmw.kek.jp/src/DAQ-Middleware-%{version}.tar.gz
 URL: http://daqmw.kek.jp/
 License: Eclipse Public License
 BuildRoot: %{_tmppath}/%{name}-root
 
-BuildRequires: OpenRTM-aist >= 1.0.0-8
+BuildRequires: OpenRTM-aist >= 1.0.0-12
 %if 0%{?rhel} >= 6
-Requires: OpenRTM-aist >= 1.0.0-8 xalan-c-devel xerces-c-devel /etc/ld.so.conf.d libuuid-devel mod_wsgi tkinter boost-devel
+Requires: OpenRTM-aist >= 1.0.0-12 xalan-c-devel xerces-c-devel /etc/ld.so.conf.d libuuid-devel mod_wsgi tkinter boost-devel
 %else
-Requires: OpenRTM-aist >= 1.0.0-8 xalan-c-devel xerces-c-devel /etc/ld.so.conf.d mod_python tkinter boost-devel
+Requires: OpenRTM-aist >= 1.0.0-12 xalan-c-devel xerces-c-devel /etc/ld.so.conf.d mod_python tkinter boost-devel
 %endif
 
 
@@ -43,7 +43,7 @@ make install DESTDIR=$RPM_BUILD_ROOT
 
 # make install prefix=$RPM_BUILD_ROOT/usr
 # mkdir -p $RPM_BUILD_ROOT/etc/ld.so.conf.d
-# echo "%{_libdir}/daqmw" > $RPM_BUILD_ROOT/etc/ld.so.conf.d/daqmiddleware-%{_arch}.conf
+# echo "%%{_libdir}/daqmw" > $RPM_BUILD_ROOT/etc/ld.so.conf.d/daqmiddleware-%%{_arch}.conf
 
 %clean
 rm -rf ${RPM_BUILD_ROOT}
@@ -75,6 +75,12 @@ rm -rf ${RPM_BUILD_ROOT}
 # %%{_mandir}/*/*
 
 %changelog
+* Wed May 19 2021 Hiroshi Sendai
+- Release build for 1.4.5
+
+* Mon May 10 2021 Hiroshi Sendai
+- Prepare for 1.4.5 release
+
 * Mon Jul 1 2019 Hiroshi Sendai
 - Prepare for 1.4.4 release
 
