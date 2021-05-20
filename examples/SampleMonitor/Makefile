@@ -25,7 +25,7 @@ all: $(COMP_NAME)Comp
 SRCS += $(COMP_NAME).cpp
 SRCS += $(COMP_NAME)Comp.cpp
 
-CPPFLAGS += -I$(shell ${ROOTSYS}/bin/root-config --incdir)
+CXXFLAGS += $(shell ${ROOTSYS}/bin/root-config --cflags)
 LDLIBS   += $(shell ${ROOTSYS}/bin/root-config --glibs)
 
 # sample install target
