@@ -10,6 +10,8 @@ BUGFIX: run.pyおよびbootComps.py (リモートブート用プログラム)で
         います。/proc/<PID>/cmd_lineを読む実装になっています。cmd_lineを読むときに
         発生する可能性がある例外について正しく取り扱っていませんでしたのでこの
         バージョンではそれを修正しました。
+BUILD:  SampleMonitorのMakefileでCXXFLAGSとroot-config --cflagsを使って-std=c++NN
+        コンパイルオプションが指定されるように変更しました。
 BUILD:  debuginfoパッケージも作るようにしました。作ったRPMファイルは
         https://daqmw.kek.jp/rpm/el7/ にあります。
 BUILD:  EL 6用パッケージは今後作成しないことにしました。
