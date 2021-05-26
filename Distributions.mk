@@ -114,69 +114,69 @@ endif
 
 ########## Fedora ##########
 ifeq ($(strip $(OS)),Fedora)
-WWW_DOCUMENT_ROOT = /var/www/html
-HTTPD_CONF_DIR    = /etc/httpd/conf.d
-USE_MOD_WSGI      = 1
-USE_PYTHON3       = 1
-PYTHON_EXEC_FILE  = python3
-PYTHON_CONFIG     = python3-config
+    WWW_DOCUMENT_ROOT = /var/www/html
+    HTTPD_CONF_DIR    = /etc/httpd/conf.d
+    USE_MOD_WSGI      = 1
+    USE_PYTHON3       = 1
+    PYTHON_EXEC_FILE  = python3
+    PYTHON_CONFIG     = python3-config
 endif
 
 ########## Debian ##########
 ifeq ($(strip $(OS)),Debian)
-WWW_DOCUMENT_ROOT = /var/www
-HTTPD_CONF_DIR    = /etc/apache2/conf.d
-USE_MOD_WSGI      = 1
-USE_PYTHON3       = 1
-PYTHON_EXEC_FILE  = python3
-PYTHON_CONFIG     = python3-config
+    WWW_DOCUMENT_ROOT = /var/www
+    HTTPD_CONF_DIR    = /etc/apache2/conf.d
+    USE_MOD_WSGI      = 1
+    USE_PYTHON3       = 1
+    PYTHON_EXEC_FILE  = python3
+    PYTHON_CONFIG     = python3-config
 endif
 
 ########## Ubuntu ##########
 ifeq ($(strip $(OS)),Ubuntu)
-WWW_DOCUMENT_ROOT = /var/www
-HTTPD_CONF_DIR    = /etc/apache2/conf.d
-USE_MOD_WSGI      = 1
-USE_PYTHON3       = 1
-PYTHON_EXEC_FILE  = python3
-PYTHON_CONFIG     = python3-config
+    WWW_DOCUMENT_ROOT = /var/www
+    HTTPD_CONF_DIR    = /etc/apache2/conf.d
+    USE_MOD_WSGI      = 1
+    USE_PYTHON3       = 1
+    PYTHON_EXEC_FILE  = python3
+    PYTHON_CONFIG     = python3-config
 endif
 
 ########## ArchLinux  ##########
 ifeq ($(strip $(OS)),archlinux)
-WWW_DOCUMENT_ROOT = /srv/http
-HTTPD_CONF_DIR    = /etc/httpd/conf/extra
-USE_MOD_WSGI      = 1
-USE_PYTHON3       = 1
-PYTHON_EXEC_FILE  = python
-PYTHON_CONFIG     = python-config
+    WWW_DOCUMENT_ROOT = /srv/http
+    HTTPD_CONF_DIR    = /etc/httpd/conf/extra
+    USE_MOD_WSGI      = 1
+    USE_PYTHON3       = 1
+    PYTHON_EXEC_FILE  = python
+    PYTHON_CONFIG     = python-config
 endif
 
 ########## ArchLinux (lsb_release -si output changed) ##########
 ifeq ($(strip $(OS)),arch)
-WWW_DOCUMENT_ROOT = /srv/http
-HTTPD_CONF_DIR    = /etc/httpd/conf/extra
-USE_MOD_WSGI      = 1
-USE_PYTHON3       = 1
-PYTHON_EXEC_FILE  = python
-PYTHON_CONFIG     = python-config
+    WWW_DOCUMENT_ROOT = /srv/http
+    HTTPD_CONF_DIR    = /etc/httpd/conf/extra
+    USE_MOD_WSGI      = 1
+    USE_PYTHON3       = 1
+    PYTHON_EXEC_FILE  = python
+    PYTHON_CONFIG     = python-config
 endif
 
 ########## Raspbian ##########
 ifeq ($(strip $(OS)),Raspbian)
-WWW_DOCUMENT_ROOT = /var/www/html
-HTTPD_CONF_DIR    = /etc/apache2/conf-available
-USE_MOD_WSGI      = 1
-USE_PYTHON3       = 1
-PYTHON_EXEC_FILE  = python3
-PYTHON_CONFIG     = python3-config
+    WWW_DOCUMENT_ROOT = /var/www/html
+    HTTPD_CONF_DIR    = /etc/apache2/conf-available
+    USE_MOD_WSGI      = 1
+    USE_PYTHON3       = 1
+    PYTHON_EXEC_FILE  = python3
+    PYTHON_CONFIG     = python3-config
 endif
 
 ########## Unknown ##########
 ifeq ($(strip $(WWW_DOCUMENT_ROOT)),)
-WWW_DOCUMENT_ROOT = /
-HTTPD_CONF_DIR    = /
-USE_MOD_WSGI      = 1
+    WWW_DOCUMENT_ROOT = /
+    HTTPD_CONF_DIR    = /
+    USE_MOD_WSGI      = 1
 endif
 
 # all target for testing #
