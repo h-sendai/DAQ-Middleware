@@ -2,8 +2,8 @@ DAQ-Middleware 1.5.x
 
 # About python version
 
-on CentOS 7.6 or earlier, we use python 2
-on CentOS 7.7 or later, we use python 3
+- on CentOS 7.6 or earlier, we use python 2
+- on CentOS 7.7 or later, we use python 3
 
 # Branches
 
