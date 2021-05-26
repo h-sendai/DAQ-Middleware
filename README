@@ -1,6 +1,16 @@
-DAQ-Middleware 1.4.5
+DAQ-Middleware 1.5.x
 
-This is DAQ-Middleware 1.4.5
+# About python version
+
+on CentOS 7.6 or earlier, we use python 2
+on CentOS 7.7 or later, we use python 3
+
+# Branches
+
+There are two branches.
+
+- master: this branch to develop 1.5.x series.
+- release_1_4: develop 1.4.x series.
 
 URL: http://daqmw.kek.jp/
 

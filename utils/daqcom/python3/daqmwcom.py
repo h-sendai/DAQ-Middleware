@@ -1,3 +1,4 @@
+#!/usr/bin/python3
 #!/usr/bin/env python
 
 """daqmwcom : commnication tool for DAQ Operator
@@ -18,7 +19,7 @@ __author__   = 'Yoshiji Yasu and Hiroshi Sendai'
 __version__  = '0.95'
 __date__ = '9-April-2012'
 
-import urllib
+import urllib.request, urllib.parse, urllib.error
 import httplib2
 import getopt, sys
 from xml.dom.minidom import parseString
@@ -43,7 +44,7 @@ class daqmwcom:
         self.url = self.urlbase + "Params"
         self.body = {"cmd":"<?xml version='1.0' encoding='UTF-8' standalone='no' ?><request><params>config.xml</params></request>"}
         self.headers = {'Content-type': 'application/x-www-form-urlencoded'}
-        self.response, self.content = self.http.request(self.url, 'POST', headers=self.headers, body=urllib.urlencode(self.body))
+        self.response, self.content = self.http.request(self.url, 'POST', headers=self.headers, body=urllib.parse.urlencode(self.body))
 #        print self.response
         return self.content
 
@@ -51,35 +52,35 @@ class daqmwcom:
         self.url = self.urlbase + "Begin"
         self.body= {"cmd":"<?xml version='1.0' encoding='UTF-8' ?><request><runNo>" + runNo + "</runNo></request>"}
         self.headers = {'Content-type': 'application/x-www-form-urlencoded'}
-        self.response, self.content = self.http.request(self.url, 'POST', headers=self.headers, body=urllib.urlencode(self.body))
+        self.response, self.content = self.http.request(self.url, 'POST', headers=self.headers, body=urllib.parse.urlencode(self.body))
         return self.content
 
     def stop(self):
         self.url = self.urlbase + "End"
         self.body ={"cmd":" " }
         self.headers = {'Content-type': 'application/x-www-form-urlencoded'}
-        self.response, self.content = self.http.request(self.url, 'POST', headers=self.headers, body=urllib.urlencode(self.body))
+        self.response, self.content = self.http.request(self.url, 'POST', headers=self.headers, body=urllib.parse.urlencode(self.body))
         return self.content
 
     def pause(self):
         self.url = self.urlbase + "Pause"
         self.body ={"cmd":" " }
         self.headers = {'Content-type': 'application/x-www-form-urlencoded'}
-        self.response, self.content = self.http.request(self.url, 'POST', headers=self.headers, body=urllib.urlencode(self.body))
+        self.response, self.content = self.http.request(self.url, 'POST', headers=self.headers, body=urllib.parse.urlencode(self.body))
         return self.content
 
     def unconfigure(self):
         self.url = self.urlbase + "ResetParams"
         self.body ={"cmd":" " }
         self.headers = {'Content-type': 'application/x-www-form-urlencoded'}
-        self.response, self.content = self.http.request(self.url, 'POST', headers=self.headers, body=urllib.urlencode(self.body))
+        self.response, self.content = self.http.request(self.url, 'POST', headers=self.headers, body=urllib.parse.urlencode(self.body))
         return self.content
 
     def resume(self):
         self.url = self.urlbase + "Restart"
         self.body ={"cmd":" " }
         self.headers = {'Content-type': 'application/x-www-form-urlencoded'}
-        self.response, self.content = self.http.request(self.url, 'POST', headers=self.headers, body=urllib.urlencode(self.body))
+        self.response, self.content = self.http.request(self.url, 'POST', headers=self.headers, body=urllib.parse.urlencode(self.body))
         return self.content
 
     def getLog(self, tag):
@@ -99,27 +100,27 @@ class daqmwcom:
         self.url = self.urlbase + "../writedata.py/SaveRunNumber"
         self.body ={"RunNumber": runNo }
         self.headers = {'Content-type': 'application/x-www-form-urlencoded'}
-        self.response, self.content = self.http.request(self.url, 'POST', headers=self.headers, body=urllib.urlencode(self.body))
+        self.response, self.content = self.http.request(self.url, 'POST', headers=self.headers, body=urllib.parse.urlencode(self.body))
         return self.content
 
     def cli(self):
         argc = len(sys.argv)
         if argc != 3 and argc != 4:
-            print "usage: %s urlbase options" % sys.argv[0]
-            print "       urlbase:"
-            print "       http://localhost/daqmw/operatorPanel/ for SL(C)5 or earlier"
-            print "       http://localhost/daqmw/scripts/ for SL(C)6 or later"
-            print "       options:"
-            print "       -c or --configure   : configure command"
-            print "       -b runNum or --start runNum : start(begin) command"
-            print "          for example, -b 100"
-            print "       -e or --stop        : stop(end) command"
-            print "       -u or --unconfigure : unconfigure command"
-            print "       -p or --pause       : pause command"
-            print "       -r or --resume      : resume command"
-            print "       -g tag or --getLog tag : getLog command"
-            print "          for example, -g state or -g all"
-            print "            all means all of tags"
+            print("usage: %s urlbase options" % sys.argv[0])
+            print("       urlbase:")
+            print("       http://localhost/daqmw/operatorPanel/ for SL(C)5 or earlier")
+            print("       http://localhost/daqmw/scripts/ for SL(C)6 or later")
+            print("       options:")
+            print("       -c or --configure   : configure command")
+            print("       -b runNum or --start runNum : start(begin) command")
+            print("          for example, -b 100")
+            print("       -e or --stop        : stop(end) command")
+            print("       -u or --unconfigure : unconfigure command")
+            print("       -p or --pause       : pause command")
+            print("       -r or --resume      : resume command")
+            print("       -g tag or --getLog tag : getLog command")
+            print("          for example, -g state or -g all")
+            print("            all means all of tags")
             sys.exit()
 
         urlbase = sys.argv[1]
@@ -128,22 +129,22 @@ class daqmwcom:
         # print opts, args
         for o, a in opts:
             if o == "--configure" or o == "-c":
-                print com.configure()
+                print(com.configure().decode('UTF-8'))
             elif o == "--start" or o == "-b":
                 runNo = a
-                print com.setRunNumber(runNo)
-                print com.start(runNo)
+                print(com.setRunNumber(runNo).decode('UTF-8'))
+                print(com.start(runNo).decode('UTF-8'))
             elif o == "--stop" or o == "-e":
-                print com.stop()
+                print(com.stop().decode('UTF-8'))
             elif o == "--unconfigure" or o == "-u":
-                print com.unconfigure()
+                print(com.unconfigure().decode('UTF-8'))
             elif o == "--pause" or o == "-p":
-                print com.pause()
+                print(com.pause().decode('UTF-8'))
             elif o == "--resume" or o == "-r":
-                print com.resume()
+                print(com.resume().decode('UTF-8'))
             elif o == "--getLog" or o == "-g":
                 tag = a
-                print com.getLog(tag)
+                print(com.getLog(tag))
             else:
-                print "invalid command"
+                print("invalid command")
                 break

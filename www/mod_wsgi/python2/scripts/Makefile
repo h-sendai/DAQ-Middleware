@@ -1,4 +1,4 @@
-include ../../Distributions.mk
+include ../../../../Distributions.mk
 
 SWIG = $(shell which swig)
 ifeq ($(strip $(SWIG)),)
@@ -15,12 +15,12 @@ INSTALL_FILES += ParameterClient.py
 INSTALL_FILES += daq.py
 INSTALL_FILES += writedata.py
 
-SOCK_INC       = ../../../src/lib/SiTCP/CPP/Sock
-SOCK_LIB       = -L../../../src/lib/SiTCP/CPP/Sock -lSock
+SOCK_INC       = ../../../../src/lib/SiTCP/CPP/Sock
+SOCK_LIB       = -L../../../../src/lib/SiTCP/CPP/Sock -lSock
 
 SWIG_FLAGS     = -c++ -python
 PYTHON_VERSION = $(shell python -c 'import sys; v = "%d.%d" % (sys.version_info[0], sys.version_info[1]); print v')
-PYTHON_INC_DIR = /usr/include/python${PYTHON_VERSION}
+PYTHON_INC_DIR = $(shell ${PYTHON_CONFIG} --includes)
 
 IFILE          = ParameterClient
 SRCS           = ${IFILE}.h
@@ -40,7 +40,7 @@ writedata.py: writedata.py.in
 
 ${SHAREDLIB}: ${SRCS}
 	${SWIG} ${SWIG_FLAGS} ${INTERFACE}
-	${CXX} ${CXX_FLAGS} -I${SOCK_INC} -I${PYTHON_INC_DIR} ${WRAPFILE}
+	${CXX} ${CXX_FLAGS} -I${SOCK_INC} ${PYTHON_INC_DIR} ${WRAPFILE}
 	${CXX} -shared ${WRAPFILE_O} ${SOCK_LIB} -o ${SHAREDLIB}
 
 install:

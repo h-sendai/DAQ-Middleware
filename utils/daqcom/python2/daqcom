@@ -1,0 +1,7 @@
+#!/usr/bin/python2
+#!/usr/bin/env python
+
+from daqmwcom import daqmwcom
+if __name__ == '__main__':
+    daqmwcom = daqmwcom()
+    daqmwcom.cli()

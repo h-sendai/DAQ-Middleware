@@ -1,4 +1,4 @@
-include ../../Distributions.mk
+include ../../../Distributions.mk
 
 SWIG = $(shell which swig)
 ifeq ($(strip $(SWIG)),)

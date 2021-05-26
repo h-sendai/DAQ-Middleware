@@ -1,28 +1,31 @@
 %define daqmw_dir daqmw
-%{!?python_sitelib: %define python_sitelib %(python -c "from distutils.sysconfig import get_python_lib; print get_python_lib()")}
+
+%if 0%{?rhel} == 7
+%global __python %{__python3}
+%endif
 
 Summary: DAQ Middleware
 Name: DAQ-Middleware
-Version: 1.4.5
-Release: 3%{?dist}
+Version: 1.5.0
+Release: 1%{?dist}
 Group: Development/Libraries
 Source: http://daqmw.kek.jp/src/DAQ-Middleware-%{version}.tar.gz
 URL: http://daqmw.kek.jp/
-License: Eclipse Public License
+License: LGPL
 BuildRoot: %{_tmppath}/%{name}-root
 
-BuildRequires: OpenRTM-aist >= 1.0.0-12
-%if 0%{?rhel} >= 6
-Requires: OpenRTM-aist >= 1.0.0-12 xalan-c-devel xerces-c-devel /etc/ld.so.conf.d libuuid-devel mod_wsgi tkinter boost-devel
-%else
-Requires: OpenRTM-aist >= 1.0.0-12 xalan-c-devel xerces-c-devel /etc/ld.so.conf.d mod_python tkinter boost-devel
+BuildRequires: OpenRTM-aist >= 1.2.2-3
+
+%if 0%{?rhel} == 7
+BuildRequires: python3-devel
+%endif
+%if 0%{?rhel} == 8
+BuildRequires: platform-python-devel
 %endif
 
+BuildRequires: swig
 
-
-#BuildRequires: omniORB, omniORB-devel, python, OpenRTM-aist
-#Requires: omniORB, omniORB-utils, omniORB-devel, omniORB-servers, omniORB-bootscripts, omniORB-doc, python, OpenRTM-aist
-#
+Requires: OpenRTM-aist >= 1.2.2-3 xalan-c-devel xerces-c-devel /etc/ld.so.conf.d libuuid-devel python3-mod_wsgi python3-tkinter boost-devel
 
 %description
 This is DAQ-Middleware, a middleware for Data Acquisition System.
@@ -61,8 +64,18 @@ rm -rf ${RPM_BUILD_ROOT}
 %{_datadir}/%{daqmw_dir}/*
 %{_var}/www/html/%{daqmw_dir}/*
 %{_sysconfdir}/httpd/conf.d/daq.conf
+%if "%{?dist}" == ".el8"
+%{python3_sitelib}/%{daqmw_dir}/*
+%{python3_sitelib}/daqmw.pth
+%endif
+%if "%{?dist}" == ".el7"
 %{python_sitelib}/%{daqmw_dir}/*
 %{python_sitelib}/daqmw.pth
+%endif
+%if "%{?dist}" == ".el6"
+%{python_sitelib}/%{daqmw_dir}/*
+%{python_sitelib}/daqmw.pth
+%endif
 
 #%%{_libdir}/%%{daqmw_dir}/*
 #%%{_includedir}/%%{daqmw_dir}/*
@@ -75,11 +88,15 @@ rm -rf ${RPM_BUILD_ROOT}
 # %%{_mandir}/*/*
 
 %changelog
-* Wed May 19 2021 Hiroshi Sendai
-- Release build for 1.4.5
+* Mon May 17 2021 Hiroshi Sendai
+- remove EL 6 lines
 
-* Mon May 10 2021 Hiroshi Sendai
-- Prepare for 1.4.5 release
+* Wed Apr 28 2021 Hiroshi Sendai
+- Require package: mod_wsgi -> python3-mod_wsgi for CentOS 8
+- Package version bump: 2.0.0-0 -> 2.0.0-1
+
+* Fri Apr 24 2020 Hiroshi Sendai
+- Prepare for 2.0.0 release
 
 * Mon Jul 1 2019 Hiroshi Sendai
 - Prepare for 1.4.4 release
