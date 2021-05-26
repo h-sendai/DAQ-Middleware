@@ -10,7 +10,7 @@ on CentOS 7.7 or later, we use python 3
 There are two branches.
 
 - master: this branch to develop 1.5.x series.
-- release_1_4: develop 1.4.x series.
+- release_1_4: develop 1.4.x series. github: https://github.com/h-sendai/DAQ-Middleware/tree/release_1_4
 
 URL: http://daqmw.kek.jp/
 
