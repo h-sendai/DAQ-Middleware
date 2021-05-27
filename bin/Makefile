@@ -7,9 +7,12 @@ DIR = $(DESTDIR)$(prefix)/bin
 MODE = 0755
 
 FILES += condition_xml2json
-FILES += condition_xml2json.py
 FILES += xml2json-with-attribute.xslt
 FILES += daqmw-rpm 
+
+ifeq ($(strip $(USE_PYTHON2)),1)
+    FILES += condition_xml2json.py
+endif
 
 all:
 
