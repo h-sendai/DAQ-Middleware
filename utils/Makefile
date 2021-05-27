@@ -1,3 +1,5 @@
+include ../Distributions.mk
+
 DESTDIR =
 prefix  = /usr
 
@@ -5,9 +7,12 @@ SUBDIRS += pythonLibSetup
 SUBDIRS += daqcom
 SUBDIRS += newcomp
 SUBDIRS += daqmw-emulator
-SUBDIRS += conditionPanel
-SUBDIRS += dmbepanel
-SUBDIRS += configGUI
+
+ifeq ($(strip $(USE_PYTHON2)),1)
+    SUBDIRS += conditionPanel
+    SUBDIRS += dmbepanel
+    SUBDIRS += configGUI
+endif
 
 .PHONY: $(SUBDIRS)
 
