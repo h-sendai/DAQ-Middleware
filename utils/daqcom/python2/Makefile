@@ -1,7 +1,9 @@
+include ../../../Distributions.mk
+
 DESTDIR = 
 prefix  = /usr
 
-PYTHON_SITELIB=$(shell python -c "from distutils.sysconfig import get_python_lib; print get_python_lib()")
+PYTHON_SITELIB=$(shell $(PYTHON_EXEC_PATH) -c "from distutils.sysconfig import get_python_lib; print get_python_lib()")
 
 DAQCOM_DIR      = $(DESTDIR)$(PYTHON_SITELIB)/daqmw
 HTTPLIB2_DIR    = $(DESTDIR)$(PYTHON_SITELIB)/daqmw/httplib2
