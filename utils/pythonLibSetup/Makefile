@@ -4,7 +4,7 @@ DESTDIR =
 prefix  = /usr
 
 # We may use "from __future__" on python3
-PYTHON_SITELIB=$(shell $(PYTHON_EXEC_FILE) -c "from __future__ import print_function; from distutils.sysconfig import get_python_lib; print(get_python_lib())")
+PYTHON_SITELIB=$(shell $(PYTHON_EXEC_PATH) -c "from __future__ import print_function; from distutils.sysconfig import get_python_lib; print(get_python_lib())")
 
 PYTHON_LIB_DIR        = $(DESTDIR)$(PYTHON_SITELIB)
 PYTHON_LIB_DAQMW_DIR  = $(DESTDIR)$(PYTHON_SITELIB)/daqmw

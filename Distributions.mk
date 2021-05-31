@@ -179,6 +179,9 @@ ifeq ($(strip $(WWW_DOCUMENT_ROOT)),)
     USE_MOD_WSGI      = 1
 endif
 
+PYTHON_EXEC_PATH   = /usr/bin/$(PYTHON_EXEC_FILE)
+PYTHON_CONFIG_PATH = /usr/bin/$(PYTHON_CONFIG)
+
 # all target for testing #
 #all:
 #       @echo "os:" $(OS)

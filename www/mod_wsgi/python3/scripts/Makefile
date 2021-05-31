@@ -19,8 +19,8 @@ SOCK_INC       = ../../../../src/lib/SiTCP/CPP/Sock
 SOCK_LIB       = -L../../../../src/lib/SiTCP/CPP/Sock -lSock
 
 SWIG_FLAGS     = -c++ -python
-PYTHON_VERSION = $(shell python -c 'import sys; v = "%d.%d" % (sys.version_info[0], sys.version_info[1]); print v')
-PYTHON_INC_DIR = $(shell ${PYTHON_CONFIG} --includes)
+# PYTHON_VERSION = $(shell python -c 'import sys; v = "%d.%d" % (sys.version_info[0], sys.version_info[1]); print v')
+PYTHON_INC_DIR = $(shell ${PYTHON_CONFIG_PATH} --includes)
 
 IFILE          = ParameterClient
 SRCS           = ${IFILE}.h
