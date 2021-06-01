@@ -93,7 +93,7 @@ int SampleLogger::parse_params(::NVList* list)
 {
     int ret = 0;
 
-    // supress warnings (-Wunused)
+    // suppress warnings (-Wunused)
     bool __attribute__((unused)) isExistParamLogging = false;
     bool __attribute__((unused)) isExistParamDirName = false;
 
