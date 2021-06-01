@@ -93,8 +93,9 @@ int SampleLogger::parse_params(::NVList* list)
 {
     int ret = 0;
 
-    bool isExistParamLogging = false;
-    bool isExistParamDirName = false;
+    // supress warnings (-Wunused)
+    bool __attribute__((unused)) isExistParamLogging = false;
+    bool __attribute__((unused)) isExistParamDirName = false;
 
     int length = (*list).length();
     for (int i = 0; i < length; i += 2) {
