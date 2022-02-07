@@ -112,6 +112,16 @@ HTTPD_CONF_DIR    = /etc/httpd/conf.d
     endif
 endif
 
+########## CentOS Stream ##########
+ifeq ($(strip $(OS)),CentOSStream)
+	WWW_DOCUMENT_ROOT = /var/www/html
+	HTTPD_CONF_DIR    = /etc/httpd/conf.d
+	USE_MOD_WSGI      = 1
+	USE_PYTHON3       = 1
+	PYTHON_EXEC_FILE  = python3
+	PYTHON_CONFIG     = python3-config
+endif
+
 ########## Fedora ##########
 ifeq ($(strip $(OS)),Fedora)
     WWW_DOCUMENT_ROOT = /var/www/html
