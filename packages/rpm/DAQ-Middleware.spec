@@ -4,6 +4,14 @@
 %global __python %{__python3}
 %endif
 
+%if 0%{?rhel} == 8
+%global __python /usr/bin/python3
+%endif
+
+%if 0%{?rhel} == 9
+%global __python /usr/bin/python3
+%endif
+
 Summary: DAQ Middleware
 Name: DAQ-Middleware
 Version: 1.5.0
@@ -20,7 +28,10 @@ BuildRequires: OpenRTM-aist >= 1.2.2-3
 BuildRequires: python3-devel
 %endif
 %if 0%{?rhel} == 8
-BuildRequires: platform-python-devel
+BuildRequires: python3-devel
+%endif
+%if 0%{?rhel} == 9
+BuildRequires: python3-devel
 %endif
 
 BuildRequires: swig
