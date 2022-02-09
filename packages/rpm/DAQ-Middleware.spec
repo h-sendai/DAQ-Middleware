@@ -15,7 +15,7 @@
 Summary: DAQ Middleware
 Name: DAQ-Middleware
 Version: 1.5.0
-Release: 1%{?dist}
+Release: 2%{?dist}
 Group: Development/Libraries
 Source: http://daqmw.kek.jp/src/DAQ-Middleware-%{version}.tar.gz
 URL: http://daqmw.kek.jp/
@@ -99,6 +99,10 @@ rm -rf ${RPM_BUILD_ROOT}
 # %%{_mandir}/*/*
 
 %changelog
+* Wed Feb 09 2022
+- use /usr/bin/python3 shebang
+- rpm package version bump to 1.5.0-2
+
 * Mon May 17 2021 Hiroshi Sendai
 - remove EL 6 lines
 
