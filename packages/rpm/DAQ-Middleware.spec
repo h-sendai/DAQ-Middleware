@@ -8,9 +8,10 @@
 %global __python /usr/bin/python3
 %endif
 
-%if 0%{?rhel} == 9
-%global __python /usr/bin/python3
-%endif
+# does not need to specify __python on CS 9 (does not have python2)
+#%%if 0%%{?rhel} == 9
+#%%global __python /usr/bin/python3
+#%%endif
 
 Summary: DAQ Middleware
 Name: DAQ-Middleware
@@ -75,6 +76,10 @@ rm -rf ${RPM_BUILD_ROOT}
 %{_datadir}/%{daqmw_dir}/*
 %{_var}/www/html/%{daqmw_dir}/*
 %{_sysconfdir}/httpd/conf.d/daq.conf
+%if "%{?dist}" == ".el9"
+%{python3_sitelib}/%{daqmw_dir}/*
+%{python3_sitelib}/daqmw.pth
+%endif
 %if "%{?dist}" == ".el8"
 %{python3_sitelib}/%{daqmw_dir}/*
 %{python3_sitelib}/daqmw.pth
