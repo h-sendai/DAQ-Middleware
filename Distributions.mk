@@ -1,14 +1,19 @@
-can_run_lsb_release = $(shell lsb_release -a 2>/dev/null)
-
-ifeq ($(strip $(can_run_lsb_release)),)
-$(error Cannot execute lsb_release command.  Please install lsb_release.)
+OS_RELEASE_FILE = /etc/os-release
+ifneq (,$(wildcard, $(OS_RELEASE_FILE)))
+$(error cannot find /etc/os-release.  This Makefile look up the file to get distribution name and version.)
 endif
 
-OS            = $(shell lsb_release -si)
-VERSION       = $(shell lsb_release -sr)
-ARCH          = $(shell uname -m)
+OS      = $(shell . /etc/os-release; echo -n $$ID)
+VERSION = $(shell . /etc/os-release; echo -n $$VERSION_ID)
 MAJOR_VERSION = $(shell echo $(VERSION) | sed -e 's/\..*//')
 MINOR_VERSION = $(shell echo $(VERSION) | awk -F'.' '{print $$2}')
+
+# If the distribution is CentOS  7, We need minor version to determine python version
+ifeq ($(strip $(OS)), centos)
+ifeq ($(strip $(VERSION)), 7)
+MINOR_VERSION = $(shell awk -F'[ |.]' '{print $$5}' /etc/redhat-release)
+endif
+endif
 
 # default vars
 USE_MOD_PYTHON = 0
@@ -27,7 +32,7 @@ ifeq ($(strip $(OS)),ScientificSL)
 endif
 
 ########## Scientific Linux 5.8 - , 7.x ##########
-ifeq ($(strip $(OS)),Scientific)
+ifeq ($(strip $(OS)),scientific)
     WWW_DOCUMENT_ROOT = /var/www/html
     HTTPD_CONF_DIR    = /etc/httpd/conf.d
     ifeq ($(strip $(MAJOR_VERSION)),5)
@@ -76,7 +81,7 @@ endif
 # CERN CentOS 7 is like a CentOS 7
 
 ########## CentOS ##########
-ifeq ($(strip $(OS)),CentOS)
+ifeq ($(strip $(OS)),centos)
 WWW_DOCUMENT_ROOT = /var/www/html
 HTTPD_CONF_DIR    = /etc/httpd/conf.d
     ifeq ($(strip $(MAJOR_VERSION)),5)
@@ -110,16 +115,12 @@ HTTPD_CONF_DIR    = /etc/httpd/conf.d
         PYTHON_EXEC_FILE  = python3
         PYTHON_CONFIG     = python3-config
     endif
-endif
-
-########## CentOS Stream ##########
-ifeq ($(strip $(OS)),CentOSStream)
-	WWW_DOCUMENT_ROOT = /var/www/html
-	HTTPD_CONF_DIR    = /etc/httpd/conf.d
-	USE_MOD_WSGI      = 1
-	USE_PYTHON3       = 1
-	PYTHON_EXEC_FILE  = python3
-	PYTHON_CONFIG     = python3-config
+    ifeq ($(strip $(MAJOR_VERSION)),9)
+        USE_MOD_WSGI      = 1
+        USE_PYTHON3       = 1
+        PYTHON_EXEC_FILE  = python3
+        PYTHON_CONFIG     = python3-config
+    endif
 endif
 
 ########## Fedora ##########
@@ -133,7 +134,7 @@ ifeq ($(strip $(OS)),Fedora)
 endif
 
 ########## Debian ##########
-ifeq ($(strip $(OS)),Debian)
+ifeq ($(strip $(OS)),debian)
     WWW_DOCUMENT_ROOT = /var/www
     HTTPD_CONF_DIR    = /etc/apache2/conf.d
     USE_MOD_WSGI      = 1
@@ -143,7 +144,7 @@ ifeq ($(strip $(OS)),Debian)
 endif
 
 ########## Ubuntu ##########
-ifeq ($(strip $(OS)),Ubuntu)
+ifeq ($(strip $(OS)),ubuntu)
     WWW_DOCUMENT_ROOT = /var/www
     HTTPD_CONF_DIR    = /etc/apache2/conf.d
     USE_MOD_WSGI      = 1
@@ -153,16 +154,6 @@ ifeq ($(strip $(OS)),Ubuntu)
 endif
 
 ########## ArchLinux  ##########
-ifeq ($(strip $(OS)),archlinux)
-    WWW_DOCUMENT_ROOT = /srv/http
-    HTTPD_CONF_DIR    = /etc/httpd/conf/extra
-    USE_MOD_WSGI      = 1
-    USE_PYTHON3       = 1
-    PYTHON_EXEC_FILE  = python
-    PYTHON_CONFIG     = python-config
-endif
-
-########## ArchLinux (lsb_release -si output changed) ##########
 ifeq ($(strip $(OS)),arch)
     WWW_DOCUMENT_ROOT = /srv/http
     HTTPD_CONF_DIR    = /etc/httpd/conf/extra
@@ -173,7 +164,7 @@ ifeq ($(strip $(OS)),arch)
 endif
 
 ########## Raspbian ##########
-ifeq ($(strip $(OS)),Raspbian)
+ifeq ($(strip $(OS)),raspbian)
     WWW_DOCUMENT_ROOT = /var/www/html
     HTTPD_CONF_DIR    = /etc/apache2/conf-available
     USE_MOD_WSGI      = 1
