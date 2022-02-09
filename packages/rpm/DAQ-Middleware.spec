@@ -99,7 +99,7 @@ rm -rf ${RPM_BUILD_ROOT}
 # %%{_mandir}/*/*
 
 %changelog
-* Wed Feb 09 2022
+* Wed Feb 09 2022 Hiroshi Sendai
 - use /usr/bin/python3 shebang
 - rpm package version bump to 1.5.0-2
 
