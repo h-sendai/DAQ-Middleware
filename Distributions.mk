@@ -123,6 +123,24 @@ HTTPD_CONF_DIR    = /etc/httpd/conf.d
     endif
 endif
 
+########## AlmaLinux ##########
+ifeq ($(strip $(OS)),almalinux)
+WWW_DOCUMENT_ROOT = /var/www/html
+HTTPD_CONF_DIR    = /etc/httpd/conf.d
+    ifeq ($(strip $(MAJOR_VERSION)),8)
+        USE_MOD_WSGI      = 1
+        USE_PYTHON3       = 1
+        PYTHON_EXEC_FILE  = python3
+        PYTHON_CONFIG     = python3-config
+    endif
+    ifeq ($(strip $(MAJOR_VERSION)),9)
+        USE_MOD_WSGI      = 1
+        USE_PYTHON3       = 1
+        PYTHON_EXEC_FILE  = python3
+        PYTHON_CONFIG     = python3-config
+    endif
+endif
+
 ########## Fedora ##########
 ifeq ($(strip $(OS)),Fedora)
     WWW_DOCUMENT_ROOT = /var/www/html
