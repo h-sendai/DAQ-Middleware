@@ -383,10 +383,20 @@ namespace DAQMW
         {
             BufferStatus ret = BUF_SUCCESS;
             int index = 0;
+#if RTM_MAJOR_VERSION == 1
             RTC::DataPortStatus::Enum out_status = myOutPort.getStatus(index);
+#endif
+#if RTM_MAJOR_VERSION == 2
+            RTC::DataPortStatus out_status = myOutPort.getStatus(index);
+#endif
             if(m_debug) {
                 std::cerr << "OutPort status: "
+#if RTM_MAJOR_VERSION == 1
                           << RTC::DataPortStatus::toString(out_status) 
+#endif
+#if RTM_MAJOR_VERSION == 2
+                          << RTC::toString(out_status) 
+#endif
                           << std::endl;
             }
             switch(out_status) {
@@ -404,7 +414,12 @@ namespace DAQMW
             case RTC::DataPortStatus::PRECONDITION_NOT_MET:
             case RTC::DataPortStatus::CONNECTION_LOST:
                 std::cerr << "OutPort status: "
+#if RTM_MAJOR_VERSION == 1
                           << RTC::DataPortStatus::toString(out_status) 
+#endif
+#if RTM_MAJOR_VERSION == 2
+                          << RTC::toString(out_status) 
+#endif
                           << std::endl;
                 ret = BUF_FATAL;
                 break;
@@ -417,7 +432,7 @@ namespace DAQMW
             case RTC::DataPortStatus::BUFFER_ERROR:
             case RTC::DataPortStatus::INVALID_ARGS:
                 std::cerr << "Impossible OutPort status: "
-                          << RTC::DataPortStatus::toString(out_status) 
+                          << RTC::toString(out_status) 
                           << std::endl;
                 ret = BUF_FATAL;
                 break;
@@ -438,10 +453,20 @@ namespace DAQMW
         {
             BufferStatus ret = BUF_SUCCESS;
             int index = 0;
+#if RTM_MAJOR_VERSION == 1
             RTC::DataPortStatus::Enum in_status = myInPort.getStatus(index);
+#endif
+#if RTM_MAJOR_VERSION == 2
+            RTC::DataPortStatus in_status = myInPort.getStatus(index);
+#endif
             if(m_debug) {
                 std::cerr << "InPort status: "
+#if RTM_MAJOR_VERSION == 1
                           << RTC::DataPortStatus::toString(in_status)
+#endif
+#if RTM_MAJOR_VERSION == 2
+                          << RTC::toString(in_status)
+#endif
                           << std::endl;
             }
             switch(in_status) {
@@ -457,7 +482,12 @@ namespace DAQMW
             case RTC::DataPortStatus::PORT_ERROR:
             case RTC::DataPortStatus::PRECONDITION_NOT_MET:
                 std::cerr << "InPort status: "
+#if RTM_MAJOR_VERSION == 1
                           << RTC::DataPortStatus::toString(in_status)
+#endif
+#if RTM_MAJOR_VERSION == 2
+                          << RTC::toString(in_status)
+#endif
                           << std::endl;
                 ret = BUF_FATAL;
                 break;
@@ -472,7 +502,12 @@ namespace DAQMW
             case RTC::DataPortStatus::CONNECTION_LOST:
             case RTC::DataPortStatus::UNKNOWN_ERROR:
                 std::cerr << "Impossible InPort status: " 
+#if RTM_MAJOR_VERSION == 1
                           << RTC::DataPortStatus::toString(in_status) 
+#endif
+#if RTM_MAJOR_VERSION == 2
+                          << RTC::toString(in_status) 
+#endif
                           << std::endl;
                 ret = BUF_FATAL;
                 break;

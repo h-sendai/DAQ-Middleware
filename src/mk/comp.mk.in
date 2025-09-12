@@ -28,13 +28,13 @@ IMPL_OBJ  = $(AUTO_GEN_DIR)/DAQServiceSVC_impl.o
 OBJS     += $(SKEL_OBJ) $(IMPL_OBJ)
 OBJS     += $(subst .cpp,.o, $(SRCS))
 
-CXXFLAGS += $(shell rtm-config --cflags)
-LDFLAGS  += $(shell rtm-config --libs)
+CXXFLAGS += $(shell @RTM_CONFIG@ --cflags)
+LDFLAGS  += $(shell @RTM_CONFIG@ --libs)
 SHFLAGS  = -shared
 
-IDLC     = `rtm-config --idlc`
-IDLFLAGS = `rtm-config --idlflags` -I`rtm-config --prefix`/include/rtm/idl
-WRAPPER  = rtm-skelwrapper
+IDLC     = `@RTM_CONFIG@ --idlc`
+IDLFLAGS = `@RTM_CONFIG@ --idlflags` -I`@RTM_CONFIG@ --prefix`/include/rtm/idl
+WRAPPER  = @RTM_SKELWRAPPER@
 WRAPPER_FLAGS = --include-dir="" --skel-suffix=Skel --stub-suffix=Stub
 
 LIB_DIR=lib

@@ -29,12 +29,14 @@ ifeq ($(strip $(OS)),ScientificSL)
     WWW_DOCUMENT_ROOT = /var/www/html
     HTTPD_CONF_DIR    = /etc/httpd/conf.d
     USE_MOD_PYTHON    = 1
+    USE_OPENRTM_AIST_VERSION = 1
 endif
 
 ########## Scientific Linux 5.8 - , 7.x ##########
 ifeq ($(strip $(OS)),scientific)
     WWW_DOCUMENT_ROOT = /var/www/html
     HTTPD_CONF_DIR    = /etc/httpd/conf.d
+    USE_OPENRTM_AIST_VERSION = 1
     ifeq ($(strip $(MAJOR_VERSION)),5)
         USE_MOD_PYTHON    = 1
         USE_PYTHON2       = 1
@@ -65,6 +67,7 @@ endif
 ifeq ($(strip $(OS)),ScientificCERNSLC)
     WWW_DOCUMENT_ROOT = /var/www/html
     HTTPD_CONF_DIR    = /etc/httpd/conf.d
+    USE_OPENRTM_AIST_VERSION = 1
     ifeq ($(strip $(MAJOR_VERSION)),5)
         USE_MOD_PYTHON    = 1
         USE_PYTHON2       = 1
@@ -89,24 +92,28 @@ HTTPD_CONF_DIR    = /etc/httpd/conf.d
         USE_PYTHON2       = 1
         PYTHON_EXEC_FILE  = python2
         PYTHON_CONFIG     = python2-config
+        USE_OPENRTM_AIST_VERSION = 1
     endif
     ifeq ($(strip $(MAJOR_VERSION)),6)
         USE_MOD_WSGI      = 1
         USE_PYTHON2       = 1
         PYTHON_EXEC_FILE  = python2
         PYTHON_CONFIG     = python-config
+        USE_OPENRTM_AIST_VERSION = 1
     endif
     ifeq ($(strip $(MAJOR_VERSION)),7)
         USE_MOD_WSGI      = 1
         USE_PYTHON2       = 1
         PYTHON_EXEC_FILE  = python2
         PYTHON_CONFIG     = python2-config
+        USE_OPENRTM_AIST_VERSION = 1
         # Use python3 on CentOS 7.7 and later
         ifeq ($(shell test $(MINOR_VERSION) -gt 6; echo $$?),0)
             USE_PYTHON2 = 0
             USE_PYTHON3 = 1
             PYTHON_EXEC_FILE  = python3
             PYTHON_CONFIG     = python3-config
+            USE_OPENRTM_AIST_VERSION = 1
         endif
     endif
     ifeq ($(strip $(MAJOR_VERSION)),8)
@@ -114,12 +121,34 @@ HTTPD_CONF_DIR    = /etc/httpd/conf.d
         USE_PYTHON3       = 1
         PYTHON_EXEC_FILE  = python3
         PYTHON_CONFIG     = python3-config
+        USE_OPENRTM_AIST_VERSION = 1
     endif
     ifeq ($(strip $(MAJOR_VERSION)),9)
         USE_MOD_WSGI      = 1
         USE_PYTHON3       = 1
         PYTHON_EXEC_FILE  = python3
         PYTHON_CONFIG     = python3-config
+        USE_OPENRTM_AIST_VERSION = 2
+    endif
+endif
+
+########## AlmaLinux ##########
+ifeq ($(strip $(OS)),almalinux)
+WWW_DOCUMENT_ROOT = /var/www/html
+HTTPD_CONF_DIR    = /etc/httpd/conf.d
+    ifeq ($(strip $(MAJOR_VERSION)),8)
+        USE_MOD_WSGI      = 1
+        USE_PYTHON3       = 1
+        PYTHON_EXEC_FILE  = python3
+        PYTHON_CONFIG     = python3-config
+        USE_OPENRTM_AIST_VERSION = 1
+    endif
+    ifeq ($(strip $(MAJOR_VERSION)),9)
+        USE_MOD_WSGI      = 1
+        USE_PYTHON3       = 1
+        PYTHON_EXEC_FILE  = python3
+        PYTHON_CONFIG     = python3-config
+        USE_OPENRTM_AIST_VERSION = 2
     endif
 endif
 
@@ -149,6 +178,7 @@ ifeq ($(strip $(OS)),Fedora)
     USE_PYTHON3       = 1
     PYTHON_EXEC_FILE  = python3
     PYTHON_CONFIG     = python3-config
+    USE_OPENRTM_AIST_VERSION = 2
 endif
 
 ########## Debian ##########
@@ -159,6 +189,7 @@ ifeq ($(strip $(OS)),debian)
     USE_PYTHON3       = 1
     PYTHON_EXEC_FILE  = python3
     PYTHON_CONFIG     = python3-config
+    USE_OPENRTM_AIST_VERSION = 1
 endif
 
 ########## Ubuntu ##########
@@ -169,6 +200,7 @@ ifeq ($(strip $(OS)),ubuntu)
     USE_PYTHON3       = 1
     PYTHON_EXEC_FILE  = python3
     PYTHON_CONFIG     = python3-config
+    USE_OPENRTM_AIST_VERSION = 2
 endif
 
 ########## ArchLinux  ##########
@@ -179,6 +211,7 @@ ifeq ($(strip $(OS)),arch)
     USE_PYTHON3       = 1
     PYTHON_EXEC_FILE  = python
     PYTHON_CONFIG     = python-config
+    USE_OPENRTM_AIST_VERSION = 2
 endif
 
 ########## Raspbian ##########
@@ -189,6 +222,7 @@ ifeq ($(strip $(OS)),raspbian)
     USE_PYTHON3       = 1
     PYTHON_EXEC_FILE  = python3
     PYTHON_CONFIG     = python3-config
+    USE_OPENRTM_AIST_VERSION = 1
 endif
 
 ########## Unknown ##########
@@ -196,6 +230,7 @@ ifeq ($(strip $(WWW_DOCUMENT_ROOT)),)
     WWW_DOCUMENT_ROOT = /
     HTTPD_CONF_DIR    = /
     USE_MOD_WSGI      = 1
+    USE_OPENRTM_AIST_VERSION = 1
 endif
 
 PYTHON_EXEC_PATH   = /usr/bin/$(PYTHON_EXEC_FILE)
