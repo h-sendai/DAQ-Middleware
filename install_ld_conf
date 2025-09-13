@@ -27,6 +27,9 @@ if [ $os = "Linux" ]; then
         if [ $arch = "armv6l" ]; then
             echo /usr/lib/daqmw > $conf_file
         fi
+        if [ $arch = "aarch64" ]; then
+            echo /usr/lib64/daqmw > $conf_file
+        fi
     fi
     if [ -z $destdir ]; then
         echo "exec. ldconfig"

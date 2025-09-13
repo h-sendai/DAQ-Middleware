@@ -53,6 +53,11 @@ ifeq "$(strip $(arch))"      "x86_64"
 LIB_DIR=lib64
 endif
 endif
+ifeq "$(strip $(try_lib64))" "/usr/lib64"
+ifeq "$(strip $(arch))"      "aarch64"
+LIB_DIR=lib64
+endif
+endif
 DAQMW_SUFFIX    = daqmw
 INSTALL_LIB_DIR = $(DESTDIR)$(prefix)/$(LIB_DIR)/$(DAQMW_SUFFIX)
 INSTALL_INC_DIR = $(DESTDIR)$(prefix)/include/$(DAQMW_SUFFIX)
