@@ -11,6 +11,7 @@ FILES      += bootComps-xinetd.sample
 FILES      += services.sample
 FILES      += bootComps.socket.sample
 FILES      += bootComps@.service.sample
+FILES      += README
 # EXEC_FILES += bootComps.py
 
 all:
