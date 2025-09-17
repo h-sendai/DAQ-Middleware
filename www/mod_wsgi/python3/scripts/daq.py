@@ -12,6 +12,7 @@ import os
 import sys
 import cgi
 import ParameterClient
+import urllib.parse
 
 host = "localhost"
 port = 30000
@@ -147,11 +148,11 @@ def application(environ, start_response):
 	os.environ['PARAMETER_CLIENT_TIMEOUT'] = environ.get('PARAMETER_CLIENT_TIMEOUT', '20')
 	# print >>  sys.stderr, "request = ", req, "  method = ", method
 	if req == "GET":
-		params = cgi.parse_qsl(environ['QUERY_STRING'])
+		params = urllib.parse.parse_qsl(environ['QUERY_STRING'])
 	if req == "POST":
 		wsgi_input     = environ['wsgi.input']
 		content_length = int(environ.get('CONTENT_LENGTH', 0))
-		params = cgi.parse_qsl(wsgi_input.read(content_length))
+		params = urllib.parse.parse_qsl(wsgi_input.read(content_length))
 	cmd =''
 	# print >> sys.stderr, "params ", params
 	if params != []:

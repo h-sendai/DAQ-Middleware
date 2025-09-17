@@ -8,6 +8,7 @@ __date__     = '11-April-2012'
 
 import sys
 import cgi
+import urllib.parse
 file = "@WWW_DOCUMENT_ROOT@/daqmw/operatorPanel/runNumber.txt"
 xml_ver = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>"
 xml_style = "<?xml-stylesheet href=\"../../operatorPanel/style.xsl\" type=\"text/xsl\" ?>"
@@ -26,7 +27,7 @@ def application(environ, start_response):
        status = '200 OK'
        wsgi_input     = environ['wsgi.input']
        content_length = int(environ.get('CONTENT_LENGTH', 0))
-       params = cgi.parse_qsl(wsgi_input.read(content_length))
+       params = urllib.parse.parse_qsl(wsgi_input.read(content_length))
        # print >> sys.stderr, "params ", params
        RunNumber =''
        if params != []:
