@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/python3
 
 """Server program based on mod_wsgi for DaqOperator
 
