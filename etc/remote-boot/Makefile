@@ -9,6 +9,8 @@ EXEC_MODE = 0755
 
 FILES      += bootComps-xinetd.sample
 FILES      += services.sample
+FILES      += bootComps.socket.sample
+FILES      += bootComps@.service.sample
 # EXEC_FILES += bootComps.py
 
 all:

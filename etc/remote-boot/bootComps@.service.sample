@@ -1,0 +1,13 @@
+[Unit]
+Description=Remote boot program
+
+[Service]
+Type=simple
+ExecStart=-/usr/share/daqmw/etc/remote-boot/bootComps.py
+# IgnoreSIGPIPE=no
+StandardInput=socket
+StandardError=socket
+#StandardError=journal
+
+[Install]
+WantedBy=multi-user.target
