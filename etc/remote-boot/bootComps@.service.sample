@@ -8,6 +8,8 @@ ExecStart=-/usr/share/daqmw/etc/remote-boot/bootComps.py
 StandardInput=socket
 StandardError=socket
 #StandardError=journal
+User=daq
+Group=daq
 
 [Install]
 WantedBy=multi-user.target
