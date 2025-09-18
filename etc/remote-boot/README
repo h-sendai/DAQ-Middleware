@@ -11,3 +11,7 @@ systemctl start bootComps.socket
 
 echo hello | nc localhost 50000
 として-1 need more info.とでるかどうか確認する。
+
+boot@Comps@.service中でStandardError=journalにしているので
+bootComps.pyの標準エラー出力はbootComps.pyが機動した計算機の
+journalに出力され、journalctlコマンドで見ることができる。

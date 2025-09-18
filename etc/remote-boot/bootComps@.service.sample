@@ -6,10 +6,11 @@ Type=simple
 ExecStart=-/usr/share/daqmw/etc/remote-boot/bootComps.py
 # IgnoreSIGPIPE=no
 StandardInput=socket
-StandardError=socket
-#StandardError=journal
+# StandardError=socket
+StandardError=journal
 User=daq
 Group=daq
+RemainAfterExit=yes
 
 [Install]
 WantedBy=multi-user.target
