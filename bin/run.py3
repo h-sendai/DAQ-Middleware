@@ -818,7 +818,7 @@ def send_file_content(ip_address, portno, file_path, content):
 
     recvline = so.recv(1024).decode('UTF-8')
     if recvline != '':
-        print(msg='ERROR: %s: %s' % (ip_address, recvline))
+        print('ERROR: %s: %s' % (ip_address, recvline))
         # sys.exit(msg)
         return False
     return True
