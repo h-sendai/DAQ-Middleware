@@ -8,7 +8,7 @@ BINDIR    = $(DESTDIR)$(prefix)/bin
 SRCDIR    = $(DESTDIR)$(prefix)/share/daqmw/daqmw-emulator
 
 PROG   = daqmw-emulator
-CFLAGS = -g -O2 -Wall
+CFLAGS += -g -O2 -Wall
 LDLIBS = -lm
 
 all: $(PROG)
