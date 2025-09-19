@@ -27,7 +27,7 @@ void usage(void)
 "    -d            debug\n"
 "    -v            verbose\n";
 
-	fprintf(stderr, usage_message);
+	fprintf(stderr, "%s", usage_message);
 	return;
 }
 
