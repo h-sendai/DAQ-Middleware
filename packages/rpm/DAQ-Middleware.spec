@@ -15,15 +15,15 @@
 
 Summary: DAQ Middleware
 Name: DAQ-Middleware
-Version: 1.5.0
-Release: 2%{?dist}
+Version: 2.0.0
+Release: 3%{?dist}
 Group: Development/Libraries
 Source: http://daqmw.kek.jp/src/DAQ-Middleware-%{version}.tar.gz
 URL: http://daqmw.kek.jp/
 License: LGPL
 BuildRoot: %{_tmppath}/%{name}-root
 
-BuildRequires: OpenRTM-aist >= 1.2.2-3
+BuildRequires: OpenRTM-aist >= 2.0.0
 
 %if 0%{?rhel} == 7
 BuildRequires: python3-devel
@@ -34,10 +34,13 @@ BuildRequires: python3-devel
 %if 0%{?rhel} == 9
 BuildRequires: python3-devel
 %endif
+%if 0%{?rhel} == 10
+BuildRequires: python3-devel
+%endif
 
 BuildRequires: swig
 
-Requires: OpenRTM-aist >= 1.2.2-3 xalan-c-devel xerces-c-devel /etc/ld.so.conf.d libuuid-devel python3-mod_wsgi python3-tkinter boost-devel
+Requires: OpenRTM-aist >= 2.0.0 xalan-c-devel xerces-c-devel /etc/ld.so.conf.d libuuid-devel python3-mod_wsgi python3-tkinter boost-devel
 
 %description
 This is DAQ-Middleware, a middleware for Data Acquisition System.
@@ -60,8 +63,8 @@ make install DESTDIR=$RPM_BUILD_ROOT
 # mkdir -p $RPM_BUILD_ROOT/etc/ld.so.conf.d
 # echo "%%{_libdir}/daqmw" > $RPM_BUILD_ROOT/etc/ld.so.conf.d/daqmiddleware-%%{_arch}.conf
 
-%clean
-rm -rf ${RPM_BUILD_ROOT}
+#%%clean
+#rm -rf ${RPM_BUILD_ROOT}
 
 %post -p /sbin/ldconfig
 %postun -p /sbin/ldconfig
@@ -76,6 +79,10 @@ rm -rf ${RPM_BUILD_ROOT}
 %{_datadir}/%{daqmw_dir}/*
 %{_var}/www/html/%{daqmw_dir}/*
 %{_sysconfdir}/httpd/conf.d/daq.conf
+%if "%{?dist}" == ".el10"
+%{python3_sitelib}/%{daqmw_dir}/*
+%{python3_sitelib}/daqmw.pth
+%endif
 %if "%{?dist}" == ".el9"
 %{python3_sitelib}/%{daqmw_dir}/*
 %{python3_sitelib}/daqmw.pth
