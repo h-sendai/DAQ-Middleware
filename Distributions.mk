@@ -150,23 +150,12 @@ HTTPD_CONF_DIR    = /etc/httpd/conf.d
         PYTHON_CONFIG     = python3-config
         USE_OPENRTM_AIST_VERSION = 2
     endif
-endif
-
-########## AlmaLinux ##########
-ifeq ($(strip $(OS)),almalinux)
-WWW_DOCUMENT_ROOT = /var/www/html
-HTTPD_CONF_DIR    = /etc/httpd/conf.d
-    ifeq ($(strip $(MAJOR_VERSION)),8)
+    ifeq ($(strip $(MAJOR_VERSION)),10)
         USE_MOD_WSGI      = 1
         USE_PYTHON3       = 1
         PYTHON_EXEC_FILE  = python3
         PYTHON_CONFIG     = python3-config
-    endif
-    ifeq ($(strip $(MAJOR_VERSION)),9)
-        USE_MOD_WSGI      = 1
-        USE_PYTHON3       = 1
-        PYTHON_EXEC_FILE  = python3
-        PYTHON_CONFIG     = python3-config
+        USE_OPENRTM_AIST_VERSION = 2
     endif
 endif
 
