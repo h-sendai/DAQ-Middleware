@@ -18,9 +18,10 @@
 
 #include <iostream>
 
+#include <rtm/idl/BasicDataTypeSkel.h>
+
 #include <rtm/Manager.h>
 #include <rtm/DataFlowComponentBase.h>
-#include <rtm/idl/BasicDataTypeSkel.h>
 #include <rtm/CorbaPort.h>
 #include <rtm/DataInPort.h>
 #include <rtm/DataOutPort.h>
