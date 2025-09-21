@@ -63,6 +63,8 @@ int SitcpRbcp::send_recv_command_packet(int command, std::string ip_address, int
     struct sitcp_rbcp_header send_header, reply_header;
     std::string function_name;
     
+    memset(&send_header, 0, sizeof(send_header));
+
     send_header.ver_type = (char) 0xff;
     if (command == READ) {
         send_header.cmd_flag = (char) 0xc0;
