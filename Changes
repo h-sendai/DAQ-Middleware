@@ -1,3 +1,30 @@
+2.0.0 2025-09-24 Hiroshi Sendai
+
+Summary
+- We use OpenRTM-aist 2.0.x as base software.  
+  We can use OpenRTM-aist 1.
+  We do not have to re-write DAQ-Components.
+  Previously developed DAQ components can be used without any code changes
+  by simply recompiling.
+- We use xinetd to boot the DAQ-Components on the remote computers.  But
+  the xinetd package is no longer provided in AlmaLinux 9.  Instead we
+  have added sample configuration files that use systemd socket unit.
+- This release will be the final one.
+
+Details
+
+FEATURE: Use OpenRTM-aist 2.0
+FEATURE: Add sample configuration files that use systemd socket unit.
+COMPAT:  cgi.parse_qsl() function used in the WebUI has been disappeared.
+         Use urllib.parse.parse_qsl() insted.
+COMPAT:  Fix compilation failure with gcc 12 and later C++ compilers.
+         (Include rtm/idl files first in DaqComponentBase.h)
+BUILD:   Create EL 9 RPM packages.
+BUILD:   A warning was genereated from the awk command running during the
+         compilation of SampleLogger.  Fix this warning.
+BUILD:   We can setup in Ubuntu 2404 LTS environment by make; make install.
+         (We will not provide Ubuntu deb packages)
+
 1.4.5 2021-05-25 Hiroshi Sendai
 
 Summary
