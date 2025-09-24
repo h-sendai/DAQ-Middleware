@@ -187,7 +187,7 @@ ifeq ($(strip $(OS)),debian)
     PYTHON_EXEC_FILE  = python3
     PYTHON_CONFIG     = python3-config
     PYTHON_SITELIB   = /usr/lib/python3/dist-packages
-    USE_OPENRTM_AIST_VERSION = 1
+    USE_OPENRTM_AIST_VERSION = 2
 endif
 
 ########## Ubuntu ##########
