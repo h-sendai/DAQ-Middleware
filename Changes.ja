@@ -1,3 +1,30 @@
+2.0.0 2025-09-24 Hiroshi Sendai
+
+サマリー
+- ベースとして使用しているOpenRTM-aistについてOpenRTM-aist 2.0.xを
+  使うようにしました。OpenRTM-aist 1でもコンパイルできるようにしています。
+  いままで開発されたDAQコンポーネントはコードを変更する必要はなく、
+  再コンパイルすれば使えます。
+- リモートブートで従来はxinetdを使っていましたが、AlmaLinux 9ではxinetd
+  パッケージが提供されなくなりました。かわりにsystemdソケットユニットを
+  使うサンプルファイルを追加してあります。
+- これがDAQ-Middlewareの最後のリリースです。
+
+詳細
+FEATURE: OpenRTM-aist 2.0を使うことにしました。
+FEATURE: リモートブートでsystemdソケットユニットを使う場合の設定ファイルの
+         サンプルを追加しました。
+COMPAT:  WebUIで使っていたcgi.parse_qsl()関数がpython 3.9で消滅したので
+         urllib.parse.parse_qsl()を使うように修正しました。
+COMPAT:  gcc 12およびそれ以降のc++コンパイラでDAQコンポーネントのコンパイルに
+         失敗するのを修正しました(DaqComponentBase.hでrtm/idlを先に
+         インクルードするように修正した)。
+BUILD:   EL 9パッケージを作ることにしました。
+BUILD:   SampleLoggerのコンパイル中に起動しているawkコマンドから警告がでる
+         ようになったので出ないように修正しました。
+BUILD:   Ubuntu 2404 LTSでmake; make installでセットアップできるように
+         修正しました(Ubuntuのバイナリパッケージを作成する予定はありません)。
+
 1.4.5 2021-05-25 Hiroshi Sendai
 
 サマリー

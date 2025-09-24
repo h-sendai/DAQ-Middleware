@@ -1,4 +1,4 @@
-DAQ-Middleware 1.5.x
+DAQ-Middleware 2.0.0
 
 # About python version
 
@@ -9,7 +9,7 @@ DAQ-Middleware 1.5.x
 
 There are two branches.
 
-- master: this branch to develop 1.5.x series.
+- master: this branch to develop 2.0.x series (using OpenRTM-aist 2.0.x)
 - release_1_4: develop 1.4.x series. github: https://github.com/h-sendai/DAQ-Middleware/tree/release_1_4
 
 URL: http://daqmw.kek.jp/
