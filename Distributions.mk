@@ -106,6 +106,7 @@ HTTPD_CONF_DIR    = /etc/httpd/conf.d
         USE_PYTHON2       = 1
         PYTHON_EXEC_FILE  = python2
         PYTHON_CONFIG     = python2-config
+        PYTHON_SITELIB   = /usr/lib/python2.7/site-packages
         USE_OPENRTM_AIST_VERSION = 1
         # Use python3 on CentOS 7.7 and later
         ifeq ($(shell test $(MINOR_VERSION) -gt 6; echo $$?),0)
@@ -113,6 +114,7 @@ HTTPD_CONF_DIR    = /etc/httpd/conf.d
             USE_PYTHON3 = 1
             PYTHON_EXEC_FILE  = python3
             PYTHON_CONFIG     = python3-config
+            PYTHON_SITELIB   = /usr/lib/python3.6/site-packages
             USE_OPENRTM_AIST_VERSION = 1
         endif
     endif
@@ -121,6 +123,7 @@ HTTPD_CONF_DIR    = /etc/httpd/conf.d
         USE_PYTHON3       = 1
         PYTHON_EXEC_FILE  = python3
         PYTHON_CONFIG     = python3-config
+        PYTHON_SITELIB   = /usr/lib/python3.6/site-packages
         USE_OPENRTM_AIST_VERSION = 1
     endif
     ifeq ($(strip $(MAJOR_VERSION)),9)
@@ -128,6 +131,7 @@ HTTPD_CONF_DIR    = /etc/httpd/conf.d
         USE_PYTHON3       = 1
         PYTHON_EXEC_FILE  = python3
         PYTHON_CONFIG     = python3-config
+        PYTHON_SITELIB   = /usr/lib/python3.9/site-packages
         USE_OPENRTM_AIST_VERSION = 2
     endif
 endif
@@ -141,6 +145,7 @@ HTTPD_CONF_DIR    = /etc/httpd/conf.d
         USE_PYTHON3       = 1
         PYTHON_EXEC_FILE  = python3
         PYTHON_CONFIG     = python3-config
+        PYTHON_SITELIB   = /usr/lib/python3.6/site-packages
         USE_OPENRTM_AIST_VERSION = 1
     endif
     ifeq ($(strip $(MAJOR_VERSION)),9)
@@ -148,6 +153,7 @@ HTTPD_CONF_DIR    = /etc/httpd/conf.d
         USE_PYTHON3       = 1
         PYTHON_EXEC_FILE  = python3
         PYTHON_CONFIG     = python3-config
+        PYTHON_SITELIB   = /usr/lib/python3.9/site-packages
         USE_OPENRTM_AIST_VERSION = 2
     endif
     ifeq ($(strip $(MAJOR_VERSION)),10)
@@ -155,6 +161,7 @@ HTTPD_CONF_DIR    = /etc/httpd/conf.d
         USE_PYTHON3       = 1
         PYTHON_EXEC_FILE  = python3
         PYTHON_CONFIG     = python3-config
+        PYTHON_SITELIB   = /usr/lib/python3.12/site-packages
         USE_OPENRTM_AIST_VERSION = 2
     endif
 endif
@@ -167,6 +174,7 @@ ifeq ($(strip $(OS)),Fedora)
     USE_PYTHON3       = 1
     PYTHON_EXEC_FILE  = python3
     PYTHON_CONFIG     = python3-config
+    PYTHON_SITELIB   = /usr/lib/python3.13/site-packages
     USE_OPENRTM_AIST_VERSION = 2
 endif
 
@@ -178,6 +186,7 @@ ifeq ($(strip $(OS)),debian)
     USE_PYTHON3       = 1
     PYTHON_EXEC_FILE  = python3
     PYTHON_CONFIG     = python3-config
+    PYTHON_SITELIB   = /usr/lib/python3/dist-packages
     USE_OPENRTM_AIST_VERSION = 1
 endif
 
@@ -189,6 +198,7 @@ ifeq ($(strip $(OS)),ubuntu)
     USE_PYTHON3       = 1
     PYTHON_EXEC_FILE  = python3
     PYTHON_CONFIG     = python3-config
+    PYTHON_SITELIB   = /usr/lib/python3/dist-packages
     USE_OPENRTM_AIST_VERSION = 2
 endif
 
@@ -200,6 +210,7 @@ ifeq ($(strip $(OS)),arch)
     USE_PYTHON3       = 1
     PYTHON_EXEC_FILE  = python
     PYTHON_CONFIG     = python-config
+    PYTHON_SITELIB   = /usr/lib/python3.13/site-packages
     USE_OPENRTM_AIST_VERSION = 2
 endif
 
@@ -211,6 +222,7 @@ ifeq ($(strip $(OS)),raspbian)
     USE_PYTHON3       = 1
     PYTHON_EXEC_FILE  = python3
     PYTHON_CONFIG     = python3-config
+    PYTHON_SITELIB   = /usr/lib/python3/dist-packages
     USE_OPENRTM_AIST_VERSION = 1
 endif
 
