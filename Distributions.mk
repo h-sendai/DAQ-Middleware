@@ -167,7 +167,7 @@ HTTPD_CONF_DIR    = /etc/httpd/conf.d
 endif
 
 ########## Fedora ##########
-ifeq ($(strip $(OS)),Fedora)
+ifeq ($(strip $(OS)),fedora)
     WWW_DOCUMENT_ROOT = /var/www/html
     HTTPD_CONF_DIR    = /etc/httpd/conf.d
     USE_MOD_WSGI      = 1
