@@ -28,7 +28,7 @@ IMPL_OBJ  = $(AUTO_GEN_DIR)/DAQServiceSVC_impl.o
 OBJS     += $(SKEL_OBJ) $(IMPL_OBJ)
 OBJS     += $(subst .cpp,.o, $(SRCS))
 
-CXXFLAGS += $(shell @RTM_CONFIG@ --cflags)
+CXXFLAGS += -g -O2 -Wall $(shell @RTM_CONFIG@ --cflags)
 LDFLAGS  += $(shell @RTM_CONFIG@ --libs)
 SHFLAGS  = -shared
 
