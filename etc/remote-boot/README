@@ -9,9 +9,16 @@ cp bootComps.socket.sample /etc/systemd/system/bootComps.socket
 cp bootComps@.service.sample /etc/systemd/system/bootComps@.service
 systemctl start bootComps.socket
 
-echo hello | nc localhost 50000
-として-1 need more info.とでるかどうか確認する。
-
 boot@Comps@.service中でStandardError=journalにしているので
 bootComps.pyの標準エラー出力はbootComps.pyが機動した計算機の
 journalに出力され、journalctlコマンドで見ることができる。
+
+echo hello | nc localhost 50000
+
+として
+
+journalctl --since=today
+
+などとして
+bootComps.py[98074]: -1 need more info.
+とでているかどうか確認する。でていれば動作している。
