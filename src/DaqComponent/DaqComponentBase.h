@@ -433,7 +433,12 @@ namespace DAQMW
             case RTC::DataPortStatus::BUFFER_ERROR:
             case RTC::DataPortStatus::INVALID_ARGS:
                 std::cerr << "Impossible OutPort status: "
+#if RTM_MAJOR_VERSION == 1
+                          << RTC::DataPortStatus::toString(out_status) 
+#endif
+#if RTM_MAJOR_VERSION == 2
                           << RTC::toString(out_status) 
+#endif
                           << std::endl;
                 ret = BUF_FATAL;
                 break;
