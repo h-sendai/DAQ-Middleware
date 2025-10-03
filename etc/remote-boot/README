@@ -10,7 +10,7 @@ cp bootComps@.service.sample /etc/systemd/system/bootComps@.service
 systemctl start bootComps.socket
 
 boot@Comps@.service中でStandardError=journalにしているので
-bootComps.pyの標準エラー出力はbootComps.pyが機動した計算機の
+bootComps.pyの標準エラー出力はbootComps.pyが起動した計算機の
 journalに出力され、journalctlコマンドで見ることができる。
 
 echo hello | nc localhost 50000
